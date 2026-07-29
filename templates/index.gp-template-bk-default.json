@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "pebble_hero": {
+      "type": "pebble-hero-slider",
+      "blocks": {
+        "slide_one": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "NEW WINTER SEASON",
+            "heading": "Feel good & enjoy every day",
+            "body": "<p>Soft, feel-good pieces made for little moments and big adventures.</p>",
+            "button_label": "Shop new arrivals",
+            "sticker": "WOW!",
+            "background": "#f5c9eb",
+            "foreground": "#2c2234",
+            "button_background": "#ff6d3a",
+            "button_foreground": "#ffffff"
+          }
+        },
+        "slide_two": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "MADE TO PLAY",
+            "heading": "Little layers, lots of joy",
+            "body": "<p>Easy-to-wear essentials with room to move, explore and imagine.</p>",
+            "button_label": "Discover the collection",
+            "sticker": "PLAY",
+            "background": "#d9edb5",
+            "foreground": "#243321",
+            "button_background": "#2c2234",
+            "button_foreground": "#ffffff"
+          }
+        },
+        "slide_three": {
+          "type": "slide",
+          "settings": {
+            "eyebrow": "EVERYDAY COMFORT",
+            "heading": "Soft on skin, big on personality",
+            "body": "<p>A cheerful, cozy collection made for every part of their day.</p>",
+            "button_label": "Explore essentials",
+            "sticker": "KIDS",
+            "background": "#b9d5f8",
+            "foreground": "#1f2c46",
+            "button_background": "#f77d43",
+            "button_foreground": "#ffffff"
+          }
+        }
+      },
+      "block_order": [
+        "slide_one",
+        "slide_two",
+        "slide_three"
+      ],
+      "settings": {
+        "height": "large",
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "show_arrows": true,
+        "show_pagination": true
+      }
+    }
+  },
+  "order": [
+    "pebble_hero"
+  ]
+}
