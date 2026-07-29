@@ -1,0 +1,905 @@
+{% liquid
+  assign slide_count = section.blocks.size
+  if slide_count < 3
+    assign missing_slide_count = 3 | minus: slide_count
+    assign rendered_slide_count = 3
+  else
+    assign missing_slide_count = 0
+    assign rendered_slide_count = slide_count
+  endif
+%}
+
+<section
+  id="PebbleHero-{{ section.id }}"
+  class="pebble-hero full-width pebble-hero--{{ section.settings.height }}"
+  data-pebble-slider
+  data-autoplay="{% if section.settings.autoplay %}true{% else %}false{% endif %}"
+  data-delay="{{ section.settings.autoplay_speed | times: 1000 }}"
+  data-pause-on-hover="{% if section.settings.pause_on_hover %}true{% else %}false{% endif %}"
+  data-show-pagination="{% if section.settings.show_pagination %}true{% else %}false{% endif %}"
+  data-speed="{{ section.settings.transition_speed }}"
+  data-go-to-slide="{{ 'pebble_hero.go_to_slide' | t }}"
+  data-next-slide="{{ 'pebble_hero.next_slide' | t }}"
+  data-previous-slide="{{ 'pebble_hero.previous_slide' | t }}"
+  aria-label="{{ 'pebble_hero.carousel' | t }}"
+>
+  <div class="pebble-hero__swiper swiper" aria-roledescription="carousel">
+    <div class="swiper-wrapper">
+      {% for block in section.blocks %}
+        {% liquid
+          assign image_loading = 'lazy'
+          if forloop.first
+            assign image_loading = 'eager'
+          endif
+        %}
+        <article
+          class="pebble-hero__slide swiper-slide"
+          style="--pebble-background: {{ block.settings.background }}; --pebble-foreground: {{ block.settings.foreground }}; --pebble-button-background: {{ block.settings.button_background }}; --pebble-button-foreground: {{ block.settings.button_foreground }}; --pebble-overlay-color: {{ block.settings.overlay_color }}; --pebble-overlay-opacity: {{ block.settings.overlay_opacity }};"
+          aria-roledescription="slide"
+          aria-label="{{ 'pebble_hero.slide_label' | t: current: forloop.index, total: rendered_slide_count }}"
+          {{ block.shopify_attributes }}
+        >
+          <div class="pebble-hero__shape pebble-hero__shape--one"></div>
+          <div class="pebble-hero__shape pebble-hero__shape--two"></div>
+          <div class="pebble-hero__overlay"></div>
+
+          <div class="pebble-hero__content pebble-hero__content--{{ block.settings.content_position }}">
+            {% if block.settings.eyebrow != blank %}
+              <p class="pebble-hero__eyebrow">{{ block.settings.eyebrow | escape }}</p>
+            {% endif %}
+
+            {% if block.settings.heading != blank %}
+              {% if forloop.first %}
+                <h1 class="pebble-hero__heading">{{ block.settings.heading }}</h1>
+              {% else %}
+                <h2 class="pebble-hero__heading">{{ block.settings.heading }}</h2>
+              {% endif %}
+            {% endif %}
+
+            {% if block.settings.body != blank %}
+              <div class="pebble-hero__body">{{ block.settings.body }}</div>
+            {% endif %}
+
+            {% if block.settings.button_label != blank %}
+              {% if block.settings.button_link != blank %}
+                <a class="pebble-hero__button" href="{{ block.settings.button_link }}">{{ block.settings.button_label | escape }}</a>
+              {% else %}
+                <span class="pebble-hero__button">{{ block.settings.button_label | escape }}</span>
+              {% endif %}
+            {% endif %}
+          </div>
+
+          <div class="pebble-hero__art" aria-hidden="true">
+            <div class="pebble-hero__image-wrap">
+              {% if block.settings.mobile_image != blank or block.settings.image != blank %}
+                <picture>
+                  {% if block.settings.mobile_image != blank %}
+                    <source media="(max-width: 749px)" srcset="{{ block.settings.mobile_image | image_url: width: 900 }}">
+                  {% endif %}
+                  {{ block.settings.image | default: block.settings.mobile_image | image_url: width: 1800 | image_tag: class: 'pebble-hero__image', widths: '540, 720, 900, 1200, 1500, 1800', sizes: '(min-width: 990px) 48vw, (min-width: 750px) 50vw, 88vw', loading: image_loading }}
+                </picture>
+              {% else %}
+                {{ 'lifestyle-1' | placeholder_svg_tag: 'pebble-hero__placeholder' }}
+              {% endif %}
+            </div>
+            {% if block.settings.sticker != blank %}
+              <span class="pebble-hero__sticker">{{ block.settings.sticker | escape }}</span>
+            {% endif %}
+            <span class="pebble-hero__orb">{{ 'pebble_hero.orb_label' | t }}</span>
+          </div>
+        </article>
+      {% endfor %}
+
+      {% if missing_slide_count > 0 %}
+        {% for index in (1..missing_slide_count) %}
+          {% assign placeholder_slide_index = section.blocks.size | plus: forloop.index %}
+          <article
+            class="pebble-hero__slide pebble-hero__slide--placeholder swiper-slide"
+            style="--pebble-background: #f5c9eb; --pebble-foreground: #2c2234; --pebble-button-background: #ff6d3a; --pebble-button-foreground: #ffffff; --pebble-overlay-color: #2c2234; --pebble-overlay-opacity: 0;"
+            aria-roledescription="slide"
+            aria-label="{{ 'pebble_hero.slide_label' | t: current: placeholder_slide_index, total: rendered_slide_count }}"
+          >
+            <div class="pebble-hero__shape pebble-hero__shape--one"></div>
+            <div class="pebble-hero__shape pebble-hero__shape--two"></div>
+            <div class="pebble-hero__overlay"></div>
+            <div class="pebble-hero__content pebble-hero__content--left">
+              <p class="pebble-hero__eyebrow">{{ 'pebble_hero.placeholder_eyebrow' | t }}</p>
+              {% if section.blocks.size == 0 and forloop.first %}
+                <h1 class="pebble-hero__heading">{{ 'pebble_hero.placeholder_heading' | t }}</h1>
+              {% else %}
+                <h2 class="pebble-hero__heading">{{ 'pebble_hero.placeholder_heading' | t }}</h2>
+              {% endif %}
+              <div class="pebble-hero__body"><p>{{ 'pebble_hero.placeholder_body' | t }}</p></div>
+              <span class="pebble-hero__button">{{ 'pebble_hero.placeholder_button' | t }}</span>
+            </div>
+            <div class="pebble-hero__art" aria-hidden="true">
+              <div class="pebble-hero__image-wrap">{{ 'lifestyle-1' | placeholder_svg_tag: 'pebble-hero__placeholder' }}</div>
+              <span class="pebble-hero__sticker">{{ 'pebble_hero.placeholder_sticker' | t }}</span>
+              <span class="pebble-hero__orb">{{ 'pebble_hero.orb_label' | t }}</span>
+            </div>
+          </article>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    {% if section.settings.show_arrows %}
+      <div class="pebble-hero__navigation">
+        <button class="pebble-hero__arrow pebble-hero__arrow--previous" type="button" data-slider-previous aria-label="{{ 'pebble_hero.previous_slide' | t }}">
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M14.5 5 7.5 12l7 7"></path></svg>
+        </button>
+        <button class="pebble-hero__arrow pebble-hero__arrow--next" type="button" data-slider-next aria-label="{{ 'pebble_hero.next_slide' | t }}">
+          <svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="m9.5 5 7 7-7 7"></path></svg>
+        </button>
+      </div>
+    {% endif %}
+
+    {% if section.settings.show_pagination %}
+      <div class="pebble-hero__pagination" data-slider-pagination></div>
+    {% endif %}
+  </div>
+</section>
+
+{% stylesheet %}
+  .pebble-hero {
+    width: 100%;
+    overflow: clip;
+  }
+
+  .pebble-hero__swiper {
+    position: relative;
+    width: 100%;
+  }
+
+  .pebble-hero__slide {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 0.9fr);
+    align-items: center;
+    min-height: clamp(35rem, 68vw, 49rem);
+    overflow: hidden;
+    padding: clamp(4rem, 8vw, 8rem) max(5vw, calc((100vw - 84rem) / 2));
+    background: var(--pebble-background);
+    color: var(--pebble-foreground);
+    isolation: isolate;
+  }
+
+  .pebble-hero--compact .pebble-hero__slide {
+    min-height: clamp(31rem, 55vw, 42rem);
+  }
+
+  .pebble-hero--large .pebble-hero__slide {
+    min-height: clamp(39rem, 76vw, 54rem);
+  }
+
+  .pebble-hero__content {
+    position: relative;
+    z-index: 3;
+    width: min(100%, 38rem);
+    font-family: var(--font-primary--family);
+  }
+
+  .pebble-hero__content--left {
+    justify-self: start;
+    text-align: left;
+  }
+
+  .pebble-hero__content--center {
+    justify-self: center;
+    text-align: center;
+  }
+
+  .pebble-hero__content--right {
+    justify-self: end;
+    text-align: right;
+  }
+
+  .pebble-hero__eyebrow {
+    margin: 0 0 1rem;
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    line-height: 1.2;
+  }
+
+  .pebble-hero__heading {
+    max-width: 12ch;
+    margin: 0;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: clamp(3.1rem, 6.3vw, 6.8rem);
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: -0.075em;
+    line-height: 0.88;
+  }
+
+  .pebble-hero__content--center .pebble-hero__heading,
+  .pebble-hero__content--right .pebble-hero__heading {
+    margin-inline: auto;
+  }
+
+  .pebble-hero__body {
+    max-width: 30rem;
+    margin: 1.5rem 0 2rem;
+    font-size: clamp(1rem, 1.4vw, 1.2rem);
+    line-height: 1.5;
+  }
+
+  .pebble-hero__content--center .pebble-hero__body,
+  .pebble-hero__content--right .pebble-hero__body {
+    margin-inline: auto;
+  }
+
+  .pebble-hero__body p {
+    margin: 0;
+  }
+
+  .pebble-hero__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 3.4rem;
+    padding: 0.75rem 1.3rem;
+    border: 0;
+    border-radius: 999px;
+    background: var(--pebble-button-background);
+    color: var(--pebble-button-foreground);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 180ms ease, box-shadow 180ms ease;
+  }
+
+  a.pebble-hero__button:hover {
+    box-shadow: 0 0.6rem 1.4rem rgb(36 34 52 / 22%);
+    transform: translateY(-0.15rem);
+  }
+
+  .pebble-hero__art {
+    position: relative;
+    z-index: 1;
+    justify-self: stretch;
+    min-height: 27rem;
+  }
+
+  .pebble-hero__image-wrap {
+    position: absolute;
+    inset: 3% 0 2% 5%;
+    overflow: hidden;
+    border-radius: 48% 52% 43% 57% / 56% 46% 54% 44%;
+    background: rgb(255 255 255 / 32%);
+    box-shadow: 1.2rem 1.2rem 0 rgb(255 255 255 / 28%);
+    transform: rotate(3deg) scale(0.94);
+  }
+
+  .pebble-hero__image,
+  .pebble-hero__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .pebble-hero__placeholder {
+    padding: 18%;
+    fill: currentcolor;
+    opacity: 0.48;
+  }
+
+  .pebble-hero__shape {
+    position: absolute;
+    z-index: 0;
+    display: block;
+    width: clamp(9rem, 18vw, 17rem);
+    aspect-ratio: 1;
+    border: 0.35rem solid rgb(255 255 255 / 58%);
+    border-radius: 42% 58% 59% 41% / 39% 37% 63% 61%;
+    opacity: 0.78;
+  }
+
+  .pebble-hero__shape--one {
+    top: -4rem;
+    left: 43%;
+    transform: rotate(21deg);
+  }
+
+  .pebble-hero__shape--two {
+    right: -4rem;
+    bottom: -6rem;
+    width: clamp(13rem, 24vw, 23rem);
+    border-style: dashed;
+    transform: rotate(-18deg);
+  }
+
+  .pebble-hero__overlay {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    background: var(--pebble-overlay-color);
+    opacity: calc(var(--pebble-overlay-opacity) / 100);
+    pointer-events: none;
+  }
+
+  .pebble-hero__sticker,
+  .pebble-hero__orb {
+    position: absolute;
+    display: grid;
+    place-items: center;
+    border-radius: 999px;
+    font-size: clamp(0.75rem, 1.2vw, 1rem);
+    font-weight: 900;
+    letter-spacing: 0.03em;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .pebble-hero__sticker {
+    top: 5%;
+    left: -5%;
+    z-index: 2;
+    width: clamp(5rem, 10vw, 8.2rem);
+    aspect-ratio: 1;
+    background: #ffe96a;
+    color: #2c2234;
+    transform: rotate(-22deg) scale(0.85);
+  }
+
+  .pebble-hero__orb {
+    right: -3%;
+    bottom: 7%;
+    z-index: 2;
+    width: clamp(4.5rem, 8.5vw, 7rem);
+    aspect-ratio: 1;
+    background: #ffffff;
+    color: var(--pebble-foreground);
+    transform: rotate(20deg) scale(0.85);
+  }
+
+  .pebble-hero__navigation {
+    position: absolute;
+    z-index: 5;
+    right: max(4vw, calc((100vw - 84rem) / 2));
+    bottom: 2rem;
+    display: flex;
+    gap: 0.65rem;
+  }
+
+  .pebble-hero__arrow {
+    display: grid;
+    width: 3rem;
+    aspect-ratio: 1;
+    padding: 0;
+    border: 1px solid rgb(44 34 52 / 22%);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 84%);
+    color: var(--pebble-foreground);
+    cursor: pointer;
+    place-items: center;
+    transition: background 180ms ease, transform 180ms ease;
+  }
+
+  .pebble-hero__arrow svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
+    stroke: currentcolor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .pebble-hero__arrow:hover {
+    background: #ffffff;
+    transform: scale(1.06);
+  }
+
+  .pebble-hero__pagination {
+    position: absolute;
+    z-index: 5;
+    bottom: 2.9rem !important;
+    left: max(5vw, calc((100vw - 84rem) / 2)) !important;
+    display: flex;
+    align-items: center;
+    width: auto !important;
+    gap: 0.5rem;
+  }
+
+  .pebble-hero .swiper-pagination-bullet {
+    width: 0.55rem;
+    height: 0.55rem;
+    margin: 0 !important;
+    border: 0;
+    border-radius: 999px;
+    background: var(--pebble-foreground);
+    cursor: pointer;
+    opacity: 0.3;
+    transition: width 400ms ease, opacity 250ms ease, transform 250ms ease;
+  }
+
+  .pebble-hero .swiper-pagination-bullet-active {
+    width: 2.4rem;
+    opacity: 1;
+    transform: none;
+  }
+
+  .pebble-hero__slide .pebble-hero__eyebrow,
+  .pebble-hero__slide .pebble-hero__heading,
+  .pebble-hero__slide .pebble-hero__body,
+  .pebble-hero__slide .pebble-hero__button,
+  .pebble-hero__slide .pebble-hero__image-wrap,
+  .pebble-hero__slide .pebble-hero__sticker,
+  .pebble-hero__slide .pebble-hero__orb {
+    opacity: 0;
+  }
+
+  .pebble-hero__slide .pebble-hero__eyebrow,
+  .pebble-hero__slide .pebble-hero__heading,
+  .pebble-hero__slide .pebble-hero__body,
+  .pebble-hero__slide .pebble-hero__button {
+    transform: translateY(1.2rem);
+    transition: opacity 500ms ease, transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pebble-hero__slide .pebble-hero__image-wrap {
+    transition: opacity 700ms ease 120ms, transform 1000ms cubic-bezier(0.16, 1, 0.3, 1) 120ms;
+  }
+
+  .pebble-hero__slide .pebble-hero__sticker,
+  .pebble-hero__slide .pebble-hero__orb {
+    transition: opacity 500ms ease 400ms, transform 700ms cubic-bezier(0.16, 1, 0.3, 1) 400ms;
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__eyebrow,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__heading,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__body,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__button,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__image-wrap,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__sticker,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__orb {
+    opacity: 1;
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__eyebrow,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__heading,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__body,
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__button {
+    transform: translateY(0);
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__heading {
+    transition-delay: 90ms;
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__body {
+    transition-delay: 170ms;
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__button {
+    transition-delay: 250ms;
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__image-wrap {
+    transform: rotate(3deg) scale(1);
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__sticker {
+    transform: rotate(-14deg) scale(1);
+  }
+
+  .pebble-hero__slide.swiper-slide-active .pebble-hero__orb {
+    transform: rotate(13deg) scale(1);
+  }
+
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .pebble-hero__slide {
+      grid-template-columns: minmax(0, 1fr) minmax(17rem, 0.8fr);
+      min-height: clamp(34rem, 76vw, 44rem);
+      padding-inline: 6vw;
+    }
+
+    .pebble-hero__heading {
+      font-size: clamp(3.2rem, 7vw, 4.8rem);
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .pebble-hero__slide,
+    .pebble-hero--compact .pebble-hero__slide,
+    .pebble-hero--large .pebble-hero__slide {
+      display: flex;
+      min-height: 42rem;
+      padding: 2.2rem 1.4rem 5.8rem;
+      align-items: flex-end;
+    }
+
+    .pebble-hero__content,
+    .pebble-hero__content--center,
+    .pebble-hero__content--right {
+      max-width: 82%;
+      justify-self: start;
+      text-align: left;
+    }
+
+    .pebble-hero__content--center .pebble-hero__heading,
+    .pebble-hero__content--right .pebble-hero__heading,
+    .pebble-hero__content--center .pebble-hero__body,
+    .pebble-hero__content--right .pebble-hero__body {
+      margin-inline: 0;
+    }
+
+    .pebble-hero__heading {
+      font-size: clamp(3rem, 13.5vw, 4.5rem);
+    }
+
+    .pebble-hero__body {
+      margin: 1rem 0 1.45rem;
+    }
+
+    .pebble-hero__art {
+      position: absolute;
+      inset: 1.5rem 0 auto 31%;
+      min-height: 19rem;
+      pointer-events: none;
+    }
+
+    .pebble-hero__image-wrap {
+      inset: 0 0 0 9%;
+      opacity: 0.9;
+    }
+
+    .pebble-hero__sticker {
+      top: -5%;
+      left: 0;
+    }
+
+    .pebble-hero__orb {
+      right: -8%;
+      bottom: -4%;
+    }
+
+    .pebble-hero__shape--one {
+      top: -3rem;
+      left: 2%;
+    }
+
+    .pebble-hero__navigation {
+      right: 1.4rem;
+      bottom: 1.5rem;
+    }
+
+    .pebble-hero__pagination {
+      bottom: 2.35rem !important;
+      left: 1.4rem !important;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pebble-hero__button,
+    .pebble-hero__arrow,
+    .pebble-hero .swiper-pagination-bullet,
+    .pebble-hero__slide .pebble-hero__eyebrow,
+    .pebble-hero__slide .pebble-hero__heading,
+    .pebble-hero__slide .pebble-hero__body,
+    .pebble-hero__slide .pebble-hero__button,
+    .pebble-hero__slide .pebble-hero__image-wrap,
+    .pebble-hero__slide .pebble-hero__sticker,
+    .pebble-hero__slide .pebble-hero__orb {
+      transition: none;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  (function () {
+    function getSliderRoots(scope) {
+      var roots = [];
+      if (scope.matches && scope.matches('[data-pebble-slider]')) roots.push(scope);
+      if (scope.querySelectorAll) {
+        scope.querySelectorAll('[data-pebble-slider]').forEach(function (root) {
+          roots.push(root);
+        });
+      }
+      return roots;
+    }
+
+    function initializeSlider(root, attempts) {
+      if (root.dataset.pebbleSliderInitialized === 'true') return;
+
+      if (typeof window.Swiper === 'undefined') {
+        if ((attempts || 0) < 20) {
+          window.setTimeout(function () {
+            initializeSlider(root, (attempts || 0) + 1);
+          }, 100);
+        }
+        return;
+      }
+
+      var slider = root.querySelector('.pebble-hero__swiper');
+      if (!slider || slider.swiper) return;
+
+      var pagination = root.querySelector('[data-slider-pagination]');
+      var previous = root.querySelector('[data-slider-previous]');
+      var next = root.querySelector('[data-slider-next]');
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var slideCount = slider.querySelectorAll('.swiper-slide').length;
+
+      new window.Swiper(slider, {
+        a11y: {
+          nextSlideMessage: root.dataset.nextSlide,
+          prevSlideMessage: root.dataset.previousSlide,
+        },
+        autoplay:
+          root.dataset.autoplay === 'true' && !reduceMotion
+            ? {
+                delay: Number(root.dataset.delay) || 5000,
+                disableOnInteraction: false,
+                pauseOnMouseEnter: root.dataset.pauseOnHover === 'true',
+              }
+            : false,
+        effect: 'fade',
+        fadeEffect: {
+          crossFade: true,
+        },
+        keyboard: {
+          enabled: true,
+          onlyInViewport: true,
+        },
+        loop: slideCount > 1,
+        loopAdditionalSlides: 1,
+        navigation:
+          previous && next
+            ? {
+                nextEl: next,
+                prevEl: previous,
+              }
+            : false,
+        observer: true,
+        observeParents: true,
+        pagination:
+          pagination && root.dataset.showPagination === 'true'
+            ? {
+                clickable: true,
+                el: pagination,
+                renderBullet: function (index, className) {
+                  return '<button class="' + className + '" type="button" aria-label="' + root.dataset.goToSlide + ' ' + (index + 1) + '"></button>';
+                },
+              }
+            : false,
+        speed: reduceMotion ? 0 : Number(root.dataset.speed) || 700,
+        watchOverflow: true,
+      });
+
+      root.dataset.pebbleSliderInitialized = 'true';
+    }
+
+    function initializePebbleHeros(scope) {
+      getSliderRoots(scope).forEach(function (root) {
+        initializeSlider(root, 0);
+      });
+    }
+
+    if (!window.PebbleHeroSlider) {
+      window.PebbleHeroSlider = {
+        initialize: initializePebbleHeros,
+      };
+      document.addEventListener('shopify:section:load', function (event) {
+        window.PebbleHeroSlider.initialize(event.target);
+      });
+    }
+
+    window.PebbleHeroSlider.initialize(document);
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "t:pebble_hero.name",
+  "tag": "section",
+  "class": "section-pebble-hero",
+  "max_blocks": 12,
+  "settings": [
+    {
+      "type": "select",
+      "id": "height",
+      "label": "t:pebble_hero.height_label",
+      "options": [
+        {
+          "value": "compact",
+          "label": "t:pebble_hero.height_compact"
+        },
+        {
+          "value": "standard",
+          "label": "t:pebble_hero.height_standard"
+        },
+        {
+          "value": "large",
+          "label": "t:pebble_hero.height_large"
+        }
+      ],
+      "default": "large"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "t:pebble_hero.autoplay",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "autoplay_speed",
+      "label": "t:pebble_hero.autoplay_speed",
+      "min": 3,
+      "max": 10,
+      "step": 1,
+      "unit": "s",
+      "default": 5
+    },
+    {
+      "type": "range",
+      "id": "transition_speed",
+      "label": "t:pebble_hero.transition_speed",
+      "min": 300,
+      "max": 1200,
+      "step": 100,
+      "unit": "ms",
+      "default": 700
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "t:pebble_hero.pause_on_hover",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "t:pebble_hero.show_arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pagination",
+      "label": "t:pebble_hero.show_pagination",
+      "default": true
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "t:pebble_hero.slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "t:pebble_hero.image"
+        },
+        {
+          "type": "image_picker",
+          "id": "mobile_image",
+          "label": "t:pebble_hero.mobile_image",
+          "info": "t:pebble_hero.mobile_image_info"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "t:pebble_hero.eyebrow",
+          "default": "NEW WINTER SEASON"
+        },
+        {
+          "type": "inline_richtext",
+          "id": "heading",
+          "label": "t:pebble_hero.heading",
+          "default": "Feel good & enjoy every day"
+        },
+        {
+          "type": "richtext",
+          "id": "body",
+          "label": "t:pebble_hero.body",
+          "default": "<p>Soft, feel-good pieces made for little moments and big adventures.</p>"
+        },
+        {
+          "type": "text",
+          "id": "button_label",
+          "label": "t:pebble_hero.button_label",
+          "default": "Shop new arrivals"
+        },
+        {
+          "type": "url",
+          "id": "button_link",
+          "label": "t:pebble_hero.button_link"
+        },
+        {
+          "type": "text",
+          "id": "sticker",
+          "label": "t:pebble_hero.sticker",
+          "default": "WOW!"
+        },
+        {
+          "type": "select",
+          "id": "content_position",
+          "label": "t:pebble_hero.content_position",
+          "options": [
+            {
+              "value": "left",
+              "label": "t:pebble_hero.content_left"
+            },
+            {
+              "value": "center",
+              "label": "t:pebble_hero.content_center"
+            },
+            {
+              "value": "right",
+              "label": "t:pebble_hero.content_right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "header",
+          "content": "t:pebble_hero.overlay"
+        },
+        {
+          "type": "color",
+          "id": "overlay_color",
+          "label": "t:pebble_hero.overlay_color",
+          "default": "#2c2234"
+        },
+        {
+          "type": "range",
+          "id": "overlay_opacity",
+          "label": "t:pebble_hero.overlay_opacity",
+          "min": 0,
+          "max": 80,
+          "step": 10,
+          "unit": "%",
+          "default": 0
+        },
+        {
+          "type": "header",
+          "content": "t:pebble_hero.colors"
+        },
+        {
+          "type": "color",
+          "id": "background",
+          "label": "t:pebble_hero.background",
+          "default": "#f5c9eb"
+        },
+        {
+          "type": "color",
+          "id": "foreground",
+          "label": "t:pebble_hero.foreground",
+          "default": "#2c2234"
+        },
+        {
+          "type": "color",
+          "id": "button_background",
+          "label": "t:pebble_hero.button_background",
+          "default": "#ff6d3a"
+        },
+        {
+          "type": "color",
+          "id": "button_foreground",
+          "label": "t:pebble_hero.button_foreground",
+          "default": "#ffffff"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:pebble_hero.name",
+      "blocks": [
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        },
+        {
+          "type": "slide"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
