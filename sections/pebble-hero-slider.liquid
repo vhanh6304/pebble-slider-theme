@@ -134,7 +134,7 @@
     {% endif %}
 
     {% if section.settings.show_pagination %}
-      <div class="pebble-hero__pagination" data-slider-pagination></div>
+      <div class="pebble-hero__pagination" data-slider-pagination aria-live="polite" aria-atomic="true"></div>
     {% endif %}
   </div>
 </section>
@@ -396,30 +396,34 @@
   .pebble-hero__pagination {
     position: absolute;
     z-index: 5;
-    bottom: 2.9rem !important;
+    bottom: 2.55rem !important;
     left: max(5vw, calc((100vw - 84rem) / 2)) !important;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     width: auto !important;
-    gap: 0.5rem;
+    gap: 0.16rem;
+    color: var(--pebble-foreground);
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    text-shadow: 0 1px 18px rgb(255 255 255 / 18%);
   }
 
-  .pebble-hero .swiper-pagination-bullet {
-    width: 0.55rem;
-    height: 0.55rem;
-    margin: 0 !important;
-    border: 0;
-    border-radius: 999px;
-    background: var(--pebble-foreground);
-    cursor: pointer;
-    opacity: 0.3;
-    transition: width 400ms ease, opacity 250ms ease, transform 250ms ease;
+  .pebble-hero .swiper-pagination-current,
+  .pebble-hero .swiper-pagination-total {
+    min-width: 1ch;
+    font-variant-numeric: tabular-nums;
   }
 
-  .pebble-hero .swiper-pagination-bullet-active {
-    width: 2.4rem;
-    opacity: 1;
-    transform: none;
+  .pebble-hero .swiper-pagination-current {
+    font-size: 1rem;
+  }
+
+  .pebble-hero .swiper-pagination-separator,
+  .pebble-hero .swiper-pagination-total {
+    opacity: 0.58;
   }
 
   .pebble-hero__slide .pebble-hero__eyebrow,
@@ -568,7 +572,7 @@
     }
 
     .pebble-hero__pagination {
-      bottom: 2.35rem !important;
+      bottom: 2.1rem !important;
       left: 1.4rem !important;
     }
   }
@@ -576,7 +580,8 @@
   @media (prefers-reduced-motion: reduce) {
     .pebble-hero__button,
     .pebble-hero__arrow,
-    .pebble-hero .swiper-pagination-bullet,
+    .pebble-hero .swiper-pagination-current,
+    .pebble-hero .swiper-pagination-total,
     .pebble-hero__slide .pebble-hero__eyebrow,
     .pebble-hero__slide .pebble-hero__heading,
     .pebble-hero__slide .pebble-hero__body,
@@ -658,10 +663,14 @@
         pagination:
           pagination && root.dataset.showPagination === 'true'
             ? {
-                clickable: true,
                 el: pagination,
-                renderBullet: function (index, className) {
-                  return '<button class="' + className + '" type="button" aria-label="' + root.dataset.goToSlide + ' ' + (index + 1) + '"></button>';
+                type: 'fraction',
+                renderFraction: function (currentClass, totalClass) {
+                  return (
+                    '<span class="' + currentClass + '"></span>' +
+                    '<span class="swiper-pagination-separator" aria-hidden="true">/</span>' +
+                    '<span class="' + totalClass + '"></span>'
+                  );
                 },
               }
             : false,
