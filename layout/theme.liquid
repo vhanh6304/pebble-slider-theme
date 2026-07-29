@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="{{ request.locale.iso_code }}">
   <head>
+ {%- render 'layouthub_header' -%}
  {%- capture ecom_header_content -%}{%- render 'ecom_header' -%}{%- endcapture -%}{%- unless ecom_header_content contains 'Liquid error' -%}{{ ecom_header_content }}{%- endunless -%}
     {% # Inlined CSS Variables %}
     {% render 'css-variables' %}
@@ -41,8 +42,9 @@
   <body>
     {% sections 'header-group' %}
 
-    {{ content_for_layout }}
+    <!--LayoutHub-Workspace-Start-->{{ content_for_layout }}<!--LayoutHub-Workspace-End-->
 
     {% sections 'footer-group' %}
-  {%- capture ecom_footer_content -%}{%- render 'ecom_footer' -%}{%- endcapture -%}{%- unless ecom_footer_content contains 'Liquid error' -%}{{ ecom_footer_content }}{%- endunless -%}</body>
+  {%- capture ecom_footer_content -%}{%- render 'ecom_footer' -%}{%- endcapture -%}{%- unless ecom_footer_content contains 'Liquid error' -%}{{ ecom_footer_content }}{%- endunless -%}{%- render 'layouthub_footer' -%} 
+ </body>
 </html>
