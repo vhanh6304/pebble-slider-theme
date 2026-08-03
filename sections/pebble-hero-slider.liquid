@@ -12,7 +12,7 @@
 <section
   id="PebbleHero-{{ section.id }}"
   class="pebble-hero full-width pebble-hero--{{ section.settings.height }} pebble-hero--controls-{{ section.settings.controls_position }}"
-  style="--pebble-corner-radius: {{ section.settings.corner_radius }}px; --pebble-controls-color: {{ section.settings.controls_color }}; --pebble-content-padding: {{ section.settings.desktop_padding }}px; --pebble-mobile-padding: {{ section.settings.mobile_padding }}px;"
+  style="--pebble-corner-radius: {{ section.settings.corner_radius }}px; --pebble-controls-color: {{ section.settings.controls_color }}; --pebble-content-padding: {{ section.settings.desktop_padding }}px; --pebble-mobile-padding: {{ section.settings.mobile_padding }}px; --pebble-progress: 0;"
   data-pebble-slider
   data-autoplay="{% if section.settings.autoplay %}true{% else %}false{% endif %}"
   data-delay="{{ section.settings.autoplay_speed | times: 1000 }}"
@@ -38,6 +38,7 @@
           style="--pebble-background: {{ block.settings.background }}; --pebble-foreground: {{ block.settings.foreground }}; --pebble-button-background: {{ block.settings.button_background }}; --pebble-button-foreground: {{ block.settings.button_foreground }}; --pebble-overlay-color: {{ block.settings.overlay_color }}; --pebble-overlay-opacity: {{ block.settings.overlay_opacity }}; --pebble-image-position: {{ block.settings.image_position }}; --pebble-mobile-image-position: {{ block.settings.mobile_image_position }}; --pebble-image-scale: {{ block.settings.image_scale | divided_by: 100.0 }}; --pebble-heading-size: {{ block.settings.heading_size }}px; --pebble-mobile-heading-size: {{ block.settings.mobile_heading_size }}px; --pebble-content-width: {{ block.settings.content_width }}px; --pebble-button-radius: {{ block.settings.button_radius }}px;"
           aria-roledescription="slide"
           aria-label="{{ 'pebble_hero.slide_label' | t: current: forloop.index, total: rendered_slide_count }}"
+          data-pebble-slide-block="{{ block.id }}"
           {{ block.shopify_attributes }}
         >
           <div class="pebble-hero__media" aria-hidden="true">
@@ -133,7 +134,9 @@
           <div class="pebble-hero__pagination" data-slider-pagination aria-live="polite" aria-atomic="true"></div>
         {% endif %}
         {% if section.settings.show_progress_line %}
-          <span class="pebble-hero__progress" aria-hidden="true"></span>
+          <span class="pebble-hero__progress" aria-hidden="true">
+            <span class="pebble-hero__progress-fill"></span>
+          </span>
         {% endif %}
         {% if section.settings.show_arrows %}
           <div class="pebble-hero__navigation">
@@ -853,10 +856,22 @@
   }
 
   .pebble-hero__progress {
+    position: relative;
+    display: block;
     width: clamp(3.5rem, 6vw, 6rem);
     height: 1px;
+    overflow: hidden;
+    background: color-mix(in srgb, currentcolor 32%, transparent);
+  }
+
+  .pebble-hero__progress-fill {
+    position: absolute;
+    inset: 0;
+    display: block;
     background: currentcolor;
-    opacity: 0.92;
+    transform: scaleX(var(--pebble-progress));
+    transform-origin: left center;
+    transition: transform 80ms linear;
   }
 
   .pebble-hero__navigation {
@@ -1049,6 +1064,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     .pebble-hero__image,
+    .pebble-hero__progress-fill,
     .pebble-hero__slide .pebble-hero__eyebrow,
     .pebble-hero__slide .pebble-hero__heading,
     .pebble-hero__slide .pebble-hero__body,
@@ -1091,7 +1107,11 @@
       var previous = root.querySelector('[data-slider-previous]');
       var next = root.querySelector('[data-slider-next]');
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var designMode = Boolean(window.Shopify && window.Shopify.designMode);
+      var autoplayEnabled = root.dataset.autoplay === 'true' && !reduceMotion;
       var slideCount = slider.querySelectorAll('.swiper-slide').length;
+
+      root.style.setProperty('--pebble-progress', '0');
 
       new window.Swiper(slider, {
         a11y: {
@@ -1099,7 +1119,7 @@
           prevSlideMessage: root.dataset.previousSlide,
         },
         autoplay:
-          root.dataset.autoplay === 'true' && !reduceMotion
+          autoplayEnabled
             ? {
                 delay: Number(root.dataset.delay) || 5000,
                 disableOnInteraction: false,
@@ -1114,7 +1134,7 @@
           enabled: true,
           onlyInViewport: true,
         },
-        loop: slideCount > 1,
+        loop: slideCount > 1 && !designMode,
         loopAdditionalSlides: 1,
         navigation:
           previous && next
@@ -1125,6 +1145,18 @@
             : false,
         observer: true,
         observeParents: true,
+        on: {
+          autoplayStop: function () {
+            root.style.setProperty('--pebble-progress', '0');
+          },
+          autoplayTimeLeft: function (_swiper, _timeLeft, progress) {
+            var elapsed = Math.min(1, Math.max(0, 1 - progress));
+            root.style.setProperty('--pebble-progress', String(elapsed));
+          },
+          slideChangeTransitionStart: function () {
+            if (autoplayEnabled) root.style.setProperty('--pebble-progress', '0');
+          },
+        },
         pagination:
           pagination && root.dataset.showPagination === 'true'
             ? {
@@ -1146,6 +1178,43 @@
       root.dataset.pebbleSliderInitialized = 'true';
     }
 
+    function getEditorSlide(event) {
+      if (!event.detail || !event.detail.blockId) return null;
+
+      var selector = '[data-pebble-slide-block="' + event.detail.blockId + '"]';
+      if (event.target.matches && event.target.matches(selector)) return event.target;
+      if (event.target.querySelector) {
+        var localSlide = event.target.querySelector(selector);
+        if (localSlide) return localSlide;
+      }
+      return document.querySelector(selector);
+    }
+
+    function selectEditorSlide(event) {
+      var slide = getEditorSlide(event);
+      if (!slide) return;
+
+      var root = slide.closest('[data-pebble-slider]');
+      var slider = root && root.querySelector('.pebble-hero__swiper');
+      var swiper = slider && slider.swiper;
+      if (!swiper) return;
+
+      var slides = Array.prototype.slice.call(slider.querySelectorAll('[data-pebble-slide-block]'));
+      var slideIndex = slides.indexOf(slide);
+      if (slideIndex >= 0) swiper.slideTo(slideIndex, 0);
+      if (swiper.autoplay && swiper.autoplay.running) swiper.autoplay.pause();
+    }
+
+    function resumeEditorSlider(event) {
+      var slide = getEditorSlide(event);
+      if (!slide) return;
+
+      var root = slide.closest('[data-pebble-slider]');
+      var slider = root && root.querySelector('.pebble-hero__swiper');
+      var swiper = slider && slider.swiper;
+      if (swiper && swiper.autoplay && root.dataset.autoplay === 'true') swiper.autoplay.resume();
+    }
+
     function initializePebbleHeros(scope) {
       getSliderRoots(scope).forEach(function (root) {
         initializeSlider(root, 0);
@@ -1159,6 +1228,8 @@
       document.addEventListener('shopify:section:load', function (event) {
         window.PebbleHeroSlider.initialize(event.target);
       });
+      document.addEventListener('shopify:block:select', selectEditorSlide);
+      document.addEventListener('shopify:block:deselect', resumeEditorSlider);
     }
 
     window.PebbleHeroSlider.initialize(document);
