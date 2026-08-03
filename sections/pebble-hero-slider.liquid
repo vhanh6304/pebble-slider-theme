@@ -1077,6 +1077,8 @@
 
 {% javascript %}
   (function () {
+    var sliderInstances = new WeakMap();
+
     function getSliderRoots(scope) {
       var roots = [];
       if (scope.matches && scope.matches('[data-pebble-slider]')) roots.push(scope);
@@ -1088,8 +1090,127 @@
       return roots;
     }
 
+    function createAutoplayController(root, swiper, delay, enabled) {
+      var frameId = 0;
+      var startedAt = 0;
+      var elapsed = 0;
+      var pauseReasons = {};
+      var pauseOnHover = root.dataset.pauseOnHover === 'true';
+
+      function now() {
+        return window.performance && window.performance.now ? window.performance.now() : Date.now();
+      }
+
+      function render(progress) {
+        root.style.setProperty('--pebble-progress', String(Math.min(1, Math.max(0, progress))));
+      }
+
+      function isPaused() {
+        return Object.keys(pauseReasons).length > 0;
+      }
+
+      function cancelFrame() {
+        if (!frameId) return;
+        window.cancelAnimationFrame(frameId);
+        frameId = 0;
+      }
+
+      function scheduleFrame() {
+        if (!enabled || isPaused() || frameId || swiper.destroyed) return;
+        frameId = window.requestAnimationFrame(tick);
+      }
+
+      function tick(timestamp) {
+        frameId = 0;
+        if (!enabled || isPaused() || swiper.destroyed) return;
+
+        if (!startedAt) startedAt = timestamp - elapsed;
+        elapsed = Math.max(0, timestamp - startedAt);
+        render(elapsed / delay);
+
+        if (elapsed >= delay) {
+          elapsed = 0;
+          startedAt = 0;
+          render(0);
+
+          if (!swiper.params.loop && swiper.isEnd) {
+            swiper.slideTo(0);
+          } else {
+            swiper.slideNext();
+          }
+
+          scheduleFrame();
+          return;
+        }
+
+        scheduleFrame();
+      }
+
+      function restart() {
+        elapsed = 0;
+        startedAt = 0;
+        render(0);
+        cancelFrame();
+        scheduleFrame();
+      }
+
+      function pause(reason) {
+        if (!enabled) return;
+        if (startedAt) elapsed = Math.min(delay, Math.max(0, now() - startedAt));
+        pauseReasons[reason || 'manual'] = true;
+        cancelFrame();
+      }
+
+      function resume(reason) {
+        if (!enabled) return;
+        delete pauseReasons[reason || 'manual'];
+        if (isPaused()) return;
+        startedAt = now() - elapsed;
+        scheduleFrame();
+      }
+
+      function handleMouseEnter() {
+        pause('hover');
+      }
+
+      function handleMouseLeave() {
+        resume('hover');
+      }
+
+      function handleVisibilityChange() {
+        if (document.hidden) {
+          pause('visibility');
+        } else {
+          resume('visibility');
+        }
+      }
+
+      swiper.on('slideChangeTransitionStart', restart);
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+      if (pauseOnHover) {
+        root.addEventListener('mouseenter', handleMouseEnter);
+        root.addEventListener('mouseleave', handleMouseLeave);
+      }
+
+      render(0);
+      scheduleFrame();
+
+      return {
+        pause: pause,
+        restart: restart,
+        resume: resume,
+        destroy: function () {
+          cancelFrame();
+          swiper.off('slideChangeTransitionStart', restart);
+          document.removeEventListener('visibilitychange', handleVisibilityChange);
+          root.removeEventListener('mouseenter', handleMouseEnter);
+          root.removeEventListener('mouseleave', handleMouseLeave);
+        },
+      };
+    }
+
     function initializeSlider(root, attempts) {
-      if (root.dataset.pebbleSliderInitialized === 'true') return;
+      if (sliderInstances.has(root)) return;
 
       if (typeof window.Swiper === 'undefined') {
         if ((attempts || 0) < 20) {
@@ -1108,24 +1229,18 @@
       var next = root.querySelector('[data-slider-next]');
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       var designMode = Boolean(window.Shopify && window.Shopify.designMode);
-      var autoplayEnabled = root.dataset.autoplay === 'true' && !reduceMotion;
       var slideCount = slider.querySelectorAll('.swiper-slide').length;
+      var autoplayEnabled = root.dataset.autoplay === 'true' && !reduceMotion && slideCount > 1;
+      var autoplayDelay = Number(root.dataset.delay) || 5000;
 
       root.style.setProperty('--pebble-progress', '0');
 
-      new window.Swiper(slider, {
+      var swiper = new window.Swiper(slider, {
         a11y: {
           nextSlideMessage: root.dataset.nextSlide,
           prevSlideMessage: root.dataset.previousSlide,
         },
-        autoplay:
-          autoplayEnabled
-            ? {
-                delay: Number(root.dataset.delay) || 5000,
-                disableOnInteraction: false,
-                pauseOnMouseEnter: root.dataset.pauseOnHover === 'true',
-              }
-            : false,
+        autoplay: false,
         effect: 'fade',
         fadeEffect: {
           crossFade: true,
@@ -1145,18 +1260,6 @@
             : false,
         observer: true,
         observeParents: true,
-        on: {
-          autoplayStop: function () {
-            root.style.setProperty('--pebble-progress', '0');
-          },
-          autoplayTimeLeft: function (_swiper, _timeLeft, progress) {
-            var elapsed = Math.min(1, Math.max(0, 1 - progress));
-            root.style.setProperty('--pebble-progress', String(elapsed));
-          },
-          slideChangeTransitionStart: function () {
-            if (autoplayEnabled) root.style.setProperty('--pebble-progress', '0');
-          },
-        },
         pagination:
           pagination && root.dataset.showPagination === 'true'
             ? {
@@ -1175,7 +1278,24 @@
         watchOverflow: true,
       });
 
+      var autoplayController = createAutoplayController(root, swiper, autoplayDelay, autoplayEnabled);
+      sliderInstances.set(root, {
+        autoplay: autoplayController,
+        swiper: swiper,
+      });
+
       root.dataset.pebbleSliderInitialized = 'true';
+    }
+
+    function destroySlider(root) {
+      var instance = sliderInstances.get(root);
+      if (!instance) return;
+
+      instance.autoplay.destroy();
+      if (!instance.swiper.destroyed) instance.swiper.destroy(true, true);
+      sliderInstances.delete(root);
+      delete root.dataset.pebbleSliderInitialized;
+      root.style.setProperty('--pebble-progress', '0');
     }
 
     function getEditorSlide(event) {
@@ -1196,13 +1316,13 @@
 
       var root = slide.closest('[data-pebble-slider]');
       var slider = root && root.querySelector('.pebble-hero__swiper');
-      var swiper = slider && slider.swiper;
-      if (!swiper) return;
+      var instance = root && sliderInstances.get(root);
+      if (!slider || !instance) return;
 
       var slides = Array.prototype.slice.call(slider.querySelectorAll('[data-pebble-slide-block]'));
       var slideIndex = slides.indexOf(slide);
-      if (slideIndex >= 0) swiper.slideTo(slideIndex, 0);
-      if (swiper.autoplay && swiper.autoplay.running) swiper.autoplay.pause();
+      if (slideIndex >= 0) instance.swiper.slideTo(slideIndex, 0);
+      instance.autoplay.pause('editor');
     }
 
     function resumeEditorSlider(event) {
@@ -1210,9 +1330,8 @@
       if (!slide) return;
 
       var root = slide.closest('[data-pebble-slider]');
-      var slider = root && root.querySelector('.pebble-hero__swiper');
-      var swiper = slider && slider.swiper;
-      if (swiper && swiper.autoplay && root.dataset.autoplay === 'true') swiper.autoplay.resume();
+      var instance = root && sliderInstances.get(root);
+      if (instance) instance.autoplay.resume('editor');
     }
 
     function initializePebbleHeros(scope) {
@@ -1227,6 +1346,9 @@
       };
       document.addEventListener('shopify:section:load', function (event) {
         window.PebbleHeroSlider.initialize(event.target);
+      });
+      document.addEventListener('shopify:section:unload', function (event) {
+        getSliderRoots(event.target).forEach(destroySlider);
       });
       document.addEventListener('shopify:block:select', selectEditorSlide);
       document.addEventListener('shopify:block:deselect', resumeEditorSlider);
