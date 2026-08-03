@@ -95,7 +95,7 @@
         "autoplay": true,
         "autoplay_speed": 5,
         "transition_speed": 700,
-        "pause_on_hover": true,
+        "pause_on_hover": false,
         "show_arrows": true,
         "show_pagination": true,
         "show_progress_line": true,

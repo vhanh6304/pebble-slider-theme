@@ -38,7 +38,6 @@
           style="--pebble-background: {{ block.settings.background }}; --pebble-foreground: {{ block.settings.foreground }}; --pebble-button-background: {{ block.settings.button_background }}; --pebble-button-foreground: {{ block.settings.button_foreground }}; --pebble-overlay-color: {{ block.settings.overlay_color }}; --pebble-overlay-opacity: {{ block.settings.overlay_opacity }}; --pebble-image-position: {{ block.settings.image_position }}; --pebble-mobile-image-position: {{ block.settings.mobile_image_position }}; --pebble-image-scale: {{ block.settings.image_scale | divided_by: 100.0 }}; --pebble-heading-size: {{ block.settings.heading_size }}px; --pebble-mobile-heading-size: {{ block.settings.mobile_heading_size }}px; --pebble-content-width: {{ block.settings.content_width }}px; --pebble-button-radius: {{ block.settings.button_radius }}px;"
           aria-roledescription="slide"
           aria-label="{{ 'pebble_hero.slide_label' | t: current: forloop.index, total: rendered_slide_count }}"
-          data-pebble-slide-block="{{ block.id }}"
           {{ block.shopify_attributes }}
         >
           <div class="pebble-hero__media" aria-hidden="true">
@@ -1298,42 +1297,6 @@
       root.style.setProperty('--pebble-progress', '0');
     }
 
-    function getEditorSlide(event) {
-      if (!event.detail || !event.detail.blockId) return null;
-
-      var selector = '[data-pebble-slide-block="' + event.detail.blockId + '"]';
-      if (event.target.matches && event.target.matches(selector)) return event.target;
-      if (event.target.querySelector) {
-        var localSlide = event.target.querySelector(selector);
-        if (localSlide) return localSlide;
-      }
-      return document.querySelector(selector);
-    }
-
-    function selectEditorSlide(event) {
-      var slide = getEditorSlide(event);
-      if (!slide) return;
-
-      var root = slide.closest('[data-pebble-slider]');
-      var slider = root && root.querySelector('.pebble-hero__swiper');
-      var instance = root && sliderInstances.get(root);
-      if (!slider || !instance) return;
-
-      var slides = Array.prototype.slice.call(slider.querySelectorAll('[data-pebble-slide-block]'));
-      var slideIndex = slides.indexOf(slide);
-      if (slideIndex >= 0) instance.swiper.slideTo(slideIndex, 0);
-      instance.autoplay.pause('editor');
-    }
-
-    function resumeEditorSlider(event) {
-      var slide = getEditorSlide(event);
-      if (!slide) return;
-
-      var root = slide.closest('[data-pebble-slider]');
-      var instance = root && sliderInstances.get(root);
-      if (instance) instance.autoplay.resume('editor');
-    }
-
     function initializePebbleHeros(scope) {
       getSliderRoots(scope).forEach(function (root) {
         initializeSlider(root, 0);
@@ -1350,8 +1313,6 @@
       document.addEventListener('shopify:section:unload', function (event) {
         getSliderRoots(event.target).forEach(destroySlider);
       });
-      document.addEventListener('shopify:block:select', selectEditorSlide);
-      document.addEventListener('shopify:block:deselect', resumeEditorSlider);
     }
 
     window.PebbleHeroSlider.initialize(document);
@@ -1415,7 +1376,7 @@
       "type": "checkbox",
       "id": "pause_on_hover",
       "label": "t:pebble_hero.pause_on_hover",
-      "default": true
+      "default": false
     },
     {
       "type": "checkbox",
