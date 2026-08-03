@@ -942,9 +942,13 @@
     .pebble-hero__slide,
     .pebble-hero--compact .pebble-hero__slide,
     .pebble-hero--large .pebble-hero__slide {
-      min-height: clamp(38rem, 168vw, 47rem);
+      min-height: max(34rem, calc(100svh - 5rem));
       align-items: flex-end;
       padding: 4rem var(--pebble-mobile-padding) 5.65rem;
+    }
+
+    .pebble-hero--compact .pebble-hero__slide {
+      min-height: 32rem;
     }
 
     .pebble-hero__image,
