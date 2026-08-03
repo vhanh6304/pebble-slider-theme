@@ -1089,7 +1089,34 @@
       return roots;
     }
 
-    function createAutoplayController(root, swiper, delay, enabled) {
+    function createNavigationController(swiper, previous, next, slideCount) {
+      function goToOffset(offset) {
+        if (swiper.destroyed || slideCount < 2) return;
+        var targetIndex = (swiper.activeIndex + offset + slideCount) % slideCount;
+        swiper.slideTo(targetIndex);
+      }
+
+      function goPrevious() {
+        goToOffset(-1);
+      }
+
+      function goNext() {
+        goToOffset(1);
+      }
+
+      if (previous) previous.addEventListener('click', goPrevious);
+      if (next) next.addEventListener('click', goNext);
+
+      return {
+        next: goNext,
+        destroy: function () {
+          if (previous) previous.removeEventListener('click', goPrevious);
+          if (next) next.removeEventListener('click', goNext);
+        },
+      };
+    }
+
+    function createAutoplayController(root, swiper, delay, enabled, advance) {
       var frameId = 0;
       var startedAt = 0;
       var elapsed = 0;
@@ -1132,11 +1159,7 @@
           startedAt = 0;
           render(0);
 
-          if (!swiper.params.loop && swiper.isEnd) {
-            swiper.slideTo(0);
-          } else {
-            swiper.slideNext();
-          }
+          advance();
 
           scheduleFrame();
           return;
@@ -1227,7 +1250,6 @@
       var previous = root.querySelector('[data-slider-previous]');
       var next = root.querySelector('[data-slider-next]');
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var designMode = Boolean(window.Shopify && window.Shopify.designMode);
       var slideCount = slider.querySelectorAll('.swiper-slide').length;
       var autoplayEnabled = root.dataset.autoplay === 'true' && !reduceMotion && slideCount > 1;
       var autoplayDelay = Number(root.dataset.delay) || 5000;
@@ -1248,15 +1270,8 @@
           enabled: true,
           onlyInViewport: true,
         },
-        loop: slideCount > 1 && !designMode,
-        loopAdditionalSlides: 1,
-        navigation:
-          previous && next
-            ? {
-                nextEl: next,
-                prevEl: previous,
-              }
-            : false,
+        loop: false,
+        navigation: false,
         observer: true,
         observeParents: true,
         pagination:
@@ -1277,9 +1292,17 @@
         watchOverflow: true,
       });
 
-      var autoplayController = createAutoplayController(root, swiper, autoplayDelay, autoplayEnabled);
+      var navigationController = createNavigationController(swiper, previous, next, slideCount);
+      var autoplayController = createAutoplayController(
+        root,
+        swiper,
+        autoplayDelay,
+        autoplayEnabled,
+        navigationController.next
+      );
       sliderInstances.set(root, {
         autoplay: autoplayController,
+        navigation: navigationController,
         swiper: swiper,
       });
 
@@ -1291,6 +1314,7 @@
       if (!instance) return;
 
       instance.autoplay.destroy();
+      instance.navigation.destroy();
       if (!instance.swiper.destroyed) instance.swiper.destroy(true, true);
       sliderInstances.delete(root);
       delete root.dataset.pebbleSliderInitialized;
