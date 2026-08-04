@@ -1231,7 +1231,17 @@
         }
       }
 
+      function handleTouchStart() {
+        pause('drag');
+      }
+
+      function handleTouchEnd() {
+        resume('drag');
+      }
+
       swiper.on('slideChangeTransitionStart', restart);
+      swiper.on('touchStart', handleTouchStart);
+      swiper.on('touchEnd', handleTouchEnd);
       document.addEventListener('visibilitychange', handleVisibilityChange);
       if (pauseOnHover) {
         root.addEventListener('mouseenter', handleMouseEnter);
@@ -1248,6 +1258,8 @@
         destroy: function () {
           cancelFrame();
           swiper.off('slideChangeTransitionStart', restart);
+          swiper.off('touchStart', handleTouchStart);
+          swiper.off('touchEnd', handleTouchEnd);
           document.removeEventListener('visibilitychange', handleVisibilityChange);
           root.removeEventListener('mouseenter', handleMouseEnter);
           root.removeEventListener('mouseleave', handleMouseLeave);
