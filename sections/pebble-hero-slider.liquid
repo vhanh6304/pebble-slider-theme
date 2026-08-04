@@ -161,6 +161,13 @@
   .pebble-hero__swiper {
     position: relative;
     width: 100%;
+    cursor: grab;
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .pebble-hero__swiper.swiper-grabbing {
+    cursor: grabbing;
   }
 
   .pebble-hero__slide {
@@ -1279,18 +1286,25 @@
           prevSlideMessage: root.dataset.previousSlide,
         },
         autoplay: false,
+        allowTouchMove: slideCount > 1,
         effect: 'fade',
         fadeEffect: {
           crossFade: true,
         },
+        followFinger: true,
+        grabCursor: true,
         keyboard: {
           enabled: true,
           onlyInViewport: true,
         },
         loop: false,
+        longSwipes: true,
+        longSwipesMs: 300,
+        longSwipesRatio: 0.15,
         navigation: false,
         observer: true,
         observeParents: true,
+        preventInteractionOnTransition: false,
         pagination:
           pagination && root.dataset.showPagination === 'true'
             ? {
@@ -1306,7 +1320,11 @@
               }
             : false,
         speed: reduceMotion ? 0 : Number(root.dataset.speed) || 700,
+        simulateTouch: true,
+        threshold: 6,
+        touchRatio: 1,
         watchOverflow: true,
+        rewind: slideCount > 1,
       });
 
       var navigationController = createNavigationController(swiper, previous, next, slideCount);
