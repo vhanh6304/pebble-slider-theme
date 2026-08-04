@@ -72,25 +72,24 @@
             {% endif %}
 
             {% if block.settings.button_label != blank %}
-              {% if block.settings.button_link != blank %}
-                <a class="pebble-hero__button pebble-hero__button--{{ block.settings.button_style }}{% if block.settings.button_full_width_mobile %} pebble-hero__button--mobile-full{% endif %}" href="{{ block.settings.button_link }}">
-                  <span>{{ block.settings.button_label | escape }}</span>
-                  {% if block.settings.show_button_icon %}
+              {% assign button_link = block.settings.button_link | default: 'https://layouthub-hank.myshopify.com/#' %}
+              <a class="pebble-hero__button pebble-hero__button--{{ block.settings.button_style }}{% if block.settings.button_full_width_mobile %} pebble-hero__button--mobile-full{% endif %}" href="{{ button_link | escape }}">
+                <span class="pebble-hero__button-label">{{ block.settings.button_label | escape }}</span>
+                {% if block.settings.show_button_icon %}
+                  {% if block.settings.button_style == 'solid' %}
+                    <span class="pebble-hero__button-icon" aria-hidden="true">
+                      <span class="pebble-hero__button-icon-label">{{ block.settings.button_label | escape }}</span>
+                      <span class="pebble-hero__button-icon-arrow">
+                        <svg viewBox="0 0 20 20" focusable="false"><path d="M5 10h9M10.5 5.5 15 10l-4.5 4.5"></path></svg>
+                      </span>
+                    </span>
+                  {% else %}
                     <span class="pebble-hero__button-icon" aria-hidden="true">
                       <svg viewBox="0 0 20 20" focusable="false"><path d="M5 10h9M10.5 5.5 15 10l-4.5 4.5"></path></svg>
                     </span>
                   {% endif %}
-                </a>
-              {% else %}
-                <span class="pebble-hero__button pebble-hero__button--{{ block.settings.button_style }}{% if block.settings.button_full_width_mobile %} pebble-hero__button--mobile-full{% endif %}">
-                  <span>{{ block.settings.button_label | escape }}</span>
-                  {% if block.settings.show_button_icon %}
-                    <span class="pebble-hero__button-icon" aria-hidden="true">
-                      <svg viewBox="0 0 20 20" focusable="false"><path d="M5 10h9M10.5 5.5 15 10l-4.5 4.5"></path></svg>
-                    </span>
-                  {% endif %}
-                </span>
-              {% endif %}
+                {% endif %}
+              </a>
             {% endif %}
           </div>
         </article>
@@ -116,9 +115,12 @@
               {% endif %}
               <div class="pebble-hero__body"><p>{{ 'pebble_hero.placeholder_body' | t }}</p></div>
               <span class="pebble-hero__button pebble-hero__button--solid pebble-hero__button--mobile-full">
-                <span>{{ 'pebble_hero.placeholder_button' | t }}</span>
+                <span class="pebble-hero__button-label">{{ 'pebble_hero.placeholder_button' | t }}</span>
                 <span class="pebble-hero__button-icon" aria-hidden="true">
-                  <svg viewBox="0 0 20 20" focusable="false"><path d="M5 10h9M10.5 5.5 15 10l-4.5 4.5"></path></svg>
+                  <span class="pebble-hero__button-icon-label">{{ 'pebble_hero.placeholder_button' | t }}</span>
+                  <span class="pebble-hero__button-icon-arrow">
+                    <svg viewBox="0 0 20 20" focusable="false"><path d="M5 10h9M10.5 5.5 15 10l-4.5 4.5"></path></svg>
+                  </span>
                 </span>
               </span>
             </div>
@@ -759,6 +761,7 @@
 
   .pebble-hero__button {
     display: inline-flex;
+    position: relative;
     min-width: 10.8rem;
     min-height: 3.2rem;
     align-items: center;
@@ -775,6 +778,8 @@
     font-weight: 750;
     line-height: 1;
     text-decoration: none;
+    isolation: isolate;
+    overflow: hidden;
     transition: box-shadow 180ms ease, transform 180ms ease;
   }
 
@@ -796,6 +801,54 @@
     background: var(--pebble-button-foreground);
     color: var(--pebble-button-background);
     place-items: center;
+  }
+
+  .pebble-hero__button-label {
+    position: relative;
+    z-index: 1;
+  }
+
+  .pebble-hero__button--solid .pebble-hero__button-icon {
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    display: flex;
+    width: auto;
+    height: auto;
+    min-width: 0;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0 0.68rem 0 1.25rem;
+    border-radius: 0;
+    background: var(--pebble-button-foreground);
+    color: var(--pebble-button-background);
+    clip-path: circle(1.15rem at calc(100% - 1.62rem) 50%);
+    pointer-events: none;
+    transition: clip-path 600ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .pebble-hero__button--solid:hover .pebble-hero__button-icon,
+  .pebble-hero__button--solid:focus-visible .pebble-hero__button-icon {
+    clip-path: circle(150% at calc(100% - 1.62rem) 50%);
+  }
+
+  .pebble-hero__button-icon-label {
+    display: block;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .pebble-hero__button-icon-arrow {
+    display: flex;
+    width: 2.1rem;
+    height: 2.1rem;
+    flex: 0 0 2.1rem;
+    align-items: center;
+    justify-content: center;
   }
 
   .pebble-hero__button--outline .pebble-hero__button-icon {
