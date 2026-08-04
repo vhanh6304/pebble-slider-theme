@@ -821,26 +821,31 @@
     align-items: center;
     justify-content: space-between;
     gap: 0.5rem;
-    padding: 0 0.68rem 0 1.25rem;
+    padding: 0 0.26rem 0 1.25rem;
     border-radius: 0;
     background: var(--pebble-button-foreground);
     color: var(--pebble-button-background);
-    clip-path: circle(1.15rem at calc(100% - 1.62rem) 50%);
+    clip-path: circle(1.05rem at calc(100% - 1.25rem) 50%);
     pointer-events: none;
     transition: clip-path 600ms cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .pebble-hero__button--solid:hover .pebble-hero__button-icon,
   .pebble-hero__button--solid:focus-visible .pebble-hero__button-icon {
-    clip-path: circle(150% at calc(100% - 1.62rem) 50%);
+    clip-path: circle(150% at calc(100% - 1.25rem) 50%);
+  }
+
+  .pebble-hero__button--solid {
+    min-width: min(13rem, 100%);
   }
 
   .pebble-hero__button-icon-label {
     display: block;
-    min-width: 0;
-    overflow: hidden;
+    min-width: max-content;
+    flex: 1 1 auto;
+    overflow: visible;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: clip;
   }
 
   .pebble-hero__button-icon-arrow {
