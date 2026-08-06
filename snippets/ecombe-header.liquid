@@ -1,0 +1,10 @@
+{% assign ecombe_header = false %}
+{% capture eb_global_style %}{% render 'ecombe-global-style' %}{% endcapture %}
+{% unless eb_global_style contains 'Liquid error' %}
+{{ eb_global_style }}
+{% endunless %}
+{% capture eb_ab_snippet %}{% render 'ecombe-ab-testing' %}{% endcapture %}
+    {% unless eb_ab_snippet contains 'Liquid error' %}
+    {{ eb_ab_snippet }}
+    {% endunless %}
+{% assign ecombe_header = true %}
