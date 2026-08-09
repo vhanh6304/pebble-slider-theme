@@ -150,6 +150,7 @@
         const isOpen = submenu.dataset.mobileSubmenu === activeName;
         submenu.classList.toggle('is-open', isOpen);
         submenu.setAttribute('aria-hidden', String(!isOpen));
+        submenu.toggleAttribute('inert', !isOpen);
       });
       $$('[data-mobile-submenu-toggle]').forEach((button) => {
         const isOpen = button.dataset.mobileSubmenuToggle === activeName;
@@ -188,12 +189,12 @@
           drawer.classList.remove('is-popover');
           drawer.style.removeProperty('--lhx-popover-top');
           drawer.style.removeProperty('--lhx-popover-right');
+          if (name === 'menu') setMobilePanel('root');
         }
         if (restoreFocus && previousTrigger?.isConnected) previousTrigger.focus({ preventScroll: true });
       };
       if (instant) finish();
       else window.setTimeout(finish, wasPopover ? 260 : 410);
-      if (name === 'menu') setMobilePanel('root');
     }
 
     function openDrawer(name, trigger) {
