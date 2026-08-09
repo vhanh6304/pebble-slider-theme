@@ -178,7 +178,7 @@
           <button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close menu">{% render 'lhx-icon', icon: 'close' %}</button>
         </div>
         <div class="lhx-mobile-subpanel__body">
-          <ul>{%- if block.settings.menu != blank -%}{%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}{%- elsif block.settings.collection != blank -%}{%- for product in block.settings.collection.products limit: 8 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}{%- endif -%}</ul>
+          <ul>{%- if block.settings.menu != blank -%}{%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}{%- elsif block.settings.collection != blank -%}<li><a href="{{ block.settings.collection.url }}">Shop all {{ block.settings.label | escape }}</a></li>{%- endif -%}</ul>
           {%- if mobile_featured_collection != blank and mobile_featured_collection.products_count > 0 -%}
             <div class="lhx-mobile-products">
               <h3 class="lhx-mobile-products__heading">{{ block.settings.mobile_products_heading | default: 'Best deals 🔥' | escape }}</h3>
