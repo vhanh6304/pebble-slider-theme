@@ -529,20 +529,34 @@
     pointer-events: none;
   }
 
+  .lhx-drawer[data-drawer='menu'] {
+    overflow: hidden;
+  }
+
+  .lhx-mobile-panel {
+    z-index: 2;
+    background: #fff;
+    opacity: 1;
+    transform: translateX(100%);
+    transition: transform .3s ease-in-out;
+    will-change: transform;
+  }
+
   .lhx-mobile-panel[data-mobile-panel='root'] {
+    z-index: 1;
     display: flex;
     flex-direction: column;
   }
 
   .lhx-mobile-panel.is-before {
-    opacity: 0;
-    transform: translateX(-34px);
+    opacity: 1;
+    transform: translateX(0);
     pointer-events: none;
   }
 
   .lhx-mobile-panel.is-after {
-    opacity: 0;
-    transform: translateX(34px);
+    opacity: 1;
+    transform: translateX(100%);
     pointer-events: none;
   }
 
