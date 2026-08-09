@@ -345,6 +345,25 @@
 }
 
 @media (min-width: 991px) {
+  .lhx-mega {
+    opacity: 0;
+    transition:
+      height .3s cubic-bezier(.6, .14, 0, 1),
+      opacity .2s cubic-bezier(.6, .14, 0, 1),
+      box-shadow .2s ease;
+  }
+
+  .lhx-mega.is-open {
+    opacity: 1;
+  }
+
+  .lhx-mega__inner,
+  .lhx-mega.is-open .lhx-mega__inner {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
   .lhx-header:not(.is-sticky):has(.lhx-pages-menu.is-open) .lhx-header__shell {
     margin-right: 0;
     margin-left: 0;
