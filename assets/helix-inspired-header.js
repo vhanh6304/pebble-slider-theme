@@ -13,6 +13,7 @@
     const backdrop = $('[data-header-backdrop]');
     const pagesMenu = $('[data-pages-menu]');
     const pagesTrigger = $('[data-pages-trigger]');
+    const desktopNav = $('.lhx-nav');
     const megaPanels = $$('[data-mega-panel]');
     const megaTriggers = $$('[data-mega-trigger]');
 
@@ -459,10 +460,14 @@
       const id = trigger.dataset.megaTrigger;
       trigger.addEventListener('mouseenter', () => openMega(id));
       trigger.addEventListener('focus', () => openMega(id));
-      trigger.addEventListener('mouseleave', scheduleMegaClose);
       trigger.addEventListener('click', () => {
         if (activeMega !== id) openMega(id);
       });
+    });
+    desktopNav?.addEventListener('mouseenter', () => window.clearTimeout(megaCloseTimer));
+    desktopNav?.addEventListener('mouseleave', scheduleMegaClose);
+    $$('.lhx-nav__link', desktopNav || root).forEach((link) => {
+      link.addEventListener('mouseenter', () => closeMega());
     });
     megaPanels.forEach((panel) => {
       panel.addEventListener('mouseenter', () => window.clearTimeout(megaCloseTimer));
