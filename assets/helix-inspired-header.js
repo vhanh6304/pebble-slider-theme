@@ -85,7 +85,10 @@
       pagesMenu.hidden = false;
       pagesTrigger.setAttribute('aria-expanded', 'true');
       positionPages();
-      requestAnimationFrame(() => pagesMenu.classList.add('is-open'));
+      requestAnimationFrame(() => {
+        pagesMenu.classList.add('is-open');
+        positionPages();
+      });
     };
 
     const schedulePagesClose = () => {
@@ -240,6 +243,8 @@
       target.removeAttribute('inert');
       void target.offsetWidth;
       target.classList.add('is-active');
+      const targetBody = target.querySelector('.lhx-mobile-subpanel__body');
+      if (targetBody) targetBody.scrollTop = 0;
       target.querySelector('[data-mobile-panel-back]')?.focus({ preventScroll: true });
       setMobileRootInteractive(false);
     };
@@ -546,8 +551,18 @@
     $$('[data-quick-add]').forEach((button) => {
       button.addEventListener('click', async () => {
         const original = button.textContent;
+        const originalAriaLabel = button.getAttribute('aria-label');
+        const isIconButton = button.hasAttribute('data-quick-add-icon');
+        const setQuickAddState = (state, label) => {
+          if (isIconButton) {
+            button.dataset.quickAddState = state;
+            button.setAttribute('aria-label', label);
+          } else {
+            button.textContent = label;
+          }
+        };
         button.disabled = true;
-        button.textContent = 'Adding…';
+        setQuickAddState('loading', 'Adding…');
         try {
           const url = cartAddUrl.endsWith('.js') ? cartAddUrl : `${cartAddUrl}.js`;
           const response = await fetch(url, {
@@ -556,14 +571,20 @@
             body: JSON.stringify({ items: [{ id: Number(button.dataset.variantId), quantity: 1 }] })
           });
           if (!response.ok) throw new Error('Unable to add item');
-          button.textContent = 'Added';
+          setQuickAddState('added', 'Added');
           await refreshCart();
         } catch (_) {
-          button.textContent = 'Try again';
+          setQuickAddState('error', 'Try again');
         }
         window.setTimeout(() => {
           button.disabled = false;
-          button.textContent = original;
+          if (isIconButton) {
+            delete button.dataset.quickAddState;
+            if (originalAriaLabel) button.setAttribute('aria-label', originalAriaLabel);
+            else button.removeAttribute('aria-label');
+          } else {
+            button.textContent = original;
+          }
         }, 1300);
       });
     });
