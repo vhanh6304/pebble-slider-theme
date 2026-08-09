@@ -23,6 +23,8 @@
     let pagesCloseTimer = 0;
     let backdropTimer = 0;
     let searchTimer = 0;
+    let mobilePanelTimer = 0;
+    let activeMobilePanel = 'root';
     let lastScroll = window.scrollY;
     let scrollFrame = 0;
 
@@ -144,19 +146,48 @@
       }, 150);
     };
 
-    const setMobilePanel = (name = 'root') => {
-      const activeName = name === 'root' ? '' : name;
-      $$('[data-mobile-submenu]').forEach((submenu) => {
-        const isOpen = submenu.dataset.mobileSubmenu === activeName;
-        submenu.classList.toggle('is-open', isOpen);
-        submenu.setAttribute('aria-hidden', String(!isOpen));
-        submenu.toggleAttribute('inert', !isOpen);
+    const mobileSubpanels = $$('[data-mobile-subpanel]');
+    const mobilePanelTriggers = $$('[data-mobile-panel-open]');
+    const findMobilePanel = (name) => mobileSubpanels.find((panel) => panel.dataset.mobileSubpanel === name);
+    const finishMobilePanel = (panel) => {
+      if (!panel) return;
+      panel.classList.remove('is-active', 'is-closing');
+      panel.setAttribute('aria-hidden', 'true');
+      panel.setAttribute('inert', '');
+    };
+
+    const setMobilePanel = (name = 'root', instant = false) => {
+      window.clearTimeout(mobilePanelTimer);
+      const current = activeMobilePanel === 'root' ? null : findMobilePanel(activeMobilePanel);
+      mobilePanelTriggers.forEach((button) => {
+        button.setAttribute('aria-expanded', String(name !== 'root' && button.dataset.mobilePanelOpen === name));
       });
-      $$('[data-mobile-submenu-toggle]').forEach((button) => {
-        const isOpen = button.dataset.mobileSubmenuToggle === activeName;
-        button.classList.toggle('is-open', isOpen);
-        button.setAttribute('aria-expanded', String(isOpen));
+
+      if (name === 'root') {
+        activeMobilePanel = 'root';
+        if (instant) {
+          mobileSubpanels.forEach(finishMobilePanel);
+          return;
+        }
+        if (!current) return;
+        current.classList.remove('is-active');
+        current.classList.add('is-closing');
+        mobilePanelTimer = window.setTimeout(() => finishMobilePanel(current), 320);
+        return;
+      }
+
+      const target = findMobilePanel(name);
+      if (!target || activeMobilePanel === name) return;
+      if (current) finishMobilePanel(current);
+      mobileSubpanels.forEach((panel) => {
+        if (panel !== target) finishMobilePanel(panel);
       });
+      activeMobilePanel = name;
+      target.classList.remove('is-closing');
+      target.setAttribute('aria-hidden', 'false');
+      target.removeAttribute('inert');
+      void target.offsetWidth;
+      target.classList.add('is-active');
     };
 
     const positionLocalization = (drawer, trigger) => {
@@ -189,7 +220,7 @@
           drawer.classList.remove('is-popover');
           drawer.style.removeProperty('--lhx-popover-top');
           drawer.style.removeProperty('--lhx-popover-right');
-          if (name === 'menu') setMobilePanel('root');
+          if (name === 'menu') setMobilePanel('root', true);
         }
         if (restoreFocus && previousTrigger?.isConnected) previousTrigger.focus({ preventScroll: true });
       };
@@ -225,7 +256,7 @@
         showBackdrop(true);
         lockBody(true);
       }
-      if (name === 'menu') setMobilePanel('root');
+      if (name === 'menu') setMobilePanel('root', true);
       requestAnimationFrame(() => drawer.classList.add('is-open'));
       if (name === 'search') window.setTimeout(() => $('[data-search-input]')?.focus(), 160);
       else window.setTimeout(() => drawer.focus({ preventScroll: true }), 120);
@@ -289,13 +320,13 @@
       closePages();
     });
 
-    $$('[data-mobile-submenu-toggle]').forEach((button) => {
-      button.addEventListener('click', () => {
-        const name = button.dataset.mobileSubmenuToggle;
-        setMobilePanel(button.getAttribute('aria-expanded') === 'true' ? 'root' : name);
-      });
+    mobilePanelTriggers.forEach((button) => {
+      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen));
     });
-    setMobilePanel('root');
+    $$('[data-mobile-panel-back]').forEach((button) => {
+      button.addEventListener('click', () => setMobilePanel('root'));
+    });
+    setMobilePanel('root', true);
 
     const announcementItems = $$('[data-announcement-item]');
     if (announcementItems.length > 1) {
