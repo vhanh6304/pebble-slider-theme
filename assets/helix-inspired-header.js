@@ -145,12 +145,16 @@
     };
 
     const setMobilePanel = (name = 'root') => {
-      $$('[data-mobile-panel]').forEach((panel) => {
-        const panelName = panel.dataset.mobilePanel;
-        panel.classList.remove('is-active', 'is-before', 'is-after');
-        if (panelName === name) panel.classList.add('is-active');
-        else if (panelName === 'root' && name !== 'root') panel.classList.add('is-before');
-        else panel.classList.add('is-after');
+      const activeName = name === 'root' ? '' : name;
+      $$('[data-mobile-submenu]').forEach((submenu) => {
+        const isOpen = submenu.dataset.mobileSubmenu === activeName;
+        submenu.classList.toggle('is-open', isOpen);
+        submenu.setAttribute('aria-hidden', String(!isOpen));
+      });
+      $$('[data-mobile-submenu-toggle]').forEach((button) => {
+        const isOpen = button.dataset.mobileSubmenuToggle === activeName;
+        button.classList.toggle('is-open', isOpen);
+        button.setAttribute('aria-expanded', String(isOpen));
       });
     };
 
@@ -284,11 +288,11 @@
       closePages();
     });
 
-    $$('[data-mobile-panel-open]').forEach((button) => {
-      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen));
-    });
-    $$('[data-mobile-panel-back]').forEach((button) => {
-      button.addEventListener('click', () => setMobilePanel('root'));
+    $$('[data-mobile-submenu-toggle]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const name = button.dataset.mobileSubmenuToggle;
+        setMobilePanel(button.getAttribute('aria-expanded') === 'true' ? 'root' : name);
+      });
     });
     setMobilePanel('root');
 

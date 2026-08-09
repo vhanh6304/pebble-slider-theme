@@ -151,10 +151,25 @@
     <div class="lhx-mobile-panel is-active" data-mobile-panel="root">
       <nav class="lhx-mobile-nav" aria-label="Mobile navigation">
         {%- for block in menu_blocks limit: 2 -%}
-          <div class="lhx-mobile-nav__item"><a href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">{{ block.settings.label | escape }}</a><button type="button" data-mobile-panel-open="{{ block.id }}" aria-label="Explore {{ block.settings.label | escape }}">{% render 'lhx-icon', icon: 'arrow-right' %}</button></div>
+          <div class="lhx-mobile-nav__group" data-mobile-submenu-group>
+            <div class="lhx-mobile-nav__item">
+              <a href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">{{ block.settings.label | escape }}</a>
+              <button type="button" data-mobile-submenu-toggle="{{ block.id }}" aria-controls="lhx-mobile-submenu-{{ block.id }}" aria-expanded="false" aria-label="Explore {{ block.settings.label | escape }}">{% render 'lhx-icon', icon: 'arrow-right' %}</button>
+            </div>
+            <div class="lhx-mobile-submenu" id="lhx-mobile-submenu-{{ block.id }}" data-mobile-submenu="{{ block.id }}" aria-hidden="true">
+              <div class="lhx-mobile-submenu__inner">
+                <ul>{%- if block.settings.menu != blank -%}{%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}{%- elsif block.settings.collection != blank -%}{%- for product in block.settings.collection.products limit: 8 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}{%- endif -%}</ul>
+              </div>
+            </div>
+          </div>
         {%- endfor -%}
         <div class="lhx-mobile-nav__item"><a href="{{ section.settings.find_link | default: routes.root_url }}">{{ section.settings.find_link_label | escape }}</a></div>
-        <div class="lhx-mobile-nav__item"><button type="button" data-mobile-panel-open="pages">{{ section.settings.pages_label | escape }}{% render 'lhx-icon', icon: 'arrow-right' %}</button></div>
+        <div class="lhx-mobile-nav__group" data-mobile-submenu-group>
+          <div class="lhx-mobile-nav__item lhx-mobile-nav__item--toggle"><button type="button" data-mobile-submenu-toggle="pages" aria-controls="lhx-mobile-submenu-pages-{{ section.id }}" aria-expanded="false">{{ section.settings.pages_label | escape }}{% render 'lhx-icon', icon: 'arrow-right' %}</button></div>
+          <div class="lhx-mobile-submenu" id="lhx-mobile-submenu-pages-{{ section.id }}" data-mobile-submenu="pages" aria-hidden="true">
+            <div class="lhx-mobile-submenu__inner"><ul>{%- for block in page_blocks -%}{%- if block.settings.page != blank -%}<li><a href="{{ block.settings.page.url }}">{{ block.settings.label | default: block.settings.page.title | escape }}</a></li>{%- endif -%}{%- endfor -%}</ul></div>
+          </div>
+        </div>
       </nav>
       <a class="lhx-mobile-account" href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %} Account</a>
       {%- if section.settings.show_localization -%}<button class="lhx-mobile-localization" type="button" data-drawer-switch="localization">{{ localization.country.name }} · {{ localization.language.endonym_name }}</button>{%- endif -%}
@@ -167,14 +182,6 @@
         </div>
       {%- endif -%}
     </div>
-    {%- for block in menu_blocks limit: 2 -%}
-      <div class="lhx-mobile-panel" data-mobile-panel="{{ block.id }}">
-        <button class="lhx-back-button" type="button" data-mobile-panel-back>{% render 'lhx-icon', icon: 'arrow-left' %} Back</button>
-        <a class="lhx-mobile-panel__title" href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">{{ block.settings.label | escape }}</a>
-        <ul>{%- if block.settings.menu != blank -%}{%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}{%- elsif block.settings.collection != blank -%}{%- for product in block.settings.collection.products limit: 8 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}{%- endif -%}</ul>
-      </div>
-    {%- endfor -%}
-    <div class="lhx-mobile-panel" data-mobile-panel="pages"><button class="lhx-back-button" type="button" data-mobile-panel-back>{% render 'lhx-icon', icon: 'arrow-left' %} Back</button><p class="lhx-mobile-panel__title">{{ section.settings.pages_label | escape }}</p><ul>{%- for block in page_blocks -%}{%- if block.settings.page != blank -%}<li><a href="{{ block.settings.page.url }}">{{ block.settings.label | default: block.settings.page.title | escape }}</a></li>{%- endif -%}{%- endfor -%}</ul></div>
   </aside>
 
   <aside class="lhx-drawer" id="lhx-search-drawer-{{ section.id }}" data-drawer="search" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="true" tabindex="-1" hidden>
