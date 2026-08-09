@@ -1,5 +1,6 @@
 {{ 'helix-inspired-header.css' | asset_url | stylesheet_tag }}
 {{ 'helix-inspired-header-overlay.css' | asset_url | stylesheet_tag }}
+{{ 'helix-inspired-header-fixes.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'helix-inspired-header.js' | asset_url }}" defer="defer"></script>
 
 {%- liquid
@@ -10,15 +11,24 @@
 -%}
 
 <header
-  class="lhx-header{% if request.page_type == 'index' and section.settings.overlay_on_home %} lhx-header--overlay{% endif %}"
+  class="lhx-header full-width{% if request.page_type == 'index' and section.settings.overlay_on_home %} lhx-header--overlay{% endif %}"
   data-lhx-header
   data-announcement-delay="{{ section.settings.announcement_delay | times: 1000 }}"
+  data-announcement-autoplay="{{ section.settings.enable_announcement_autoplay }}"
   data-sticky="{{ section.settings.enable_sticky }}"
   data-section-id="{{ section.id }}"
+  data-root-url="{{ routes.root_url }}"
+  data-cart-url="{{ routes.cart_url }}"
+  data-cart-add-url="{{ routes.cart_add_url }}"
+  data-cart-change-url="{{ routes.cart_change_url }}"
+  data-all-products-url="{{ routes.all_products_collection_url }}"
+  data-search-url="{{ routes.search_url }}"
+  data-search-suggest-url="{{ routes.predictive_search_url }}"
+  data-currency="{{ cart.currency.iso_code | default: shop.currency }}"
 >
   {%- if section.settings.show_announcement and announcement_blocks.size > 0 -%}
     <aside class="lhx-announcement" aria-label="Store announcements">
-      <div class="lhx-announcement__track" data-announcement-track>
+      <div class="lhx-announcement__track" data-announcement-track aria-live="polite" aria-atomic="true">
         {%- for block in announcement_blocks -%}
           <p class="lhx-announcement__item{% if forloop.first %} is-active{% endif %}" data-announcement-item {{ block.shopify_attributes }}>
             {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
@@ -38,7 +48,7 @@
 
   <div class="lhx-header__shell" data-header-shell>
     <div class="lhx-header__bar">
-      <button class="lhx-icon-button lhx-mobile-only" type="button" data-drawer-open="menu" aria-label="Open menu">{% render 'lhx-icon', icon: 'menu' %}</button>
+      <button class="lhx-icon-button lhx-mobile-only" type="button" data-drawer-open="menu" aria-label="Open menu" aria-expanded="false" aria-controls="lhx-menu-{{ section.id }}">{% render 'lhx-icon', icon: 'menu' %}</button>
 
       <nav class="lhx-nav lhx-desktop-only" aria-label="Main navigation">
         {%- for block in menu_blocks limit: 2 -%}
@@ -65,22 +75,22 @@
 
       <div class="lhx-actions">
         {%- if section.settings.show_localization -%}
-          <button class="lhx-localization lhx-desktop-only" type="button" data-drawer-open="localization" aria-label="Choose country or language">
+          <button class="lhx-localization lhx-desktop-only" type="button" data-drawer-open="localization" aria-label="Choose country or language" aria-expanded="false" aria-controls="lhx-localization-{{ section.id }}">
             {{ localization.country.iso_code }} / {{ localization.language.iso_code | upcase }}
           </button>
         {%- endif -%}
-        <button class="lhx-icon-button" type="button" data-drawer-open="search" aria-label="Search">{% render 'lhx-icon', icon: 'search' %}</button>
+        <button class="lhx-icon-button" type="button" data-drawer-open="search" aria-label="Search" aria-expanded="false" aria-controls="lhx-search-drawer-{{ section.id }}">{% render 'lhx-icon', icon: 'search' %}</button>
         <a class="lhx-icon-button lhx-desktop-only" href="{{ routes.account_url }}" aria-label="Account">{% render 'lhx-icon', icon: 'account' %}</a>
-        <button class="lhx-icon-button lhx-cart-button" type="button" data-drawer-open="cart" aria-label="Cart">
-          {% render 'lhx-icon', icon: 'bag' %}<span class="lhx-cart-count" data-cart-count>{{ cart.item_count }}</span>
+        <button class="lhx-icon-button lhx-cart-button" type="button" data-drawer-open="cart" aria-label="Cart" aria-expanded="false" aria-controls="lhx-cart-{{ section.id }}">
+          {% render 'lhx-icon', icon: 'bag' %}<span class="lhx-cart-count" data-cart-count{% if cart.item_count == 0 %} data-empty="true"{% endif %}>{{ cart.item_count }}</span>
         </button>
       </div>
     </div>
 
-    <div class="lhx-pages-menu lhx-desktop-only" id="lhx-pages-menu" data-pages-menu hidden>
+    <div class="lhx-pages-menu lhx-desktop-only" id="lhx-pages-menu" data-pages-menu role="menu" hidden>
       {%- for block in page_blocks -%}
         {%- if block.settings.page != blank -%}
-          <a href="{{ block.settings.page.url }}" {{ block.shopify_attributes }}>{{ block.settings.label | default: block.settings.page.title | escape }}</a>
+          <a href="{{ block.settings.page.url }}" role="menuitem" {{ block.shopify_attributes }}>{{ block.settings.label | default: block.settings.page.title | escape }}</a>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -126,7 +136,7 @@
             {%- endfor -%}
           </div>
           <div class="lhx-rail-controls">
-            <button class="lhx-icon-button" type="button" data-rail-prev aria-label="Previous products">{% render 'lhx-icon', icon: 'chevron-left' %}</button>
+            <button class="lhx-icon-button" type="button" data-rail-prev aria-label="Previous products" disabled>{% render 'lhx-icon', icon: 'chevron-left' %}</button>
             <button class="lhx-icon-button" type="button" data-rail-next aria-label="Next products">{% render 'lhx-icon', icon: 'chevron-right' %}</button>
           </div>
         </div>
@@ -134,10 +144,10 @@
     </section>
   {%- endfor -%}
 
-  <div class="lhx-backdrop" data-header-backdrop hidden></div>
+  <div class="lhx-backdrop" data-header-backdrop aria-hidden="true" hidden></div>
 
-  <aside class="lhx-drawer lhx-drawer--left" data-drawer="menu" aria-label="Menu" aria-hidden="true" hidden>
-    <div class="lhx-drawer__header"><strong>Menu</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close menu">{% render 'lhx-icon', icon: 'close' %}</button></div>
+  <aside class="lhx-drawer lhx-drawer--left" id="lhx-menu-{{ section.id }}" data-drawer="menu" role="dialog" aria-modal="true" aria-label="Menu" aria-hidden="true" tabindex="-1" hidden>
+    <div class="lhx-drawer__header"><a class="lhx-drawer__brand" href="{{ routes.root_url }}">{%- if header_logo != blank -%}{{ header_logo | image_url: width: 240 | image_tag: widths: '120,180,240', alt: shop.name }}{%- else -%}{{ shop.name | escape }}{%- endif -%}</a><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close menu">{% render 'lhx-icon', icon: 'close' %}</button></div>
     <div class="lhx-mobile-panel is-active" data-mobile-panel="root">
       <nav class="lhx-mobile-nav" aria-label="Mobile navigation">
         {%- for block in menu_blocks limit: 2 -%}
@@ -148,6 +158,14 @@
       </nav>
       <a class="lhx-mobile-account" href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %} Account</a>
       {%- if section.settings.show_localization -%}<button class="lhx-mobile-localization" type="button" data-drawer-switch="localization">{{ localization.country.name }} · {{ localization.language.endonym_name }}</button>{%- endif -%}
+      {%- if section.settings.social_facebook != blank or section.settings.social_instagram != blank or section.settings.social_youtube != blank or section.settings.social_tiktok != blank -%}
+        <div class="lhx-mobile-social" aria-label="Social media">
+          {%- if section.settings.social_facebook != blank -%}<a href="{{ section.settings.social_facebook }}" aria-label="Facebook">Fb</a>{%- endif -%}
+          {%- if section.settings.social_instagram != blank -%}<a href="{{ section.settings.social_instagram }}" aria-label="Instagram">Ig</a>{%- endif -%}
+          {%- if section.settings.social_youtube != blank -%}<a href="{{ section.settings.social_youtube }}" aria-label="YouTube">Yt</a>{%- endif -%}
+          {%- if section.settings.social_tiktok != blank -%}<a href="{{ section.settings.social_tiktok }}" aria-label="TikTok">Tk</a>{%- endif -%}
+        </div>
+      {%- endif -%}
     </div>
     {%- for block in menu_blocks limit: 2 -%}
       <div class="lhx-mobile-panel" data-mobile-panel="{{ block.id }}">
@@ -159,31 +177,37 @@
     <div class="lhx-mobile-panel" data-mobile-panel="pages"><button class="lhx-back-button" type="button" data-mobile-panel-back>{% render 'lhx-icon', icon: 'arrow-left' %} Back</button><p class="lhx-mobile-panel__title">{{ section.settings.pages_label | escape }}</p><ul>{%- for block in page_blocks -%}{%- if block.settings.page != blank -%}<li><a href="{{ block.settings.page.url }}">{{ block.settings.label | default: block.settings.page.title | escape }}</a></li>{%- endif -%}{%- endfor -%}</ul></div>
   </aside>
 
-  <aside class="lhx-drawer" data-drawer="search" aria-label="Search" aria-hidden="true" hidden>
+  <aside class="lhx-drawer" id="lhx-search-drawer-{{ section.id }}" data-drawer="search" role="dialog" aria-modal="true" aria-label="Search" aria-hidden="true" tabindex="-1" hidden>
     <div class="lhx-drawer__header"><strong>Search</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close search">{% render 'lhx-icon', icon: 'close' %}</button></div>
     <form class="lhx-search" action="{{ routes.search_url }}" method="get" role="search"><label class="visually-hidden" for="lhx-search-{{ section.id }}">Search</label><input id="lhx-search-{{ section.id }}" name="q" type="search" placeholder="What are you looking for?" autocomplete="off" data-search-input><button type="submit" aria-label="Submit search">{% render 'lhx-icon', icon: 'arrow-right' %}</button></form>
-    <div class="lhx-search-results" data-search-results></div>
+    <div class="lhx-search-results" data-search-results role="status" aria-live="polite" aria-busy="false"></div>
     <div class="lhx-search-popular"><p>Popular searches</p><div>{%- assign popular_terms = section.settings.popular_searches | split: ',' -%}{%- for term in popular_terms -%}<a href="{{ routes.search_url }}?q={{ term | strip | url_encode }}">{{ term | strip | escape }}</a>{%- endfor -%}</div></div>
   </aside>
 
-  <aside class="lhx-drawer" data-drawer="cart" aria-label="Cart" aria-hidden="true" hidden>
+  <aside class="lhx-drawer" id="lhx-cart-{{ section.id }}" data-drawer="cart" role="dialog" aria-modal="true" aria-label="Cart" aria-hidden="true" tabindex="-1" hidden>
     <div class="lhx-drawer__header"><strong>Cart <span data-cart-drawer-count>({{ cart.item_count }})</span></strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close cart">{% render 'lhx-icon', icon: 'close' %}</button></div>
-    <div class="lhx-cart-content" data-cart-content>
+    <div class="lhx-cart-content" data-cart-content aria-live="polite" aria-busy="false">
       {%- if cart.item_count == 0 -%}<p class="lhx-cart-empty">Your cart is empty.</p><a class="lhx-button" href="{{ routes.all_products_collection_url }}">Continue shopping</a>{%- else -%}{%- for item in cart.items -%}<div class="lhx-cart-line"><a href="{{ item.url }}">{%- if item.image -%}{{ item.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: item.product.title }}{%- endif -%}</a><div><a href="{{ item.url }}">{{ item.product.title | escape }}</a><span>{{ item.quantity }} × {{ item.final_price | money }}</span></div></div>{%- endfor -%}<a class="lhx-button" href="{{ routes.cart_url }}">View cart · {{ cart.total_price | money }}</a>{%- endif -%}
     </div>
   </aside>
 
-  <aside class="lhx-drawer" data-drawer="localization" aria-label="Localization" aria-hidden="true" hidden>
+  <aside class="lhx-drawer" id="lhx-localization-{{ section.id }}" data-drawer="localization" role="dialog" aria-modal="true" aria-label="Localization" aria-hidden="true" tabindex="-1" hidden>
     <div class="lhx-drawer__header"><strong>Country & language</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close localization">{% render 'lhx-icon', icon: 'close' %}</button></div>
     {% form 'localization', class: 'lhx-localization-form' %}
-      <label for="lhx-country-{{ section.id }}">Country / region</label><select id="lhx-country-{{ section.id }}" name="country_code">{%- for country in localization.available_countries -%}<option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>{%- endfor -%}</select>
-      <label for="lhx-language-{{ section.id }}">Language</label><select id="lhx-language-{{ section.id }}" name="locale_code">{%- for language in localization.available_languages -%}<option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>{%- endfor -%}</select>
-      <button class="lhx-button" type="submit">Apply</button>
+      <label class="visually-hidden" for="lhx-country-search-{{ section.id }}">Find country</label>
+      <div class="lhx-country-search-wrap"><input id="lhx-country-search-{{ section.id }}" class="lhx-country-search" type="search" placeholder="Search" autocomplete="off" data-country-search><span aria-hidden="true">{% render 'lhx-icon', icon: 'search' %}</span></div>
+      <select class="visually-hidden" id="lhx-country-{{ section.id }}" name="country_code" data-country-select tabindex="-1" aria-hidden="true">{%- for country in localization.available_countries -%}<option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>{%- endfor -%}</select>
+      <div class="lhx-country-list" data-country-list role="listbox" aria-label="Country">
+        {%- for country in localization.available_countries -%}
+          <button class="lhx-country-option{% if country.iso_code == localization.country.iso_code %} is-selected{% endif %}" type="button" data-country-option data-country-code="{{ country.iso_code }}" role="option" aria-selected="{% if country.iso_code == localization.country.iso_code %}true{% else %}false{% endif %}"><span class="lhx-country-flag" data-country-flag="{{ country.iso_code }}">{{ country.iso_code }}</span><span class="lhx-country-name">{{ country.name }}</span><span class="lhx-country-currency">{{ country.currency.iso_code }} {{ country.currency.symbol }}</span></button>
+        {%- endfor -%}
+      </div>
+      <div class="lhx-language-controls"><label for="lhx-language-{{ section.id }}">Language</label><select id="lhx-language-{{ section.id }}" name="locale_code">{%- for language in localization.available_languages -%}<option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>{%- endfor -%}</select><button class="lhx-button" type="submit">Apply</button></div>
     {% endform %}
   </aside>
 
   <nav class="lhx-bottom-dock lhx-mobile-only" aria-label="Quick navigation">
-    <a href="{{ routes.root_url }}">{% render 'lhx-icon', icon: 'home' %}<span>Home</span></a><button type="button" data-drawer-open="menu">{% render 'lhx-icon', icon: 'menu' %}<span>Menu</span></button><button type="button" data-drawer-open="search">{% render 'lhx-icon', icon: 'search' %}<span>Search</span></button><a href="{{ routes.all_products_collection_url }}">{% render 'lhx-icon', icon: 'bag' %}<span>Shop</span></a><button type="button" data-drawer-open="cart">{% render 'lhx-icon', icon: 'bag' %}<span>Cart</span></button><a href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %}<span>Account</span></a>
+    <a href="{{ routes.root_url }}">{% render 'lhx-icon', icon: 'home' %}<span>Home</span></a><button type="button" data-drawer-open="menu" aria-expanded="false" aria-controls="lhx-menu-{{ section.id }}">{% render 'lhx-icon', icon: 'menu' %}<span>Menu</span></button><button type="button" data-drawer-open="search" aria-expanded="false" aria-controls="lhx-search-drawer-{{ section.id }}">{% render 'lhx-icon', icon: 'search' %}<span>Search</span></button><a href="{{ routes.all_products_collection_url }}">{% render 'lhx-icon', icon: 'arrow-right' %}<span>Shop</span></a><button type="button" data-drawer-open="cart" aria-expanded="false" aria-controls="lhx-cart-{{ section.id }}">{% render 'lhx-icon', icon: 'bag' %}<span>Cart</span></button><a href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %}<span>Account</span></a>
   </nav>
 </header>
 
@@ -195,12 +219,18 @@
     {"type":"checkbox","id":"enable_sticky","label":"Enable floating desktop header on scroll","default":true},
     {"type":"checkbox","id":"overlay_on_home","label":"Overlay header on homepage hero","default":true},
     {"type":"checkbox","id":"show_announcement","label":"Show announcement bar","default":true},
+    {"type":"checkbox","id":"enable_announcement_autoplay","label":"Autoplay announcements","default":true},
     {"type":"range","id":"announcement_delay","min":3,"max":10,"step":1,"unit":"s","label":"Announcement delay","default":5},
     {"type":"text","id":"pages_label","label":"Pages menu label","default":"Pages"},
     {"type":"text","id":"find_link_label","label":"Utility link label","default":"Find your shoes"},
     {"type":"url","id":"find_link","label":"Utility link"},
     {"type":"checkbox","id":"show_localization","label":"Show country and language selector","default":true},
-    {"type":"text","id":"popular_searches","label":"Popular search terms (comma separated)","default":"New arrivals, Leather, Classic"}
+    {"type":"text","id":"popular_searches","label":"Popular search terms (comma separated)","default":"New arrivals, Leather, Classic"},
+    {"type":"header","content":"Mobile social links"},
+    {"type":"url","id":"social_facebook","label":"Facebook"},
+    {"type":"url","id":"social_instagram","label":"Instagram"},
+    {"type":"url","id":"social_youtube","label":"YouTube"},
+    {"type":"url","id":"social_tiktok","label":"TikTok"}
   ],
   "blocks": [
     {"type":"announcement","name":"Announcement","limit":4,"settings":[{"type":"text","id":"text","label":"Text","default":"Free shipping on orders over $75"},{"type":"url","id":"link","label":"Link"}]},

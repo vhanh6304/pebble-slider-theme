@@ -12,7 +12,7 @@
       "type": "header",
       "blocks": {
         "announcement_shipping": {"type":"announcement","settings":{"text":"Free shipping on orders over $75"}},
-        "announcement_new": {"type":"announcement","settings":{"text":"Discover the latest arrivals from layouthub-hank"}},
+        "announcement_new": {"type":"announcement","settings":{"text":"Discover the latest arrivals"}},
         "menu_classic": {"type":"mega_menu","settings":{"label":"Collections","collection":"classic-az","secondary_title":"Explore","secondary_collection":"leather","featured_collection":"classic-az"}},
         "menu_featured": {"type":"mega_menu","settings":{"label":"Featured","collection":"reebok-x-angel-reese","secondary_title":"More to discover","secondary_collection":"replacement-parts","featured_collection":"reebok-x-angel-reese"}},
         "page_contact": {"type":"page_link","settings":{"page":"contact"}},
@@ -21,7 +21,7 @@
         "page_faq": {"type":"page_link","settings":{"page":"faq-lh"}}
       },
       "block_order": ["announcement_shipping","announcement_new","menu_classic","menu_featured","page_contact","page_landing","page_clients","page_faq"],
-      "settings": {"enable_sticky":true,"overlay_on_home":true,"show_announcement":true,"announcement_delay":5,"pages_label":"Pages","find_link_label":"Find your shoes","find_link":"/collections/all","show_localization":true,"popular_searches":"Classic, Leather, Reebok"}
+      "settings": {"enable_sticky":true,"overlay_on_home":true,"show_announcement":true,"enable_announcement_autoplay":true,"announcement_delay":5,"pages_label":"Pages","find_link_label":"Find your shoes","find_link":"/collections/all","show_localization":true,"popular_searches":"Classic, Leather, Reebok"}
     }
   },
   "order": ["header"]

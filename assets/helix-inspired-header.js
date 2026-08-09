@@ -1,198 +1,624 @@
 (() => {
+  const SELECTOR = '[data-lhx-header]';
+  const DESKTOP = '(min-width: 991px)';
+
   const init = (root) => {
     if (root.dataset.lhxReady === 'true') return;
     root.dataset.lhxReady = 'true';
+
     const $ = (selector, scope = root) => scope.querySelector(selector);
     const $$ = (selector, scope = root) => [...scope.querySelectorAll(selector)];
+    const isDesktop = () => window.matchMedia(DESKTOP).matches;
+    const shell = $('[data-header-shell]');
     const backdrop = $('[data-header-backdrop]');
-    const drawers = $$('[data-drawer]');
-    const megas = $$('[data-mega-panel]');
-    const menuTriggers = $$('[data-mega-trigger]');
     const pagesMenu = $('[data-pages-menu]');
     const pagesTrigger = $('[data-pages-trigger]');
+    const megaPanels = $$('[data-mega-panel]');
+    const megaTriggers = $$('[data-mega-trigger]');
+
     let activeDrawer = null;
+    let activeDrawerTrigger = null;
     let activeMega = null;
-    let closeTimer = null;
+    let megaCloseTimer = 0;
+    let pagesCloseTimer = 0;
+    let backdropTimer = 0;
+    let searchTimer = 0;
     let lastScroll = window.scrollY;
-    let searchTimer = null;
+    let scrollFrame = 0;
+
+    const setDrawerTriggers = (name, expanded) => {
+      $$(`[data-drawer-open="${name}"], [data-drawer-switch="${name}"]`).forEach((trigger) => {
+        trigger.setAttribute('aria-expanded', String(expanded));
+      });
+    };
 
     const showBackdrop = (show) => {
       if (!backdrop) return;
-      backdrop.hidden = !show;
-      requestAnimationFrame(() => backdrop.classList.toggle('is-visible', show));
+      window.clearTimeout(backdropTimer);
+      backdrop.setAttribute('aria-hidden', String(!show));
+      if (show) {
+        backdrop.hidden = false;
+        requestAnimationFrame(() => backdrop.classList.add('is-visible'));
+        return;
+      }
+      backdrop.classList.remove('is-visible');
+      backdropTimer = window.setTimeout(() => {
+        if (!backdrop.classList.contains('is-visible')) backdrop.hidden = true;
+      }, 280);
     };
-    const lockBody = (lock) => document.documentElement.classList.toggle('lhx-body-lock', lock);
-    const closePages = () => {
+
+    const lockBody = (lock) => {
+      document.documentElement.classList.toggle('lhx-body-lock', lock);
+    };
+
+    const positionPages = () => {
+      if (!pagesMenu || !pagesTrigger || !shell || pagesMenu.hidden) return;
+      const triggerRect = pagesTrigger.getBoundingClientRect();
+      const shellRect = shell.getBoundingClientRect();
+      const menuWidth = pagesMenu.offsetWidth || 270;
+      const left = Math.max(0, Math.min(triggerRect.left - shellRect.left, shellRect.width - menuWidth));
+      pagesMenu.style.left = `${left}px`;
+      pagesMenu.style.right = 'auto';
+      pagesMenu.style.top = `${triggerRect.bottom - shellRect.top}px`;
+    };
+
+    const closePages = (instant = false) => {
+      window.clearTimeout(pagesCloseTimer);
       if (!pagesMenu || !pagesTrigger) return;
       pagesTrigger.setAttribute('aria-expanded', 'false');
       pagesMenu.classList.remove('is-open');
-      setTimeout(() => { if (!pagesMenu.classList.contains('is-open')) pagesMenu.hidden = true; }, 240);
+      const finish = () => {
+        if (!pagesMenu.classList.contains('is-open')) pagesMenu.hidden = true;
+      };
+      if (instant) finish();
+      else window.setTimeout(finish, 260);
     };
-    const closeMega = () => {
+
+    const openPages = () => {
+      if (!isDesktop() || !pagesMenu || !pagesTrigger) return;
+      closeMega(true);
+      pagesMenu.hidden = false;
+      pagesTrigger.setAttribute('aria-expanded', 'true');
+      positionPages();
+      requestAnimationFrame(() => pagesMenu.classList.add('is-open'));
+    };
+
+    const schedulePagesClose = () => {
+      window.clearTimeout(pagesCloseTimer);
+      pagesCloseTimer = window.setTimeout(() => {
+        if (!pagesTrigger?.matches(':hover') && !pagesMenu?.matches(':hover')) closePages();
+      }, 150);
+    };
+
+    const positionMega = () => {
+      if (!shell) return;
+      const rootRect = root.getBoundingClientRect();
+      const shellRect = shell.getBoundingClientRect();
+      root.style.setProperty('--lhx-mega-top', `${shellRect.bottom - rootRect.top}px`);
+      root.style.setProperty('--lhx-sticky-mega-top', `${shellRect.bottom}px`);
+    };
+
+    function closeMega(instant = false) {
+      window.clearTimeout(megaCloseTimer);
       if (!activeMega) return;
-      const panel = $(`[data-mega-panel="${activeMega}"]`);
-      const trigger = $(`[data-mega-trigger="${activeMega}"]`);
-      panel?.classList.remove('is-open');
-      trigger?.setAttribute('aria-expanded', 'false');
-      setTimeout(() => { if (!panel?.classList.contains('is-open')) panel.hidden = true; }, 320);
+      const id = activeMega;
+      const panel = $(`[data-mega-panel="${id}"]`);
+      const trigger = $(`[data-mega-trigger="${id}"]`);
       activeMega = null;
-      showBackdrop(false);
-    };
+      root.classList.remove('mega-open');
+      trigger?.setAttribute('aria-expanded', 'false');
+      panel?.classList.remove('is-open');
+      const finish = () => {
+        if (panel && !panel.classList.contains('is-open')) panel.hidden = true;
+      };
+      if (instant) finish();
+      else window.setTimeout(finish, 340);
+      if (!activeDrawer || (activeDrawer === 'localization' && isDesktop())) showBackdrop(false);
+    }
+
     const openMega = (id) => {
-      clearTimeout(closeTimer);
-      closePages();
-      if (activeMega === id) return;
-      closeMega();
+      if (!isDesktop()) return;
+      window.clearTimeout(megaCloseTimer);
+      closePages(true);
+      if (activeDrawer) closeDrawer(true, false);
+      if (activeMega && activeMega !== id) closeMega(true);
       const panel = $(`[data-mega-panel="${id}"]`);
       const trigger = $(`[data-mega-trigger="${id}"]`);
       if (!panel || !trigger) return;
       activeMega = id;
+      root.classList.add('mega-open');
       panel.hidden = false;
       trigger.setAttribute('aria-expanded', 'true');
-      requestAnimationFrame(() => panel.classList.add('is-open'));
+      positionMega();
       showBackdrop(true);
+      requestAnimationFrame(() => panel.classList.add('is-open'));
+      requestAnimationFrame(updateRails);
     };
-    const resetMobilePanels = () => {
-      $$('[data-mobile-panel]').forEach((panel) => panel.classList.toggle('is-active', panel.dataset.mobilePanel === 'root'));
+
+    const scheduleMegaClose = () => {
+      window.clearTimeout(megaCloseTimer);
+      megaCloseTimer = window.setTimeout(() => {
+        const panel = activeMega ? $(`[data-mega-panel="${activeMega}"]`) : null;
+        const trigger = activeMega ? $(`[data-mega-trigger="${activeMega}"]`) : null;
+        if (!panel?.matches(':hover') && !trigger?.matches(':hover')) closeMega();
+      }, 150);
     };
-    const closeDrawer = () => {
+
+    const setMobilePanel = (name = 'root') => {
+      $$('[data-mobile-panel]').forEach((panel) => {
+        const panelName = panel.dataset.mobilePanel;
+        panel.classList.remove('is-active', 'is-before', 'is-after');
+        if (panelName === name) panel.classList.add('is-active');
+        else if (panelName === 'root' && name !== 'root') panel.classList.add('is-before');
+        else panel.classList.add('is-after');
+      });
+    };
+
+    const positionLocalization = (drawer, trigger) => {
+      const source = trigger?.getClientRects().length
+        ? trigger
+        : $$('[data-drawer-open="localization"]').find((item) => item.getClientRects().length);
+      if (!source) return;
+      const rect = source.getBoundingClientRect();
+      drawer.style.setProperty('--lhx-popover-top', `${rect.bottom + 1}px`);
+      drawer.style.setProperty('--lhx-popover-right', `${Math.max(16, window.innerWidth - rect.right)}px`);
+    };
+
+    function closeDrawer(instant = false, restoreFocus = true) {
       if (!activeDrawer) return;
-      const drawer = $(`[data-drawer="${activeDrawer}"]`);
+      const name = activeDrawer;
+      const drawer = $(`[data-drawer="${name}"]`);
+      const wasPopover = drawer?.classList.contains('is-popover');
+      const previousTrigger = activeDrawerTrigger;
+      activeDrawer = null;
+      activeDrawerTrigger = null;
       drawer?.classList.remove('is-open');
       drawer?.setAttribute('aria-hidden', 'true');
-      const old = activeDrawer;
-      activeDrawer = null;
+      setDrawerTriggers(name, false);
       root.classList.remove('drawer-open');
-      showBackdrop(Boolean(activeMega));
       lockBody(false);
-      setTimeout(() => { if (!drawer?.classList.contains('is-open')) drawer.hidden = true; }, 390);
-      if (old === 'menu') resetMobilePanels();
-    };
-    const openDrawer = (name) => {
-      closeMega();
-      closePages();
-      if (activeDrawer === name) return;
-      closeDrawer();
+      if (!activeMega) showBackdrop(false);
+      const finish = () => {
+        if (!drawer?.classList.contains('is-open')) {
+          drawer.hidden = true;
+          drawer.classList.remove('is-popover');
+          drawer.style.removeProperty('--lhx-popover-top');
+          drawer.style.removeProperty('--lhx-popover-right');
+        }
+        if (restoreFocus && previousTrigger?.isConnected) previousTrigger.focus({ preventScroll: true });
+      };
+      if (instant) finish();
+      else window.setTimeout(finish, wasPopover ? 260 : 410);
+      if (name === 'menu') setMobilePanel('root');
+    }
+
+    function openDrawer(name, trigger) {
+      if (activeDrawer === name) {
+        closeDrawer();
+        return;
+      }
+      closeMega(true);
+      closePages(true);
+      if (activeDrawer) closeDrawer(true, false);
       const drawer = $(`[data-drawer="${name}"]`);
       if (!drawer) return;
+      const popover = name === 'localization' && isDesktop();
       activeDrawer = name;
+      activeDrawerTrigger = trigger || null;
       drawer.hidden = false;
       drawer.setAttribute('aria-hidden', 'false');
-      root.classList.add('drawer-open');
-      showBackdrop(true);
-      lockBody(true);
+      drawer.setAttribute('aria-modal', String(!popover));
+      setDrawerTriggers(name, true);
+      if (popover) {
+        drawer.classList.add('is-popover');
+        positionLocalization(drawer, trigger);
+        showBackdrop(false);
+        lockBody(false);
+      } else {
+        drawer.classList.remove('is-popover');
+        root.classList.add('drawer-open');
+        showBackdrop(true);
+        lockBody(true);
+      }
+      if (name === 'menu') setMobilePanel('root');
       requestAnimationFrame(() => drawer.classList.add('is-open'));
-      if (name === 'search') setTimeout(() => $('[data-search-input]')?.focus(), 130);
+      if (name === 'search') window.setTimeout(() => $('[data-search-input]')?.focus(), 160);
+      else window.setTimeout(() => drawer.focus({ preventScroll: true }), 120);
       if (name === 'cart') refreshCart();
-    };
-    const refreshCart = async () => {
-      const content = $('[data-cart-content]');
-      if (!content) return;
-      try {
-        const cart = await fetch('/cart.js', { headers: { Accept: 'application/json' } }).then((response) => response.json());
-        $$('[data-cart-count]').forEach((item) => { item.textContent = cart.item_count; });
-        $$('[data-cart-drawer-count]').forEach((item) => { item.textContent = `(${cart.item_count})`; });
-        if (!cart.item_count) {
-          content.innerHTML = '<p class="lhx-cart-empty">Your cart is empty.</p><a class="lhx-button" href="/collections/all">Continue shopping</a>';
-          return;
-        }
-        const money = (cents) => new Intl.NumberFormat(document.documentElement.lang || 'en', { style: 'currency', currency: window.Shopify?.currency?.active || 'USD' }).format(cents / 100);
-        content.innerHTML = cart.items.map((item) => `<div class="lhx-cart-line"><a href="${item.url}">${item.image ? `<img src="${item.image}" alt="${item.product_title.replaceAll('&', '&amp;').replaceAll('"', '&quot;')}">` : ''}</a><div><a href="${item.url}">${item.product_title}</a><span>${item.quantity} × ${money(item.final_price)}</span></div></div>`).join('') + `<a class="lhx-button" href="/cart">View cart · ${money(cart.total_price)}</a>`;
-      } catch (_) { /* Keep server-rendered cart if the AJAX request is unavailable. */ }
-    };
+    }
 
-    $$('[data-drawer-open]').forEach((button) => button.addEventListener('click', () => openDrawer(button.dataset.drawerOpen)));
-    $$('[data-drawer-switch]').forEach((button) => button.addEventListener('click', () => openDrawer(button.dataset.drawerSwitch)));
-    $$('[data-drawer-close]').forEach((button) => button.addEventListener('click', closeDrawer));
-    backdrop?.addEventListener('click', () => { closeDrawer(); closeMega(); closePages(); });
-    document.addEventListener('keydown', (event) => { if (event.key === 'Escape') { closeDrawer(); closeMega(); closePages(); } });
+    $$('[data-drawer-open]').forEach((button) => {
+      button.addEventListener('click', () => openDrawer(button.dataset.drawerOpen, button));
+    });
+    $$('[data-drawer-switch]').forEach((button) => {
+      button.addEventListener('click', () => openDrawer(button.dataset.drawerSwitch, button));
+    });
+    $$('[data-drawer-close]').forEach((button) => button.addEventListener('click', () => closeDrawer()));
+    backdrop?.addEventListener('click', () => {
+      closeDrawer();
+      closeMega();
+      closePages();
+    });
 
-    menuTriggers.forEach((trigger) => {
+    megaTriggers.forEach((trigger) => {
       const id = trigger.dataset.megaTrigger;
       trigger.addEventListener('mouseenter', () => openMega(id));
       trigger.addEventListener('focus', () => openMega(id));
-      trigger.addEventListener('click', () => openMega(id));
-      trigger.addEventListener('mouseleave', () => { closeTimer = setTimeout(closeMega, 160); });
+      trigger.addEventListener('mouseleave', scheduleMegaClose);
+      trigger.addEventListener('click', () => {
+        if (activeMega !== id) openMega(id);
+      });
     });
-    megas.forEach((panel) => {
-      panel.addEventListener('mouseenter', () => clearTimeout(closeTimer));
-      panel.addEventListener('mouseleave', () => { closeTimer = setTimeout(closeMega, 160); });
+    megaPanels.forEach((panel) => {
+      panel.addEventListener('mouseenter', () => window.clearTimeout(megaCloseTimer));
+      panel.addEventListener('mouseleave', scheduleMegaClose);
     });
+
+    pagesTrigger?.addEventListener('mouseenter', openPages);
+    pagesTrigger?.addEventListener('focus', openPages);
+    pagesTrigger?.addEventListener('mouseleave', schedulePagesClose);
     pagesTrigger?.addEventListener('click', () => {
-      const opening = pagesMenu?.hidden;
+      if (!pagesMenu?.classList.contains('is-open')) openPages();
+    });
+    pagesMenu?.addEventListener('mouseenter', () => window.clearTimeout(pagesCloseTimer));
+    pagesMenu?.addEventListener('mouseleave', schedulePagesClose);
+
+    document.addEventListener('pointerdown', (event) => {
+      const target = event.target;
+      if (pagesMenu?.classList.contains('is-open') && !pagesMenu.contains(target) && !pagesTrigger?.contains(target)) closePages();
+      if (activeMega) {
+        const panel = $(`[data-mega-panel="${activeMega}"]`);
+        const trigger = $(`[data-mega-trigger="${activeMega}"]`);
+        if (!panel?.contains(target) && !trigger?.contains(target) && target !== backdrop) closeMega();
+      }
+      if (activeDrawer === 'localization' && isDesktop()) {
+        const drawer = $('[data-drawer="localization"]');
+        const trigger = $('[data-drawer-open="localization"]');
+        if (!drawer?.contains(target) && !trigger?.contains(target)) closeDrawer();
+      }
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      closeDrawer();
       closeMega();
-      if (!pagesMenu) return;
-      if (!opening) { closePages(); return; }
-      pagesMenu.hidden = false;
-      pagesTrigger.setAttribute('aria-expanded', 'true');
-      requestAnimationFrame(() => pagesMenu.classList.add('is-open'));
+      closePages();
     });
 
-    $$('[data-mobile-panel-open]').forEach((button) => button.addEventListener('click', () => {
-      const target = button.dataset.mobilePanelOpen;
-      $$('[data-mobile-panel]').forEach((panel) => panel.classList.toggle('is-active', panel.dataset.mobilePanel === target));
-    }));
-    $$('[data-mobile-panel-back]').forEach((button) => button.addEventListener('click', resetMobilePanels));
-    $$('[data-rail-prev]').forEach((button) => button.addEventListener('click', () => button.closest('[data-product-rail]')?.querySelector('[data-product-rail-track]')?.scrollBy({ left: -235, behavior: 'smooth' })));
-    $$('[data-rail-next]').forEach((button) => button.addEventListener('click', () => button.closest('[data-product-rail]')?.querySelector('[data-product-rail-track]')?.scrollBy({ left: 235, behavior: 'smooth' })));
-    $$('[data-quick-add]').forEach((button) => button.addEventListener('click', async () => {
-      const original = button.textContent;
-      button.disabled = true;
-      button.textContent = 'Adding…';
-      try {
-        const response = await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items: [{ id: Number(button.dataset.variantId), quantity: 1 }] }) });
-        if (!response.ok) throw new Error('Unable to add item');
-        button.textContent = 'Added';
-        await refreshCart();
-      } catch (_) { button.textContent = 'Try again'; }
-      setTimeout(() => { button.disabled = false; button.textContent = original; }, 1300);
-    }));
-
-    const input = $('[data-search-input]');
-    const results = $('[data-search-results]');
-    input?.addEventListener('input', () => {
-      clearTimeout(searchTimer);
-      const term = input.value.trim();
-      if (term.length < 2) { if (results) results.innerHTML = ''; return; }
-      searchTimer = setTimeout(async () => {
-        try {
-          const url = `/search/suggest.json?q=${encodeURIComponent(term)}&resources[type]=product&resources[limit]=6`;
-          const data = await fetch(url, { headers: { Accept: 'application/json' } }).then((response) => response.json());
-          const products = data.resources?.results?.products || [];
-          if (results) results.innerHTML = products.map((product) => `<a class="lhx-search-result" href="${product.url}">${product.image ? `<img src="${product.image}" alt="">` : ''}<span>${product.title}</span></a>`).join('') || '<p>No products found.</p>';
-        } catch (_) { if (results) results.innerHTML = ''; }
-      }, 220);
+    $$('[data-mobile-panel-open]').forEach((button) => {
+      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen));
     });
+    $$('[data-mobile-panel-back]').forEach((button) => {
+      button.addEventListener('click', () => setMobilePanel('root'));
+    });
+    setMobilePanel('root');
 
     const announcementItems = $$('[data-announcement-item]');
     if (announcementItems.length > 1) {
-      let current = 0;
-      const delay = Number(root.dataset.announcementDelay || 5000);
-      const setAnnouncement = (next) => {
-        announcementItems[current].classList.remove('is-active');
-        current = (next + announcementItems.length) % announcementItems.length;
-        announcementItems[current].classList.add('is-active');
+      let current = Math.max(0, announcementItems.findIndex((item) => item.classList.contains('is-active')));
+      let announcementTimer = 0;
+      const delay = Math.max(3000, Number(root.dataset.announcementDelay || 5000));
+      const autoplay = root.dataset.announcementAutoplay !== 'false';
+      announcementItems.forEach((item, index) => item.setAttribute('aria-hidden', String(index !== current)));
+
+      const goToAnnouncement = (next, direction = 1) => {
+        const targetIndex = (next + announcementItems.length) % announcementItems.length;
+        if (targetIndex === current) return;
+        const outgoing = announcementItems[current];
+        const incoming = announcementItems[targetIndex];
+        const leaving = direction > 0 ? 'is-leaving-to-top' : 'is-leaving-to-bottom';
+        const entering = direction > 0 ? 'is-entering-from-bottom' : 'is-entering-from-top';
+        outgoing.classList.remove('is-leaving-to-top', 'is-leaving-to-bottom');
+        incoming.classList.remove('is-active', 'is-entering-from-top', 'is-entering-from-bottom', 'is-leaving-to-top', 'is-leaving-to-bottom');
+        incoming.classList.add(entering);
+        incoming.setAttribute('aria-hidden', 'false');
+        outgoing.classList.remove('is-active');
+        outgoing.classList.add(leaving);
+        outgoing.setAttribute('aria-hidden', 'true');
+        void incoming.offsetHeight;
+        requestAnimationFrame(() => {
+          incoming.classList.remove(entering);
+          incoming.classList.add('is-active');
+        });
+        window.setTimeout(() => outgoing.classList.remove(leaving), 430);
+        current = targetIndex;
       };
-      let timer = setInterval(() => setAnnouncement(current + 1), delay);
-      $('[data-announcement-prev]')?.addEventListener('click', () => { setAnnouncement(current - 1); clearInterval(timer); timer = setInterval(() => setAnnouncement(current + 1), delay); });
-      $('[data-announcement-next]')?.addEventListener('click', () => { setAnnouncement(current + 1); clearInterval(timer); timer = setInterval(() => setAnnouncement(current + 1), delay); });
+
+      const startAnnouncements = () => {
+        window.clearInterval(announcementTimer);
+        if (autoplay && !document.hidden) {
+          announcementTimer = window.setInterval(() => goToAnnouncement(current + 1, 1), delay);
+        }
+      };
+      $('[data-announcement-prev]')?.addEventListener('click', () => {
+        goToAnnouncement(current - 1, -1);
+        startAnnouncements();
+      });
+      $('[data-announcement-next]')?.addEventListener('click', () => {
+        goToAnnouncement(current + 1, 1);
+        startAnnouncements();
+      });
+      document.addEventListener('visibilitychange', startAnnouncements);
+      startAnnouncements();
     }
 
+    function updateRails() {
+      $$('[data-product-rail]').forEach((rail) => {
+        const track = $('[data-product-rail-track]', rail);
+        const prev = $('[data-rail-prev]', rail);
+        const next = $('[data-rail-next]', rail);
+        if (!track) return;
+        if (prev) prev.disabled = track.scrollLeft <= 2;
+        if (next) next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 2;
+      });
+    }
+
+    $$('[data-product-rail]').forEach((rail) => {
+      const track = $('[data-product-rail-track]', rail);
+      const move = (direction) => {
+        if (!track) return;
+        const card = track.firstElementChild;
+        const gap = Number.parseFloat(getComputedStyle(track).gap) || 12;
+        const distance = card ? card.getBoundingClientRect().width + gap : 235;
+        track.scrollBy({ left: distance * direction, behavior: 'smooth' });
+        window.setTimeout(updateRails, 380);
+      };
+      $('[data-rail-prev]', rail)?.addEventListener('click', () => move(-1));
+      $('[data-rail-next]', rail)?.addEventListener('click', () => move(1));
+      track?.addEventListener('scroll', updateRails, { passive: true });
+    });
+
+    const rootUrl = root.dataset.rootUrl || window.Shopify?.routes?.root || '/';
+    const route = (value, fallback) => value || `${rootUrl.replace(/\/?$/, '/')}${fallback.replace(/^\//, '')}`;
+    const cartUrl = route(root.dataset.cartUrl, 'cart');
+    const cartAddUrl = route(root.dataset.cartAddUrl, 'cart/add');
+    const searchSuggestUrl = route(root.dataset.searchSuggestUrl, 'search/suggest');
+    const allProductsUrl = root.dataset.allProductsUrl || `${rootUrl}collections/all`;
+
+    const money = (cents) => new Intl.NumberFormat(document.documentElement.lang || 'en', {
+      style: 'currency',
+      currency: root.dataset.currency || window.Shopify?.currency?.active || 'USD'
+    }).format(Number(cents || 0) / 100);
+
+    function updateCartBadges(cart) {
+      $$('[data-cart-count]').forEach((badge) => {
+        badge.textContent = cart.item_count;
+        badge.toggleAttribute('data-empty', cart.item_count === 0);
+      });
+      $$('[data-cart-drawer-count]').forEach((count) => { count.textContent = `(${cart.item_count})`; });
+    }
+
+    function renderCart(cart) {
+      const content = $('[data-cart-content]');
+      if (!content) return;
+      content.replaceChildren();
+      if (!cart.item_count) {
+        const message = document.createElement('p');
+        const link = document.createElement('a');
+        message.className = 'lhx-cart-empty';
+        message.textContent = 'Your cart is empty.';
+        link.className = 'lhx-button';
+        link.href = allProductsUrl;
+        link.textContent = 'Continue shopping';
+        content.append(message, link);
+        return;
+      }
+      cart.items.forEach((item) => {
+        const line = document.createElement('div');
+        const imageLink = document.createElement('a');
+        const details = document.createElement('div');
+        const title = document.createElement('a');
+        const footer = document.createElement('div');
+        const quantity = document.createElement('span');
+        const price = document.createElement('span');
+        line.className = 'lhx-cart-line';
+        imageLink.href = item.url;
+        if (item.image) {
+          const image = document.createElement('img');
+          image.src = item.image;
+          image.alt = item.product_title || '';
+          imageLink.append(image);
+        }
+        details.className = 'lhx-cart-line__details';
+        title.href = item.url;
+        title.textContent = item.product_title;
+        footer.className = 'lhx-cart-line__footer';
+        quantity.textContent = `${item.quantity} ×`;
+        price.textContent = money(item.final_price);
+        footer.append(quantity, price);
+        details.append(title, footer);
+        line.append(imageLink, details);
+        content.append(line);
+      });
+      const action = document.createElement('a');
+      action.className = 'lhx-button';
+      action.href = cartUrl;
+      action.textContent = `View cart · ${money(cart.total_price)}`;
+      content.append(action);
+    }
+
+    async function refreshCart() {
+      const content = $('[data-cart-content]');
+      content?.setAttribute('aria-busy', 'true');
+      try {
+        const url = cartUrl.endsWith('.js') ? cartUrl : `${cartUrl}.js`;
+        const response = await fetch(url, { headers: { Accept: 'application/json' } });
+        if (!response.ok) return;
+        const cart = await response.json();
+        updateCartBadges(cart);
+        renderCart(cart);
+      } catch (_) {
+        /* Keep the server-rendered state if Shopify is temporarily unavailable. */
+      } finally {
+        content?.setAttribute('aria-busy', 'false');
+      }
+    }
+
+    $$('[data-quick-add]').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const original = button.textContent;
+        button.disabled = true;
+        button.textContent = 'Adding…';
+        try {
+          const url = cartAddUrl.endsWith('.js') ? cartAddUrl : `${cartAddUrl}.js`;
+          const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ items: [{ id: Number(button.dataset.variantId), quantity: 1 }] })
+          });
+          if (!response.ok) throw new Error('Unable to add item');
+          button.textContent = 'Added';
+          await refreshCart();
+        } catch (_) {
+          button.textContent = 'Try again';
+        }
+        window.setTimeout(() => {
+          button.disabled = false;
+          button.textContent = original;
+        }, 1300);
+      });
+    });
+
+    const searchInput = $('[data-search-input]');
+    const searchResults = $('[data-search-results]');
+    searchInput?.addEventListener('input', () => {
+      window.clearTimeout(searchTimer);
+      const term = searchInput.value.trim();
+      const drawer = $('[data-drawer="search"]');
+      drawer?.classList.toggle('has-query', Boolean(term));
+      if (term.length < 2) {
+        searchResults?.replaceChildren();
+        searchResults?.setAttribute('aria-busy', 'false');
+        return;
+      }
+      searchTimer = window.setTimeout(async () => {
+        searchResults?.setAttribute('aria-busy', 'true');
+        try {
+          const endpoint = searchSuggestUrl.endsWith('.json') ? searchSuggestUrl : `${searchSuggestUrl}.json`;
+          const url = `${endpoint}?q=${encodeURIComponent(term)}&resources[type]=product&resources[limit]=6`;
+          const response = await fetch(url, { headers: { Accept: 'application/json' } });
+          const data = await response.json();
+          const products = data.resources?.results?.products || [];
+          searchResults?.replaceChildren();
+          if (!products.length) {
+            const empty = document.createElement('p');
+            empty.className = 'lhx-search-empty';
+            empty.textContent = 'No products found.';
+            searchResults?.append(empty);
+          }
+          products.forEach((product) => {
+            const link = document.createElement('a');
+            const body = document.createElement('span');
+            const title = document.createElement('span');
+            link.className = 'lhx-search-result';
+            link.href = product.url;
+            if (product.image) {
+              const image = document.createElement('img');
+              image.src = product.image;
+              image.alt = '';
+              link.append(image);
+            }
+            body.className = 'lhx-search-result__body';
+            title.className = 'lhx-search-result__title';
+            title.textContent = product.title;
+            body.append(title);
+            link.append(body);
+            searchResults?.append(link);
+          });
+        } catch (_) {
+          searchResults?.replaceChildren();
+        } finally {
+          searchResults?.setAttribute('aria-busy', 'false');
+        }
+      }, 220);
+    });
+
+    const countrySearch = $('[data-country-search]');
+    const countrySelect = $('[data-country-select]');
+    const countryButtons = $$('[data-country-option]');
+    $$('[data-country-flag]').forEach((flag) => {
+      const code = (flag.dataset.countryFlag || '').toUpperCase();
+      if (/^[A-Z]{2}$/.test(code)) {
+        flag.textContent = [...code].map((letter) => String.fromCodePoint(127397 + letter.charCodeAt(0))).join('');
+      }
+    });
+    countrySearch?.addEventListener('input', () => {
+      const term = countrySearch.value.trim().toLocaleLowerCase();
+      countryButtons.forEach((button) => {
+        button.hidden = Boolean(term) && !button.textContent.toLocaleLowerCase().includes(term) && !button.dataset.countryCode.toLocaleLowerCase().includes(term);
+      });
+    });
+    countryButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        if (!countrySelect) return;
+        countrySelect.value = button.dataset.countryCode;
+        countryButtons.forEach((item) => {
+          const selected = item === button;
+          item.classList.toggle('is-selected', selected);
+          item.setAttribute('aria-selected', String(selected));
+        });
+        button.closest('form')?.requestSubmit();
+      });
+    });
+
     const updateScrollState = () => {
+      scrollFrame = 0;
       const y = window.scrollY;
-      const desktop = window.matchMedia('(min-width: 991px)').matches;
-      root.classList.toggle('is-sticky', desktop && root.dataset.sticky === 'true' && y > 110);
-      if (!desktop) {
-        root.classList.toggle('mobile-scrolled', y > 64);
-        root.classList.toggle('mobile-hidden', y > 100 && y > lastScroll);
-      } else root.classList.remove('mobile-scrolled', 'mobile-hidden');
+      if (isDesktop()) {
+        if (activeDrawer === 'menu') closeDrawer(true, false);
+        root.classList.toggle('is-sticky', root.dataset.sticky === 'true' && y > 110);
+        root.classList.remove('mobile-scrolled', 'mobile-hidden', 'mobile-dock-visible');
+      } else {
+        if (activeMega) closeMega(true);
+        if (pagesMenu?.classList.contains('is-open')) closePages(true);
+        root.classList.remove('is-sticky');
+        if (y <= 64) {
+          root.classList.remove('mobile-scrolled', 'mobile-hidden', 'mobile-dock-visible');
+        } else {
+          root.classList.add('mobile-scrolled');
+          const delta = y - lastScroll;
+          if (delta > 4) root.classList.add('mobile-hidden', 'mobile-dock-visible');
+          else if (delta < -4) root.classList.remove('mobile-hidden', 'mobile-dock-visible');
+        }
+      }
       lastScroll = y;
+      positionMega();
+      positionPages();
+      if (activeDrawer === 'localization' && isDesktop()) {
+        const drawer = $('[data-drawer="localization"]');
+        if (drawer) positionLocalization(drawer, activeDrawerTrigger);
+      }
     };
-    window.addEventListener('scroll', updateScrollState, { passive: true });
-    window.addEventListener('resize', updateScrollState);
+
+    const requestScrollUpdate = () => {
+      if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScrollState);
+    };
+    window.addEventListener('scroll', requestScrollUpdate, { passive: true });
+    window.addEventListener('resize', () => {
+      requestScrollUpdate();
+      updateRails();
+      if (activeDrawer === 'localization' && isDesktop()) {
+        const drawer = $('[data-drawer="localization"]');
+        drawer?.classList.add('is-popover');
+        drawer?.setAttribute('aria-modal', 'false');
+        root.classList.remove('drawer-open');
+        showBackdrop(false);
+        lockBody(false);
+        if (drawer) positionLocalization(drawer, activeDrawerTrigger);
+      } else if (activeDrawer === 'localization') {
+        const drawer = $('[data-drawer="localization"]');
+        drawer?.classList.remove('is-popover');
+        drawer?.setAttribute('aria-modal', 'true');
+        root.classList.add('drawer-open');
+        showBackdrop(true);
+        lockBody(true);
+      }
+    });
     updateScrollState();
+    requestAnimationFrame(updateRails);
   };
-  const boot = () => document.querySelectorAll('[data-lhx-header]').forEach(init);
+
+  const boot = () => document.querySelectorAll(SELECTOR).forEach(init);
   document.addEventListener('DOMContentLoaded', boot);
   document.addEventListener('shopify:section:load', boot);
+  boot();
 })();
