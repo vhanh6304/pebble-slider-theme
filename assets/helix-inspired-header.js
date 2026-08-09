@@ -25,7 +25,7 @@
     let searchTimer = 0;
     let mobilePanelTimer = 0;
     let activeMobilePanel = 'root';
-    let activeMobilePanelTrigger = null;
+    let mobilePanelStack = [];
     let closingMobilePanel = null;
     let cancelMobilePanelCompletion = null;
     let lastScroll = window.scrollY;
@@ -130,6 +130,12 @@
       closePages(true);
       if (activeDrawer) closeDrawer(true, false);
       if (activeMega && activeMega !== id) closeMega(true);
+      megaPanels.forEach((candidate) => {
+        if (candidate.dataset.megaPanel === id || candidate.hidden) return;
+        candidate.classList.remove('is-open');
+        candidate.hidden = true;
+        $(`[data-mega-trigger="${candidate.dataset.megaPanel}"]`)?.setAttribute('aria-expanded', 'false');
+      });
       const panel = $(`[data-mega-panel="${id}"]`);
       const trigger = $(`[data-mega-trigger="${id}"]`);
       if (!panel || !trigger) return;
@@ -163,9 +169,16 @@
     };
     const finishMobilePanel = (panel) => {
       if (!panel) return;
-      panel.classList.remove('is-active', 'is-closing');
+      panel.classList.remove('is-active', 'is-closing', 'is-underlay');
       panel.setAttribute('aria-hidden', 'true');
       panel.setAttribute('inert', '');
+    };
+
+    const updateMobilePanelTriggers = () => {
+      const expanded = new Set(mobilePanelStack.map((entry) => entry.trigger).filter(Boolean));
+      mobilePanelTriggers.forEach((button) => {
+        button.setAttribute('aria-expanded', String(expanded.has(button)));
+      });
     };
 
     const stopMobilePanelCompletion = () => {
@@ -197,56 +210,72 @@
     };
 
     const setMobilePanel = (name = 'root', instant = false, sourceTrigger = null) => {
-      if (name === 'root' && activeMobilePanel === 'root' && !instant) return;
-      stopMobilePanelCompletion();
-      const current = activeMobilePanel === 'root' ? null : findMobilePanel(activeMobilePanel);
-      mobilePanelTriggers.forEach((button) => {
-        button.setAttribute('aria-expanded', String(name !== 'root' && button.dataset.mobilePanelOpen === name));
-      });
-
-      if (name === 'root') {
+      if (instant) {
+        stopMobilePanelCompletion();
         activeMobilePanel = 'root';
-        if (instant) {
-          setMobileRootInteractive(true);
-          mobileSubpanels.forEach(finishMobilePanel);
-          closingMobilePanel = null;
-          activeMobilePanelTrigger = null;
-          return;
-        }
-        if (!current) return;
-        const returnTrigger = activeMobilePanelTrigger;
+        mobilePanelStack = [];
+        setMobileRootInteractive(true);
+        mobileSubpanels.forEach(finishMobilePanel);
+        closingMobilePanel = null;
+        updateMobilePanelTriggers();
+        return;
+      }
+
+      if (name === activeMobilePanel) return;
+      stopMobilePanelCompletion();
+      if (closingMobilePanel) {
+        finishMobilePanel(closingMobilePanel);
+        closingMobilePanel = null;
+      }
+      const current = activeMobilePanel === 'root' ? null : findMobilePanel(activeMobilePanel);
+
+      const backEntry = mobilePanelStack[mobilePanelStack.length - 1];
+      if (current && backEntry?.name === name) {
+        mobilePanelStack.pop();
+        activeMobilePanel = name;
         closingMobilePanel = current;
         current.classList.remove('is-active');
         current.classList.add('is-closing');
-        completeAfterMobilePanelTransition(current, () => {
+        if (name === 'root') {
           setMobileRootInteractive(true);
-          returnTrigger?.focus({ preventScroll: true });
+        } else {
+          const parent = findMobilePanel(name);
+          parent?.classList.remove('is-underlay', 'is-closing');
+          parent?.classList.add('is-active');
+          parent?.setAttribute('aria-hidden', 'false');
+          parent?.removeAttribute('inert');
+        }
+        updateMobilePanelTriggers();
+        completeAfterMobilePanelTransition(current, () => {
+          backEntry.trigger?.focus({ preventScroll: true });
           finishMobilePanel(current);
           closingMobilePanel = null;
-          activeMobilePanelTrigger = null;
         });
         return;
       }
 
       const target = findMobilePanel(name);
-      if (!target || activeMobilePanel === name) return;
-      if (closingMobilePanel) finishMobilePanel(closingMobilePanel);
-      if (current) finishMobilePanel(current);
-      mobileSubpanels.forEach((panel) => {
-        if (panel !== target) finishMobilePanel(panel);
-      });
+      if (!target) return;
+      if (current) {
+        current.classList.remove('is-active', 'is-closing');
+        current.classList.add('is-underlay');
+        current.setAttribute('aria-hidden', 'true');
+        current.setAttribute('inert', '');
+      } else {
+        setMobileRootInteractive(false);
+      }
+      mobilePanelStack.push({ name: activeMobilePanel, trigger: sourceTrigger });
       activeMobilePanel = name;
       closingMobilePanel = null;
-      activeMobilePanelTrigger = sourceTrigger || mobilePanelTriggers.find((button) => button.dataset.mobilePanelOpen === name) || null;
-      target.classList.remove('is-closing');
+      finishMobilePanel(target);
       target.setAttribute('aria-hidden', 'false');
       target.removeAttribute('inert');
       void target.offsetWidth;
       target.classList.add('is-active');
+      updateMobilePanelTriggers();
       const targetBody = target.querySelector('.lhx-mobile-subpanel__body');
       if (targetBody) targetBody.scrollTop = 0;
       target.querySelector('[data-mobile-panel-back]')?.focus({ preventScroll: true });
-      setMobileRootInteractive(false);
     };
 
     const positionLocalization = (drawer, trigger) => {
@@ -383,7 +412,7 @@
       button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen, false, button));
     });
     $$('[data-mobile-panel-back]').forEach((button) => {
-      button.addEventListener('click', () => setMobilePanel('root'));
+      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelBack || 'root'));
     });
     setMobilePanel('root', true);
 
