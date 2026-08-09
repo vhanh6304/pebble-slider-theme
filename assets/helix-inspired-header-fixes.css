@@ -350,14 +350,86 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, .1);
   }
 
-  .lhx-mega {
-    transition:
-      height .3s cubic-bezier(.6, .14, 0, 1),
-      box-shadow .2s ease;
+  .lhx-mega-surface {
+    position: absolute;
+    z-index: 6;
+    top: var(--lhx-mega-top, 119px);
+    right: 0;
+    left: 0;
+    height: 0;
+    overflow: hidden;
+    background: #fff;
+    pointer-events: none;
+    transition: height .3s cubic-bezier(.6, .14, 0, 1);
+    will-change: height;
   }
 
-  .lhx-mega__inner,
+  .lhx-header.mega-open:not(.mega-closing) .lhx-mega-surface {
+    height: var(--lhx-mega-height, 382px);
+  }
+
+  .lhx-mega {
+    height: 0;
+    background: transparent;
+    opacity: 0;
+    transition:
+      height .3s cubic-bezier(.6, .14, 0, 1),
+      opacity .2s cubic-bezier(.6, .14, 0, 1),
+      box-shadow .2s ease;
+    will-change: height, opacity;
+  }
+
+  .lhx-mega.is-open,
+  .lhx-mega.is-switching-in {
+    height: var(--lhx-mega-height, 382px);
+    opacity: 1;
+  }
+
+  .lhx-mega.is-switching-in {
+    z-index: 9;
+    transition: none;
+  }
+
+  .lhx-mega.is-switching-out {
+    z-index: 8;
+    height: var(--lhx-mega-height, 382px);
+    opacity: 1;
+    pointer-events: none;
+    transition: none;
+  }
+
+  .lhx-mega.is-closing {
+    z-index: 8;
+    height: 0;
+    opacity: 1;
+    pointer-events: none;
+  }
+
+  .lhx-mega__inner {
+    opacity: 0;
+    transform: translate3d(0, 15px, 0);
+    transition:
+      opacity .2s ease,
+      transform .3s ease;
+  }
+
   .lhx-mega.is-open .lhx-mega__inner {
+    opacity: 1;
+    transform: translateZ(0);
+    transition-delay: .08s;
+  }
+
+  .lhx-mega.is-switching-in.is-open .lhx-mega__inner {
+    transition-delay: 0s;
+  }
+
+  .lhx-mega.is-switching-out .lhx-mega__inner {
+    opacity: 0;
+    transform: translate3d(0, -15px, 0);
+    transition-delay: 0s;
+  }
+
+  .lhx-mega.is-closing .lhx-mega__inner {
     opacity: 1;
     transform: none;
     transition: none;
@@ -372,11 +444,13 @@
     color: var(--lhx-ink);
   }
 
-  .lhx-header:not(.is-sticky):has(.lhx-mega.is-open) .lhx-header__shell {
+  .lhx-header:not(.is-sticky).mega-open .lhx-header__shell {
     margin-right: 0;
     margin-left: 0;
     padding-right: 50px;
     padding-left: 50px;
+    background: #fff;
+    color: var(--lhx-ink);
   }
 
   .lhx-header.mega-open .lhx-announcement {
@@ -389,11 +463,14 @@
     backdrop-filter: blur(20px);
   }
 
-  .lhx-header:not(.is-sticky):has(.lhx-mega.is-open) .lhx-mega {
+  .lhx-header:not(.is-sticky).mega-open .lhx-mega,
+  .lhx-header:not(.is-sticky).mega-open .lhx-mega-surface {
     top: var(--lhx-mega-top, 119px);
   }
 
-  .lhx-header.is-sticky .lhx-mega {
+  .lhx-header.is-sticky .lhx-mega,
+  .lhx-header.is-sticky .lhx-mega-surface {
+    position: fixed;
     top: var(--lhx-sticky-mega-top, 96px);
   }
 
@@ -472,7 +549,7 @@
     margin-left: 24px;
   }
 
-  .lhx-header:not(.is-sticky):has(.lhx-mega.is-open) .lhx-header__shell {
+  .lhx-header:not(.is-sticky).mega-open .lhx-header__shell {
     margin-right: 0;
     margin-left: 0;
     padding-right: 24px;

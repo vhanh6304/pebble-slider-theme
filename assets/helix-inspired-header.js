@@ -20,8 +20,13 @@
     let activeDrawerTrigger = null;
     let activeMega = null;
     let megaCloseTimer = 0;
+    let megaTransitionTimer = 0;
+    let megaAnimationFrame = 0;
+    let megaTransitionVersion = 0;
+    let closingMegaPanel = null;
     let pagesCloseTimer = 0;
     let backdropTimer = 0;
+    let backdropVisible = false;
     let searchTimer = 0;
     let mobilePanelTimer = 0;
     let activeMobilePanel = 'root';
@@ -39,16 +44,19 @@
 
     const showBackdrop = (show) => {
       if (!backdrop) return;
+      backdropVisible = show;
       window.clearTimeout(backdropTimer);
       backdrop.setAttribute('aria-hidden', String(!show));
       if (show) {
         backdrop.hidden = false;
-        requestAnimationFrame(() => backdrop.classList.add('is-visible'));
+        requestAnimationFrame(() => {
+          if (backdropVisible) backdrop.classList.add('is-visible');
+        });
         return;
       }
       backdrop.classList.remove('is-visible');
       backdropTimer = window.setTimeout(() => {
-        if (!backdrop.classList.contains('is-visible')) backdrop.hidden = true;
+        if (!backdropVisible && !backdrop.classList.contains('is-visible')) backdrop.hidden = true;
       }, 280);
     };
 
@@ -106,22 +114,68 @@
       root.style.setProperty('--lhx-sticky-mega-top', `${shellRect.bottom}px`);
     };
 
+    const resetMegaPanel = (panel, hide = true) => {
+      if (!panel) return;
+      panel.classList.remove('is-open', 'is-switching-in', 'is-switching-out', 'is-closing');
+      if (hide) panel.hidden = true;
+    };
+
+    const cancelMegaTransition = () => {
+      window.clearTimeout(megaTransitionTimer);
+      megaTransitionTimer = 0;
+      if (megaAnimationFrame) cancelAnimationFrame(megaAnimationFrame);
+      megaAnimationFrame = 0;
+      megaTransitionVersion += 1;
+    };
+
+    const setMegaHeight = (panel) => {
+      if (!panel) return;
+      const inner = $('.lhx-mega__inner', panel);
+      const top = panel.getBoundingClientRect().top || 119;
+      const available = Math.max(280, window.innerHeight - top - 16);
+      const measured = Math.max(382, Math.ceil(inner?.scrollHeight || 382));
+      root.style.setProperty('--lhx-mega-height', `${Math.min(measured, available)}px`);
+    };
+
     function closeMega(instant = false) {
       window.clearTimeout(megaCloseTimer);
-      if (!activeMega) return;
+      if (!activeMega) {
+        if (instant && closingMegaPanel) {
+          cancelMegaTransition();
+          resetMegaPanel(closingMegaPanel);
+          closingMegaPanel = null;
+          root.classList.remove('mega-open', 'mega-closing');
+          root.style.removeProperty('--lhx-mega-height');
+          showBackdrop(false);
+        }
+        return;
+      }
+
+      cancelMegaTransition();
+      const version = megaTransitionVersion;
       const id = activeMega;
       const panel = $(`[data-mega-panel="${id}"]`);
       const trigger = $(`[data-mega-trigger="${id}"]`);
       activeMega = null;
-      root.classList.remove('mega-open');
+      closingMegaPanel = panel;
+      root.classList.add('mega-open', 'mega-closing');
       trigger?.setAttribute('aria-expanded', 'false');
-      panel?.classList.remove('is-open');
+      megaPanels.forEach((candidate) => {
+        if (candidate !== panel) resetMegaPanel(candidate);
+      });
+      panel?.classList.remove('is-open', 'is-switching-in', 'is-switching-out');
+      panel?.classList.add('is-closing');
+      showBackdrop(false);
+
       const finish = () => {
-        if (panel && !panel.classList.contains('is-open')) panel.hidden = true;
+        if (version !== megaTransitionVersion || activeMega) return;
+        resetMegaPanel(panel);
+        closingMegaPanel = null;
+        root.classList.remove('mega-open', 'mega-closing');
+        root.style.removeProperty('--lhx-mega-height');
       };
       if (instant) finish();
-      else window.setTimeout(finish, 340);
-      if (!activeDrawer || (activeDrawer === 'localization' && isDesktop())) showBackdrop(false);
+      else megaTransitionTimer = window.setTimeout(finish, 340);
     }
 
     const openMega = (id) => {
@@ -129,24 +183,61 @@
       window.clearTimeout(megaCloseTimer);
       closePages(true);
       if (activeDrawer) closeDrawer(true, false);
-      if (activeMega && activeMega !== id) closeMega(true);
-      megaPanels.forEach((candidate) => {
-        if (candidate.dataset.megaPanel === id || candidate.hidden) return;
-        candidate.classList.remove('is-open');
-        candidate.hidden = true;
-        $(`[data-mega-trigger="${candidate.dataset.megaPanel}"]`)?.setAttribute('aria-expanded', 'false');
-      });
       const panel = $(`[data-mega-panel="${id}"]`);
       const trigger = $(`[data-mega-trigger="${id}"]`);
       if (!panel || !trigger) return;
+
+      if (activeMega === id && panel.classList.contains('is-open')) return;
+
+      const previousId = activeMega;
+      const previous = previousId ? $(`[data-mega-panel="${previousId}"]`) : null;
+      const switching = Boolean(previous && previousId !== id);
+      cancelMegaTransition();
+      const version = megaTransitionVersion;
+      if (closingMegaPanel) {
+        resetMegaPanel(closingMegaPanel);
+        closingMegaPanel = null;
+      }
+      root.classList.remove('mega-closing');
+
+      megaPanels.forEach((candidate) => {
+        if (candidate !== previous && candidate !== panel) resetMegaPanel(candidate);
+        if (candidate.dataset.megaPanel !== id) {
+          $(`[data-mega-trigger="${candidate.dataset.megaPanel}"]`)?.setAttribute('aria-expanded', 'false');
+        }
+      });
+
+      resetMegaPanel(panel, false);
+      panel.hidden = false;
+      positionMega();
+      setMegaHeight(panel);
       activeMega = id;
       root.classList.add('mega-open');
-      panel.hidden = false;
       trigger.setAttribute('aria-expanded', 'true');
-      positionMega();
       showBackdrop(true);
-      requestAnimationFrame(() => panel.classList.add('is-open'));
-      requestAnimationFrame(updateRails);
+
+      if (switching) {
+        previous.classList.remove('is-open', 'is-switching-in', 'is-closing');
+        previous.classList.add('is-switching-out');
+        panel.classList.add('is-switching-in');
+      }
+
+      void panel.offsetHeight;
+      megaAnimationFrame = requestAnimationFrame(() => {
+        megaAnimationFrame = 0;
+        if (version !== megaTransitionVersion || activeMega !== id || panel.hidden) return;
+        panel.classList.add('is-open');
+        updateRails();
+      });
+
+      if (switching) {
+        megaTransitionTimer = window.setTimeout(() => {
+          if (version !== megaTransitionVersion || activeMega !== id) return;
+          resetMegaPanel(previous);
+          panel.classList.remove('is-switching-in');
+          megaTransitionTimer = 0;
+        }, 340);
+      }
     };
 
     const scheduleMegaClose = () => {
@@ -708,7 +799,7 @@
         root.classList.toggle('is-sticky', root.dataset.sticky === 'true' && y > 110);
         root.classList.remove('mobile-scrolled', 'mobile-hidden', 'mobile-dock-visible');
       } else {
-        if (activeMega) closeMega(true);
+        if (activeMega || closingMegaPanel) closeMega(true);
         if (pagesMenu?.classList.contains('is-open')) closePages(true);
         root.classList.remove('is-sticky');
         if (y <= 64) {
@@ -722,6 +813,7 @@
       }
       lastScroll = y;
       positionMega();
+      if (activeMega) setMegaHeight($(`[data-mega-panel="${activeMega}"]`));
       positionPages();
       if (activeDrawer === 'localization' && isDesktop()) {
         const drawer = $('[data-drawer="localization"]');

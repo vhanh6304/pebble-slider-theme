@@ -96,6 +96,8 @@
     </div>
   </div>
 
+  <div class="lhx-mega-surface lhx-desktop-only" data-mega-surface aria-hidden="true"></div>
+
   {%- for block in menu_blocks limit: 2 -%}
     {%- assign featured_collection = block.settings.featured_collection | default: block.settings.collection -%}
     <section class="lhx-mega lhx-desktop-only" id="lhx-mega-{{ block.id }}" data-mega-panel="{{ block.id }}" hidden aria-label="{{ block.settings.label | escape }} menu">
