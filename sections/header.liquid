@@ -1,77 +1,211 @@
-<header>
-  <h2 class="header__title">
-    {{ shop.name | link_to: routes.root_url }}
-  </h2>
+{{ 'helix-inspired-header.css' | asset_url | stylesheet_tag }}
+{{ 'helix-inspired-header-overlay.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'helix-inspired-header.js' | asset_url }}" defer="defer"></script>
 
-  <div class="header__menu">
-    {% for link in section.settings.menu.links %}
-      {{ link.title | link_to: link.url }}
-    {% endfor %}
+{%- liquid
+  assign menu_blocks = section.blocks | where: 'type', 'mega_menu'
+  assign page_blocks = section.blocks | where: 'type', 'page_link'
+  assign announcement_blocks = section.blocks | where: 'type', 'announcement'
+  assign header_logo = section.settings.logo
+-%}
+
+<header
+  class="lhx-header{% if request.page_type == 'index' and section.settings.overlay_on_home %} lhx-header--overlay{% endif %}"
+  data-lhx-header
+  data-announcement-delay="{{ section.settings.announcement_delay | times: 1000 }}"
+  data-sticky="{{ section.settings.enable_sticky }}"
+  data-section-id="{{ section.id }}"
+>
+  {%- if section.settings.show_announcement and announcement_blocks.size > 0 -%}
+    <aside class="lhx-announcement" aria-label="Store announcements">
+      <div class="lhx-announcement__track" data-announcement-track>
+        {%- for block in announcement_blocks -%}
+          <p class="lhx-announcement__item{% if forloop.first %} is-active{% endif %}" data-announcement-item {{ block.shopify_attributes }}>
+            {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
+              {{ block.settings.text | escape }}
+            {%- if block.settings.link != blank -%}</a>{%- endif -%}
+          </p>
+        {%- endfor -%}
+      </div>
+      {%- if announcement_blocks.size > 1 -%}
+        <div class="lhx-announcement__controls">
+          <button class="lhx-icon-button lhx-announcement__button" type="button" data-announcement-prev aria-label="Previous announcement">{% render 'lhx-icon', icon: 'chevron-left' %}</button>
+          <button class="lhx-icon-button lhx-announcement__button" type="button" data-announcement-next aria-label="Next announcement">{% render 'lhx-icon', icon: 'chevron-right' %}</button>
+        </div>
+      {%- endif -%}
+    </aside>
+  {%- endif -%}
+
+  <div class="lhx-header__shell" data-header-shell>
+    <div class="lhx-header__bar">
+      <button class="lhx-icon-button lhx-mobile-only" type="button" data-drawer-open="menu" aria-label="Open menu">{% render 'lhx-icon', icon: 'menu' %}</button>
+
+      <nav class="lhx-nav lhx-desktop-only" aria-label="Main navigation">
+        {%- for block in menu_blocks limit: 2 -%}
+          {%- assign block_collection = block.settings.collection -%}
+          <button class="lhx-nav__trigger" type="button" data-mega-trigger="{{ block.id }}" aria-expanded="false" aria-controls="lhx-mega-{{ block.id }}" {{ block.shopify_attributes }}>
+            <span>{{ block.settings.label | escape }}</span>{% render 'lhx-icon', icon: 'chevron-down' %}
+          </button>
+        {%- endfor -%}
+        <button class="lhx-nav__trigger" type="button" data-pages-trigger aria-expanded="false" aria-controls="lhx-pages-menu">
+          <span>{{ section.settings.pages_label | escape }}</span>{% render 'lhx-icon', icon: 'chevron-down' %}
+        </button>
+        {%- if section.settings.find_link_label != blank -%}
+          <a class="lhx-nav__link" href="{{ section.settings.find_link | default: routes.root_url }}">{{ section.settings.find_link_label | escape }}</a>
+        {%- endif -%}
+      </nav>
+
+      <a class="lhx-logo" href="{{ routes.root_url }}" aria-label="{{ shop.name | escape }} home">
+        {%- if header_logo != blank -%}
+          {{ header_logo | image_url: width: 300 | image_tag: class: 'lhx-logo__image', widths: '120,180,240,300', alt: shop.name }}
+        {%- else -%}
+          <span>{{ shop.name | escape }}</span>
+        {%- endif -%}
+      </a>
+
+      <div class="lhx-actions">
+        {%- if section.settings.show_localization -%}
+          <button class="lhx-localization lhx-desktop-only" type="button" data-drawer-open="localization" aria-label="Choose country or language">
+            {{ localization.country.iso_code }} / {{ localization.language.iso_code | upcase }}
+          </button>
+        {%- endif -%}
+        <button class="lhx-icon-button" type="button" data-drawer-open="search" aria-label="Search">{% render 'lhx-icon', icon: 'search' %}</button>
+        <a class="lhx-icon-button lhx-desktop-only" href="{{ routes.account_url }}" aria-label="Account">{% render 'lhx-icon', icon: 'account' %}</a>
+        <button class="lhx-icon-button lhx-cart-button" type="button" data-drawer-open="cart" aria-label="Cart">
+          {% render 'lhx-icon', icon: 'bag' %}<span class="lhx-cart-count" data-cart-count>{{ cart.item_count }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="lhx-pages-menu lhx-desktop-only" id="lhx-pages-menu" data-pages-menu hidden>
+      {%- for block in page_blocks -%}
+        {%- if block.settings.page != blank -%}
+          <a href="{{ block.settings.page.url }}" {{ block.shopify_attributes }}>{{ block.settings.label | default: block.settings.page.title | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
   </div>
 
-  <div class="header__icons">
-    {% if shop.customer_accounts_enabled %}
-      <shopify-account menu="{{ section.settings.customer_account_menu }}">
-        {{ 'icon-account.svg' | inline_asset_content }}
-      </shopify-account>
-    {% endif %}
+  {%- for block in menu_blocks limit: 2 -%}
+    {%- assign featured_collection = block.settings.featured_collection | default: block.settings.collection -%}
+    <section class="lhx-mega lhx-desktop-only" id="lhx-mega-{{ block.id }}" data-mega-panel="{{ block.id }}" hidden aria-label="{{ block.settings.label | escape }} menu">
+      <div class="lhx-mega__inner">
+        <div class="lhx-mega__links">
+          <a class="lhx-mega__all" href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">Shop all {{ block.settings.label | escape }} <span aria-hidden="true">↗</span></a>
+          {%- if block.settings.menu != blank -%}
+            <ul>
+              {%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+            </ul>
+          {%- elsif block.settings.collection != blank -%}
+            <ul>
+              {%- for product in block.settings.collection.products limit: 5 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}
+            </ul>
+          {%- endif -%}
+        </div>
+        <div class="lhx-mega__links">
+          <p class="lhx-mega__eyebrow">{{ block.settings.secondary_title | escape }}</p>
+          {%- if block.settings.secondary_menu != blank -%}
+            <ul>{%- for link in block.settings.secondary_menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}</ul>
+          {%- elsif block.settings.secondary_collection != blank -%}
+            <a class="lhx-mega__feature-link" href="{{ block.settings.secondary_collection.url }}">{{ block.settings.secondary_collection.title | escape }} <span aria-hidden="true">↗</span></a>
+          {%- endif -%}
+        </div>
+        <div class="lhx-mega__products" data-product-rail>
+          <div class="lhx-mega__rail" data-product-rail-track>
+            {%- for product in featured_collection.products limit: 6 -%}
+              {%- assign variant = product.selected_or_first_available_variant -%}
+              <article class="lhx-product-card">
+                <a href="{{ product.url }}" class="lhx-product-card__image">
+                  {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220,320,420,520', alt: product.title }}{%- endif -%}
+                </a>
+                <div class="lhx-product-card__meta"><a href="{{ product.url }}">{{ product.title | escape }}</a><span>{{ product.price | money }}</span></div>
+                {%- if variant != blank and variant.available -%}<button type="button" class="lhx-product-card__add" data-quick-add data-variant-id="{{ variant.id }}" data-product-title="{{ product.title | escape }}">Quick add</button>{%- endif -%}
+              </article>
+            {%- else -%}
+              <p class="lhx-mega__empty">Choose a featured collection in Theme Editor.</p>
+            {%- endfor -%}
+          </div>
+          <div class="lhx-rail-controls">
+            <button class="lhx-icon-button" type="button" data-rail-prev aria-label="Previous products">{% render 'lhx-icon', icon: 'chevron-left' %}</button>
+            <button class="lhx-icon-button" type="button" data-rail-next aria-label="Next products">{% render 'lhx-icon', icon: 'chevron-right' %}</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  {%- endfor -%}
 
-    <a href="{{ routes.cart_url }}">
-      {% if cart.item_count > 0 %}
-        <sup>{{ cart.item_count }}</sup>
-      {% endif %}
+  <div class="lhx-backdrop" data-header-backdrop hidden></div>
 
-      {{ 'icon-cart.svg' | inline_asset_content }}
-    </a>
-  </div>
+  <aside class="lhx-drawer lhx-drawer--left" data-drawer="menu" aria-label="Menu" aria-hidden="true" hidden>
+    <div class="lhx-drawer__header"><strong>Menu</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close menu">{% render 'lhx-icon', icon: 'close' %}</button></div>
+    <div class="lhx-mobile-panel is-active" data-mobile-panel="root">
+      <nav class="lhx-mobile-nav" aria-label="Mobile navigation">
+        {%- for block in menu_blocks limit: 2 -%}
+          <div class="lhx-mobile-nav__item"><a href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">{{ block.settings.label | escape }}</a><button type="button" data-mobile-panel-open="{{ block.id }}" aria-label="Explore {{ block.settings.label | escape }}">{% render 'lhx-icon', icon: 'arrow-right' %}</button></div>
+        {%- endfor -%}
+        <div class="lhx-mobile-nav__item"><a href="{{ section.settings.find_link | default: routes.root_url }}">{{ section.settings.find_link_label | escape }}</a></div>
+        <div class="lhx-mobile-nav__item"><button type="button" data-mobile-panel-open="pages">{{ section.settings.pages_label | escape }}{% render 'lhx-icon', icon: 'arrow-right' %}</button></div>
+      </nav>
+      <a class="lhx-mobile-account" href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %} Account</a>
+      {%- if section.settings.show_localization -%}<button class="lhx-mobile-localization" type="button" data-drawer-switch="localization">{{ localization.country.name }} · {{ localization.language.endonym_name }}</button>{%- endif -%}
+    </div>
+    {%- for block in menu_blocks limit: 2 -%}
+      <div class="lhx-mobile-panel" data-mobile-panel="{{ block.id }}">
+        <button class="lhx-back-button" type="button" data-mobile-panel-back>{% render 'lhx-icon', icon: 'arrow-left' %} Back</button>
+        <a class="lhx-mobile-panel__title" href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">{{ block.settings.label | escape }}</a>
+        <ul>{%- if block.settings.menu != blank -%}{%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}{%- elsif block.settings.collection != blank -%}{%- for product in block.settings.collection.products limit: 8 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}{%- endif -%}</ul>
+      </div>
+    {%- endfor -%}
+    <div class="lhx-mobile-panel" data-mobile-panel="pages"><button class="lhx-back-button" type="button" data-mobile-panel-back>{% render 'lhx-icon', icon: 'arrow-left' %} Back</button><p class="lhx-mobile-panel__title">{{ section.settings.pages_label | escape }}</p><ul>{%- for block in page_blocks -%}{%- if block.settings.page != blank -%}<li><a href="{{ block.settings.page.url }}">{{ block.settings.label | default: block.settings.page.title | escape }}</a></li>{%- endif -%}{%- endfor -%}</ul></div>
+  </aside>
+
+  <aside class="lhx-drawer" data-drawer="search" aria-label="Search" aria-hidden="true" hidden>
+    <div class="lhx-drawer__header"><strong>Search</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close search">{% render 'lhx-icon', icon: 'close' %}</button></div>
+    <form class="lhx-search" action="{{ routes.search_url }}" method="get" role="search"><label class="visually-hidden" for="lhx-search-{{ section.id }}">Search</label><input id="lhx-search-{{ section.id }}" name="q" type="search" placeholder="What are you looking for?" autocomplete="off" data-search-input><button type="submit" aria-label="Submit search">{% render 'lhx-icon', icon: 'arrow-right' %}</button></form>
+    <div class="lhx-search-results" data-search-results></div>
+    <div class="lhx-search-popular"><p>Popular searches</p><div>{%- assign popular_terms = section.settings.popular_searches | split: ',' -%}{%- for term in popular_terms -%}<a href="{{ routes.search_url }}?q={{ term | strip | url_encode }}">{{ term | strip | escape }}</a>{%- endfor -%}</div></div>
+  </aside>
+
+  <aside class="lhx-drawer" data-drawer="cart" aria-label="Cart" aria-hidden="true" hidden>
+    <div class="lhx-drawer__header"><strong>Cart <span data-cart-drawer-count>({{ cart.item_count }})</span></strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close cart">{% render 'lhx-icon', icon: 'close' %}</button></div>
+    <div class="lhx-cart-content" data-cart-content>
+      {%- if cart.item_count == 0 -%}<p class="lhx-cart-empty">Your cart is empty.</p><a class="lhx-button" href="{{ routes.all_products_collection_url }}">Continue shopping</a>{%- else -%}{%- for item in cart.items -%}<div class="lhx-cart-line"><a href="{{ item.url }}">{%- if item.image -%}{{ item.image | image_url: width: 180 | image_tag: loading: 'lazy', alt: item.product.title }}{%- endif -%}</a><div><a href="{{ item.url }}">{{ item.product.title | escape }}</a><span>{{ item.quantity }} × {{ item.final_price | money }}</span></div></div>{%- endfor -%}<a class="lhx-button" href="{{ routes.cart_url }}">View cart · {{ cart.total_price | money }}</a>{%- endif -%}
+    </div>
+  </aside>
+
+  <aside class="lhx-drawer" data-drawer="localization" aria-label="Localization" aria-hidden="true" hidden>
+    <div class="lhx-drawer__header"><strong>Country & language</strong><button class="lhx-icon-button" type="button" data-drawer-close aria-label="Close localization">{% render 'lhx-icon', icon: 'close' %}</button></div>
+    {% form 'localization', class: 'lhx-localization-form' %}
+      <label for="lhx-country-{{ section.id }}">Country / region</label><select id="lhx-country-{{ section.id }}" name="country_code">{%- for country in localization.available_countries -%}<option value="{{ country.iso_code }}"{% if country.iso_code == localization.country.iso_code %} selected{% endif %}>{{ country.name }} ({{ country.currency.iso_code }} {{ country.currency.symbol }})</option>{%- endfor -%}</select>
+      <label for="lhx-language-{{ section.id }}">Language</label><select id="lhx-language-{{ section.id }}" name="locale_code">{%- for language in localization.available_languages -%}<option value="{{ language.iso_code }}"{% if language.iso_code == localization.language.iso_code %} selected{% endif %}>{{ language.endonym_name | capitalize }}</option>{%- endfor -%}</select>
+      <button class="lhx-button" type="submit">Apply</button>
+    {% endform %}
+  </aside>
+
+  <nav class="lhx-bottom-dock lhx-mobile-only" aria-label="Quick navigation">
+    <a href="{{ routes.root_url }}">{% render 'lhx-icon', icon: 'home' %}<span>Home</span></a><button type="button" data-drawer-open="menu">{% render 'lhx-icon', icon: 'menu' %}<span>Menu</span></button><button type="button" data-drawer-open="search">{% render 'lhx-icon', icon: 'search' %}<span>Search</span></button><a href="{{ routes.all_products_collection_url }}">{% render 'lhx-icon', icon: 'bag' %}<span>Shop</span></a><button type="button" data-drawer-open="cart">{% render 'lhx-icon', icon: 'bag' %}<span>Cart</span></button><a href="{{ routes.account_url }}">{% render 'lhx-icon', icon: 'account' %}<span>Account</span></a>
+  </nav>
 </header>
-
-{% stylesheet %}
-  header {
-    height: 5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  header a {
-    position: relative;
-    text-decoration: none;
-    color: var(--color-foreground);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  header a sup {
-    position: absolute;
-    left: 100%;
-    overflow: hidden;
-    max-width: var(--page-margin);
-  }
-  header svg {
-    width: 2rem;
-  }
-  header .header__menu,
-  header .header__icons {
-    display: flex;
-    gap: 1rem;
-  }
-{% endstylesheet %}
 
 {% schema %}
 {
-  "name": "t:general.header",
+  "name": "Editorial header",
   "settings": [
-    {
-      "type": "link_list",
-      "id": "menu",
-      "label": "t:labels.menu"
-    },
-    {
-      "type": "link_list",
-      "id": "customer_account_menu",
-      "label": "t:labels.customer_account_menu",
-      "default": "customer-account-main-menu"
-    }
+    {"type":"image_picker","id":"logo","label":"Logo image"},
+    {"type":"checkbox","id":"enable_sticky","label":"Enable floating desktop header on scroll","default":true},
+    {"type":"checkbox","id":"overlay_on_home","label":"Overlay header on homepage hero","default":true},
+    {"type":"checkbox","id":"show_announcement","label":"Show announcement bar","default":true},
+    {"type":"range","id":"announcement_delay","min":3,"max":10,"step":1,"unit":"s","label":"Announcement delay","default":5},
+    {"type":"text","id":"pages_label","label":"Pages menu label","default":"Pages"},
+    {"type":"text","id":"find_link_label","label":"Utility link label","default":"Find your shoes"},
+    {"type":"url","id":"find_link","label":"Utility link"},
+    {"type":"checkbox","id":"show_localization","label":"Show country and language selector","default":true},
+    {"type":"text","id":"popular_searches","label":"Popular search terms (comma separated)","default":"New arrivals, Leather, Classic"}
+  ],
+  "blocks": [
+    {"type":"announcement","name":"Announcement","limit":4,"settings":[{"type":"text","id":"text","label":"Text","default":"Free shipping on orders over $75"},{"type":"url","id":"link","label":"Link"}]},
+    {"type":"mega_menu","name":"Collection mega menu","limit":2,"settings":[{"type":"text","id":"label","label":"Menu label","default":"Shop"},{"type":"collection","id":"collection","label":"Main collection"},{"type":"link_list","id":"menu","label":"Primary menu"},{"type":"text","id":"secondary_title","label":"Second column heading","default":"Discover"},{"type":"collection","id":"secondary_collection","label":"Second column collection"},{"type":"link_list","id":"secondary_menu","label":"Second column menu"},{"type":"collection","id":"featured_collection","label":"Featured products collection"}]},
+    {"type":"page_link","name":"Page link","limit":8,"settings":[{"type":"page","id":"page","label":"Page"},{"type":"text","id":"label","label":"Optional label override"}]}
   ]
 }
 {% endschema %}
