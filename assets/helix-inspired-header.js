@@ -25,6 +25,9 @@
     let searchTimer = 0;
     let mobilePanelTimer = 0;
     let activeMobilePanel = 'root';
+    let activeMobilePanelTrigger = null;
+    let closingMobilePanel = null;
+    let cancelMobilePanelCompletion = null;
     let lastScroll = window.scrollY;
     let scrollFrame = 0;
 
@@ -148,7 +151,13 @@
 
     const mobileSubpanels = $$('[data-mobile-subpanel]');
     const mobilePanelTriggers = $$('[data-mobile-panel-open]');
+    const mobileRootPanel = $('[data-mobile-panel="root"]');
     const findMobilePanel = (name) => mobileSubpanels.find((panel) => panel.dataset.mobileSubpanel === name);
+    const setMobileRootInteractive = (interactive) => {
+      if (!mobileRootPanel) return;
+      mobileRootPanel.setAttribute('aria-hidden', String(!interactive));
+      mobileRootPanel.toggleAttribute('inert', !interactive);
+    };
     const finishMobilePanel = (panel) => {
       if (!panel) return;
       panel.classList.remove('is-active', 'is-closing');
@@ -156,8 +165,37 @@
       panel.setAttribute('inert', '');
     };
 
-    const setMobilePanel = (name = 'root', instant = false) => {
+    const stopMobilePanelCompletion = () => {
       window.clearTimeout(mobilePanelTimer);
+      mobilePanelTimer = 0;
+      cancelMobilePanelCompletion?.();
+      cancelMobilePanelCompletion = null;
+    };
+
+    const completeAfterMobilePanelTransition = (panel, callback) => {
+      let complete = false;
+      const cleanup = () => panel.removeEventListener('transitionend', onTransitionEnd);
+      const finish = () => {
+        if (complete) return;
+        complete = true;
+        cleanup();
+        window.clearTimeout(mobilePanelTimer);
+        mobilePanelTimer = 0;
+        cancelMobilePanelCompletion = null;
+        callback();
+      };
+      const onTransitionEnd = (event) => {
+        if (event.target === panel && event.propertyName === 'transform') finish();
+      };
+      panel.addEventListener('transitionend', onTransitionEnd);
+      cancelMobilePanelCompletion = cleanup;
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      mobilePanelTimer = window.setTimeout(finish, reducedMotion ? 0 : 360);
+    };
+
+    const setMobilePanel = (name = 'root', instant = false, sourceTrigger = null) => {
+      if (name === 'root' && activeMobilePanel === 'root' && !instant) return;
+      stopMobilePanelCompletion();
       const current = activeMobilePanel === 'root' ? null : findMobilePanel(activeMobilePanel);
       mobilePanelTriggers.forEach((button) => {
         button.setAttribute('aria-expanded', String(name !== 'root' && button.dataset.mobilePanelOpen === name));
@@ -166,28 +204,44 @@
       if (name === 'root') {
         activeMobilePanel = 'root';
         if (instant) {
+          setMobileRootInteractive(true);
           mobileSubpanels.forEach(finishMobilePanel);
+          closingMobilePanel = null;
+          activeMobilePanelTrigger = null;
           return;
         }
         if (!current) return;
+        const returnTrigger = activeMobilePanelTrigger;
+        closingMobilePanel = current;
         current.classList.remove('is-active');
         current.classList.add('is-closing');
-        mobilePanelTimer = window.setTimeout(() => finishMobilePanel(current), 320);
+        completeAfterMobilePanelTransition(current, () => {
+          setMobileRootInteractive(true);
+          returnTrigger?.focus({ preventScroll: true });
+          finishMobilePanel(current);
+          closingMobilePanel = null;
+          activeMobilePanelTrigger = null;
+        });
         return;
       }
 
       const target = findMobilePanel(name);
       if (!target || activeMobilePanel === name) return;
+      if (closingMobilePanel) finishMobilePanel(closingMobilePanel);
       if (current) finishMobilePanel(current);
       mobileSubpanels.forEach((panel) => {
         if (panel !== target) finishMobilePanel(panel);
       });
       activeMobilePanel = name;
+      closingMobilePanel = null;
+      activeMobilePanelTrigger = sourceTrigger || mobilePanelTriggers.find((button) => button.dataset.mobilePanelOpen === name) || null;
       target.classList.remove('is-closing');
       target.setAttribute('aria-hidden', 'false');
       target.removeAttribute('inert');
       void target.offsetWidth;
       target.classList.add('is-active');
+      target.querySelector('[data-mobile-panel-back]')?.focus({ preventScroll: true });
+      setMobileRootInteractive(false);
     };
 
     const positionLocalization = (drawer, trigger) => {
@@ -321,7 +375,7 @@
     });
 
     mobilePanelTriggers.forEach((button) => {
-      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen));
+      button.addEventListener('click', () => setMobilePanel(button.dataset.mobilePanelOpen, false, button));
     });
     $$('[data-mobile-panel-back]').forEach((button) => {
       button.addEventListener('click', () => setMobilePanel('root'));
