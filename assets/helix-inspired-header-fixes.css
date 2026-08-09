@@ -557,7 +557,7 @@
   .lhx-mobile-panel.is-after {
     opacity: 1;
     transform: translateX(100%);
-    pointer-events: none;
+    pointer-events: auto;
   }
 
   .lhx-mobile-panel.is-active {
