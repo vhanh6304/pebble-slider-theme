@@ -8,23 +8,13 @@
  * ------------------------------------------------------------
  */
 {
-  "layout": "theme",
   "sections": {
-    "omnise-default-template": {
-      "type": "omnise-2daa6ae0e30a620b26ac434f",
-      "blocks": {
-        "omnise-ytrf8l": {
-          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-          "settings": {}
-        }
-      },
-      "block_order": [
-        "omnise-ytrf8l"
-      ],
+    "main": {
+      "type": "product",
       "settings": {}
     }
   },
   "order": [
-    "omnise-default-template"
+    "main"
   ]
 }
