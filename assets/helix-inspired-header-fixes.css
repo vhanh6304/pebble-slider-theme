@@ -348,6 +348,7 @@
   .lhx-header {
     --lhx-sticky-gutter: clamp(24px, 3.4vw, 60px);
     --lhx-sticky-inner-padding: clamp(30px, 2vw, 37px);
+    --lhx-desktop-surface-overlap: 81px;
     --lhx-sticky-surface-overlap: 40px;
     --lhx-header-surface: var(--lhx-paper, #fff);
   }
@@ -481,6 +482,22 @@
   .lhx-header:not(.is-sticky).mega-open .lhx-mega,
   .lhx-header:not(.is-sticky).mega-open .lhx-mega-surface {
     top: var(--lhx-mega-top, 119px);
+  }
+
+  /* Keep one continuous surface behind the complete desktop header while the
+     mega menu opens. The menu content still starts below the navigation. */
+  .lhx-header:not(.is-sticky) .lhx-mega-surface {
+    top: calc(var(--lhx-mega-top, 119px) - var(--lhx-desktop-surface-overlap));
+    background: var(--lhx-header-surface);
+  }
+
+  .lhx-header:not(.is-sticky).mega-open:not(.mega-closing) .lhx-mega-surface {
+    height: calc(var(--lhx-mega-height, 382px) + var(--lhx-desktop-surface-overlap));
+  }
+
+  .lhx-header:not(.is-sticky).mega-open .lhx-header__shell {
+    background: var(--lhx-header-surface);
+    box-shadow: none;
   }
 
   .lhx-header.is-sticky .lhx-mega,
