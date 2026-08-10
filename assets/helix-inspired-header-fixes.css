@@ -486,7 +486,7 @@
 
   /* Keep one continuous surface behind the complete desktop header while the
      mega menu opens. The menu content still starts below the navigation. */
-  .lhx-header:not(.is-sticky) .lhx-mega-surface {
+  .lhx-header:not(.is-sticky).mega-open .lhx-mega-surface {
     top: calc(var(--lhx-mega-top, 119px) - var(--lhx-desktop-surface-overlap));
     background: var(--lhx-header-surface);
   }
