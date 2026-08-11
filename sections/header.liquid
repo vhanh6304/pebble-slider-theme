@@ -101,6 +101,10 @@
   {%- for block in menu_blocks limit: 2 -%}
     {%- liquid
       assign featured_collection = block.settings.featured_collection | default: block.settings.collection
+      assign desktop_content_style = 'product_rail'
+      if forloop.first
+        assign desktop_content_style = 'promo_banners'
+      endif
       assign primary_url = block.settings.collection.url | default: routes.all_products_collection_url
       assign on_sale_url = block.settings.mobile_on_sale_link
       if on_sale_url == blank
@@ -114,7 +118,7 @@
       assign promo_link_two = block.settings.promo_link_2 | default: block.settings.secondary_collection.url | default: primary_url
     -%}
     <section class="lhx-mega lhx-desktop-only" id="lhx-mega-{{ block.id }}" data-mega-panel="{{ block.id }}" hidden aria-label="{{ block.settings.label | escape }} menu">
-      <div class="lhx-mega__inner lhx-mega__inner--{{ block.settings.desktop_content_style | default: 'product_rail' }}">
+      <div class="lhx-mega__inner lhx-mega__inner--{{ desktop_content_style }}">
         <div class="lhx-mega__menu-grid">
           <div class="lhx-mega__column lhx-mega__column--primary">
             <ul class="lhx-mega__primary-list">
@@ -160,7 +164,7 @@
           </div>
         </div>
 
-        {%- if block.settings.desktop_content_style == 'promo_banners' -%}
+        {%- if desktop_content_style == 'promo_banners' -%}
           <div class="lhx-mega__banners">
             <article class="lhx-mega-banner">
               <a class="lhx-mega-banner__image" href="{{ promo_link_one }}" aria-label="{{ block.settings.promo_title_1 | default: 'Women’s sale' | escape }}">
@@ -443,7 +447,6 @@
       "limit": 2,
       "settings": [
         {"type":"text","id":"label","label":"Menu label","default":"Shop"},
-        {"type":"select","id":"desktop_content_style","label":"Desktop right side","default":"product_rail","options":[{"value":"promo_banners","label":"Two image banners"},{"value":"product_rail","label":"Product carousel"}]},
         {"type":"collection","id":"collection","label":"Main collection"},
         {"type":"link_list","id":"menu","label":"Top links","info":"Uses the Helix Top picks, Best sellers, Trending, New arrivals and On sale links when blank."},
         {"type":"text","id":"secondary_title","label":"Second column heading","default":"By activity"},

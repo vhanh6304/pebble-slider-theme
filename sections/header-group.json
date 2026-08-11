@@ -13,8 +13,8 @@
       "blocks": {
         "announcement_shipping": {"type":"announcement","settings":{"text":"Free shipping on orders over $75"}},
         "announcement_new": {"type":"announcement","settings":{"text":"Discover the latest arrivals"}},
-        "menu_classic": {"type":"mega_menu","settings":{"label":"Women","desktop_content_style":"promo_banners","collection":"classic-az","secondary_title":"By activity","feature_title":"By feature","secondary_collection":"leather","featured_collection":"classic-az","promo_title_1":"Women\u2019s sale","promo_link_1":"/collections/classic-az","promo_title_2":"Women\u2019s favorites","promo_link_2":"/collections/leather","promo_button_label":"Shop now"}},
-        "menu_featured": {"type":"mega_menu","settings":{"label":"Men","desktop_content_style":"product_rail","collection":"reebok-x-angel-reese","secondary_title":"By activity","feature_title":"By feature","secondary_collection":"replacement-parts","featured_collection":"reebok-x-angel-reese","desktop_products_heading":"Best deals \ud83d\udd25"}},
+        "menu_classic": {"type":"mega_menu","settings":{"label":"Women","collection":"classic-az","secondary_title":"By activity","feature_title":"By feature","secondary_collection":"leather","featured_collection":"classic-az","promo_title_1":"Women\u2019s sale","promo_link_1":"/collections/classic-az","promo_title_2":"Women\u2019s favorites","promo_link_2":"/collections/leather","promo_button_label":"Shop now"}},
+        "menu_featured": {"type":"mega_menu","settings":{"label":"Men","collection":"reebok-x-angel-reese","secondary_title":"By activity","feature_title":"By feature","secondary_collection":"replacement-parts","featured_collection":"reebok-x-angel-reese","desktop_products_heading":"Best deals \ud83d\udd25"}},
         "page_contact": {"type":"page_link","settings":{"page":"contact"}},
         "page_landing": {"type":"page_link","settings":{"page":"landing-page"}},
         "page_clients": {"type":"page_link","settings":{"page":"clients"}},
