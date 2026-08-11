@@ -99,49 +99,143 @@
   <div class="lhx-mega-surface lhx-desktop-only" data-mega-surface aria-hidden="true"></div>
 
   {%- for block in menu_blocks limit: 2 -%}
-    {%- assign featured_collection = block.settings.featured_collection | default: block.settings.collection -%}
+    {%- liquid
+      assign featured_collection = block.settings.featured_collection | default: block.settings.collection
+      assign primary_url = block.settings.collection.url | default: routes.all_products_collection_url
+      assign on_sale_url = block.settings.mobile_on_sale_link
+      if on_sale_url == blank
+        assign on_sale_url = routes.search_url | append: '?q=sale&type=product'
+      endif
+      assign promo_product_one = featured_collection.products.first
+      assign promo_product_two = featured_collection.products[1] | default: promo_product_one
+      assign promo_image_one = block.settings.promo_image_1 | default: block.settings.collection.image | default: promo_product_one.featured_image
+      assign promo_image_two = block.settings.promo_image_2 | default: block.settings.secondary_collection.image | default: promo_product_two.featured_image
+      assign promo_link_one = block.settings.promo_link_1 | default: primary_url
+      assign promo_link_two = block.settings.promo_link_2 | default: block.settings.secondary_collection.url | default: primary_url
+    -%}
     <section class="lhx-mega lhx-desktop-only" id="lhx-mega-{{ block.id }}" data-mega-panel="{{ block.id }}" hidden aria-label="{{ block.settings.label | escape }} menu">
-      <div class="lhx-mega__inner">
-        <div class="lhx-mega__links">
-          <a class="lhx-mega__all" href="{{ block.settings.collection.url | default: routes.all_products_collection_url }}">Shop all {{ block.settings.label | escape }} <span aria-hidden="true">↗</span></a>
-          {%- if block.settings.menu != blank -%}
-            <ul>
-              {%- for link in block.settings.menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+      <div class="lhx-mega__inner lhx-mega__inner--{{ block.settings.desktop_content_style | default: 'product_rail' }}">
+        <div class="lhx-mega__menu-grid">
+          <div class="lhx-mega__column lhx-mega__column--primary">
+            <ul class="lhx-mega__primary-list">
+              {%- if block.settings.menu != blank -%}
+                {%- for link in block.settings.menu.links limit: 5 -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+              {%- else -%}
+                <li><a href="{{ primary_url }}">Top picks</a></li>
+                <li><a href="{{ primary_url }}?sort_by=best-selling">Best sellers</a></li>
+                <li><a href="{{ primary_url }}">Trending</a></li>
+                <li><a href="{{ primary_url }}?sort_by=created-descending">New arrivals</a></li>
+                <li><a href="{{ on_sale_url }}">On sale</a></li>
+              {%- endif -%}
             </ul>
-          {%- elsif block.settings.collection != blank -%}
+          </div>
+          <div class="lhx-mega__column">
+            <p class="lhx-mega__column-title">{{ block.settings.secondary_title | default: 'By activity' | escape }}</p>
             <ul>
-              {%- for product in block.settings.collection.products limit: 5 -%}<li><a href="{{ product.url }}">{{ product.title | escape }}</a></li>{%- endfor -%}
+              {%- if block.settings.secondary_menu != blank -%}
+                {%- for link in block.settings.secondary_menu.links limit: 6 -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+              {%- else -%}
+                <li><a href="{{ primary_url }}">Hiking</a></li>
+                <li><a href="{{ primary_url }}">Running</a></li>
+                <li><a href="{{ primary_url }}">Training</a></li>
+                <li><a href="{{ primary_url }}">Tennis</a></li>
+                <li><a href="{{ primary_url }}">Lifestyle</a></li>
+                <li><a href="{{ primary_url }}">Shop all</a></li>
+              {%- endif -%}
             </ul>
-          {%- endif -%}
-        </div>
-        <div class="lhx-mega__links">
-          <p class="lhx-mega__eyebrow">{{ block.settings.secondary_title | escape }}</p>
-          {%- if block.settings.secondary_menu != blank -%}
-            <ul>{%- for link in block.settings.secondary_menu.links -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}</ul>
-          {%- elsif block.settings.secondary_collection != blank -%}
-            <a class="lhx-mega__feature-link" href="{{ block.settings.secondary_collection.url }}">{{ block.settings.secondary_collection.title | escape }} <span aria-hidden="true">↗</span></a>
-          {%- endif -%}
-        </div>
-        <div class="lhx-mega__products" data-product-rail>
-          <div class="lhx-mega__rail" data-product-rail-track>
-            {%- for product in featured_collection.products limit: 6 -%}
-              {%- assign variant = product.selected_or_first_available_variant -%}
-              <article class="lhx-product-card">
-                <a href="{{ product.url }}" class="lhx-product-card__image">
-                  {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 520 | image_tag: loading: 'lazy', widths: '220,320,420,520', alt: product.title }}{%- endif -%}
-                </a>
-                <div class="lhx-product-card__meta"><a href="{{ product.url }}">{{ product.title | escape }}</a><span>{{ product.price | money }}</span></div>
-                {%- if variant != blank and variant.available -%}<button type="button" class="lhx-product-card__add" data-quick-add data-variant-id="{{ variant.id }}" data-product-title="{{ product.title | escape }}">Quick add</button>{%- endif -%}
-              </article>
-            {%- else -%}
-              <p class="lhx-mega__empty">Choose a featured collection in Theme Editor.</p>
-            {%- endfor -%}
           </div>
-          <div class="lhx-rail-controls">
-            <button class="lhx-icon-button" type="button" data-rail-prev aria-label="Previous products" disabled>{% render 'lhx-icon', icon: 'chevron-left' %}</button>
-            <button class="lhx-icon-button" type="button" data-rail-next aria-label="Next products">{% render 'lhx-icon', icon: 'chevron-right' %}</button>
+          <div class="lhx-mega__column">
+            <p class="lhx-mega__column-title">{{ block.settings.feature_title | default: 'By feature' | escape }}</p>
+            <ul>
+              {%- if block.settings.feature_menu != blank -%}
+                {%- for link in block.settings.feature_menu.links limit: 5 -%}<li><a href="{{ link.url }}">{{ link.title | escape }}</a></li>{%- endfor -%}
+              {%- else -%}
+                <li><a href="{{ primary_url }}">Cushioned</a></li>
+                <li><a href="{{ primary_url }}">Waterproof</a></li>
+                <li><a href="{{ primary_url }}">Water-resistant</a></li>
+                <li><a href="{{ primary_url }}">Breathable</a></li>
+                <li><a href="{{ primary_url }}">Windproof</a></li>
+              {%- endif -%}
+            </ul>
           </div>
         </div>
+
+        {%- if block.settings.desktop_content_style == 'promo_banners' -%}
+          <div class="lhx-mega__banners">
+            <article class="lhx-mega-banner">
+              <a class="lhx-mega-banner__image" href="{{ promo_link_one }}" aria-label="{{ block.settings.promo_title_1 | default: 'Women’s sale' | escape }}">
+                {%- if promo_image_one != blank -%}
+                  {{ promo_image_one | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: '(min-width: 991px) 24vw, 50vw', alt: block.settings.promo_title_1 }}
+                {%- else -%}
+                  {{ 'collection-1' | placeholder_svg_tag: 'lhx-mega-banner__placeholder' }}
+                {%- endif -%}
+              </a>
+              <h3><a href="{{ promo_link_one }}">{{ block.settings.promo_title_1 | default: 'Women’s sale' | escape }}</a></h3>
+              <a class="lhx-mega-banner__cta" href="{{ promo_link_one }}">{{ block.settings.promo_button_label | default: 'Shop now' | escape }} <span aria-hidden="true">↗</span></a>
+            </article>
+            <article class="lhx-mega-banner">
+              <a class="lhx-mega-banner__image" href="{{ promo_link_two }}" aria-label="{{ block.settings.promo_title_2 | default: 'Women’s favorites' | escape }}">
+                {%- if promo_image_two != blank -%}
+                  {{ promo_image_two | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: '(min-width: 991px) 24vw, 50vw', alt: block.settings.promo_title_2 }}
+                {%- else -%}
+                  {{ 'collection-2' | placeholder_svg_tag: 'lhx-mega-banner__placeholder' }}
+                {%- endif -%}
+              </a>
+              <h3><a href="{{ promo_link_two }}">{{ block.settings.promo_title_2 | default: 'Women’s favorites' | escape }}</a></h3>
+              <a class="lhx-mega-banner__cta" href="{{ promo_link_two }}">{{ block.settings.promo_button_label | default: 'Shop now' | escape }} <span aria-hidden="true">↗</span></a>
+            </article>
+          </div>
+        {%- else -%}
+          <div class="lhx-mega__products lhx-mega__deals" data-product-rail>
+            <div class="lhx-mega__deals-header">
+              <h3>{{ block.settings.desktop_products_heading | default: 'Best deals 🔥' | escape }}</h3>
+              <div class="lhx-rail-controls">
+                <button class="lhx-icon-button" type="button" data-rail-prev aria-label="Previous products" disabled>{% render 'lhx-icon', icon: 'chevron-left' %}</button>
+                <button class="lhx-icon-button" type="button" data-rail-next aria-label="Next products">{% render 'lhx-icon', icon: 'chevron-right' %}</button>
+              </div>
+            </div>
+            <div class="lhx-mega__rail" data-product-rail-track>
+              {%- for product in featured_collection.products limit: 6 -%}
+                {%- liquid
+                  assign variant = product.selected_or_first_available_variant
+                  assign compare_price = variant.compare_at_price
+                  assign sale_percent = 0
+                  if compare_price > variant.price
+                    assign sale_saving = compare_price | minus: variant.price
+                    assign sale_percent = sale_saving | times: 100.0 | divided_by: compare_price | round
+                  endif
+                -%}
+                <article class="lhx-product-card">
+                  <div class="lhx-product-card__visual">
+                    <a href="{{ product.url }}" class="lhx-product-card__image">
+                      {%- if product.featured_image != blank -%}{{ product.featured_image | image_url: width: 620 | image_tag: loading: 'lazy', widths: '220,320,420,520,620', alt: product.title }}{%- endif -%}
+                    </a>
+                    {%- if sale_percent > 0 -%}<span class="lhx-product-card__badge">-{{ sale_percent }}%</span>{%- endif -%}
+                    {%- if variant != blank and variant.available -%}
+                      <button type="button" class="lhx-product-card__add" data-quick-add data-quick-add-icon data-variant-id="{{ variant.id }}" data-product-title="{{ product.title | escape }}" aria-label="Quick add {{ product.title | escape }}">{% render 'lhx-icon', icon: 'bag' %}</button>
+                    {%- endif -%}
+                  </div>
+                  {%- if product.images.size > 1 -%}
+                    <div class="lhx-product-card__thumbs" aria-hidden="true">
+                      {%- for image in product.images limit: 2 -%}
+                        <span>{{ image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,90,120', alt: '' }}</span>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                  <div class="lhx-product-card__meta">
+                    <a href="{{ product.url }}">{{ product.title | escape }}</a>
+                    <div class="lhx-product-card__prices">
+                      <span{% if sale_percent > 0 %} class="is-sale"{% endif %}>{{ variant.price | money }}</span>
+                      {%- if sale_percent > 0 -%}<s>{{ compare_price | money }}</s>{%- endif -%}
+                    </div>
+                  </div>
+                </article>
+              {%- else -%}
+                <p class="lhx-mega__empty">Choose a featured collection in Theme Editor.</p>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- endif -%}
       </div>
     </section>
   {%- endfor -%}
@@ -343,7 +437,37 @@
   ],
   "blocks": [
     {"type":"announcement","name":"Announcement","limit":4,"settings":[{"type":"text","id":"text","label":"Text","default":"Free shipping on orders over $75"},{"type":"url","id":"link","label":"Link"}]},
-    {"type":"mega_menu","name":"Collection mega menu","limit":2,"settings":[{"type":"text","id":"label","label":"Menu label","default":"Shop"},{"type":"collection","id":"collection","label":"Main collection"},{"type":"link_list","id":"menu","label":"Primary menu"},{"type":"text","id":"secondary_title","label":"Second column heading","default":"Discover"},{"type":"collection","id":"secondary_collection","label":"Second column collection"},{"type":"link_list","id":"secondary_menu","label":"Second column menu"},{"type":"collection","id":"featured_collection","label":"Featured products collection"},{"type":"link_list","id":"mobile_menu","label":"Mobile submenu","info":"Top-level links are shown directly. Links with child items open another sliding panel."},{"type":"url","id":"mobile_on_sale_link","label":"Mobile On sale link"},{"type":"text","id":"mobile_products_heading","label":"Mobile product heading","default":"Best deals 🔥"}]},
+    {
+      "type": "mega_menu",
+      "name": "Helix mega menu",
+      "limit": 2,
+      "settings": [
+        {"type":"text","id":"label","label":"Menu label","default":"Shop"},
+        {"type":"select","id":"desktop_content_style","label":"Desktop right side","default":"product_rail","options":[{"value":"promo_banners","label":"Two image banners"},{"value":"product_rail","label":"Product carousel"}]},
+        {"type":"collection","id":"collection","label":"Main collection"},
+        {"type":"link_list","id":"menu","label":"Top links","info":"Uses the Helix Top picks, Best sellers, Trending, New arrivals and On sale links when blank."},
+        {"type":"text","id":"secondary_title","label":"Second column heading","default":"By activity"},
+        {"type":"link_list","id":"secondary_menu","label":"Activity links","info":"Uses the six Helix activity links when blank."},
+        {"type":"text","id":"feature_title","label":"Third column heading","default":"By feature"},
+        {"type":"link_list","id":"feature_menu","label":"Feature links","info":"Uses the five Helix feature links when blank."},
+        {"type":"collection","id":"secondary_collection","label":"Second collection / banner fallback"},
+        {"type":"collection","id":"featured_collection","label":"Featured products collection"},
+        {"type":"header","content":"Desktop image banners"},
+        {"type":"image_picker","id":"promo_image_1","label":"Banner 1 image"},
+        {"type":"text","id":"promo_title_1","label":"Banner 1 title","default":"Women’s sale"},
+        {"type":"url","id":"promo_link_1","label":"Banner 1 link"},
+        {"type":"image_picker","id":"promo_image_2","label":"Banner 2 image"},
+        {"type":"text","id":"promo_title_2","label":"Banner 2 title","default":"Women’s favorites"},
+        {"type":"url","id":"promo_link_2","label":"Banner 2 link"},
+        {"type":"text","id":"promo_button_label","label":"Banner link label","default":"Shop now"},
+        {"type":"header","content":"Desktop product carousel"},
+        {"type":"text","id":"desktop_products_heading","label":"Product carousel heading","default":"Best deals 🔥"},
+        {"type":"header","content":"Mobile"},
+        {"type":"link_list","id":"mobile_menu","label":"Mobile submenu","info":"Top-level links are shown directly. Links with child items open another sliding panel."},
+        {"type":"url","id":"mobile_on_sale_link","label":"Mobile On sale link"},
+        {"type":"text","id":"mobile_products_heading","label":"Mobile product heading","default":"Best deals 🔥"}
+      ]
+    },
     {"type":"page_link","name":"Page link","limit":8,"settings":[{"type":"page","id":"page","label":"Page"},{"type":"text","id":"label","label":"Optional label override"}]}
   ]
 }

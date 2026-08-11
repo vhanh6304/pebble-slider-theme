@@ -555,6 +555,296 @@
     z-index: 8;
   }
 
+  /* Helix desktop mega-menu: three navigation columns plus a dedicated
+     promo or product surface. */
+  .lhx-mega__inner {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 40px 50px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.02fr);
+    align-items: start;
+    gap: 40px;
+  }
+
+  .lhx-mega__menu-grid {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .lhx-mega__column {
+    min-width: 0;
+  }
+
+  .lhx-mega__column ul {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+
+  .lhx-mega__column--primary ul {
+    margin-top: 0;
+    gap: 8px;
+  }
+
+  .lhx-mega__column a,
+  .lhx-mega__column-title {
+    font-size: 14px;
+    line-height: 1.6;
+    letter-spacing: -.01em;
+  }
+
+  .lhx-mega__column-title {
+    margin: 0;
+    font-weight: 450;
+  }
+
+  .lhx-mega__primary-list a {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .lhx-mega__column a {
+    position: relative;
+    display: inline-block;
+  }
+
+  .lhx-mega__column a::after,
+  .lhx-mega-banner__cta::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: 1px;
+    left: 0;
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .2s ease;
+  }
+
+  .lhx-mega__column a:hover::after,
+  .lhx-mega__column a:focus-visible::after,
+  .lhx-mega-banner__cta:hover::after,
+  .lhx-mega-banner__cta:focus-visible::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .lhx-mega__banners {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .lhx-mega-banner {
+    min-width: 0;
+  }
+
+  .lhx-mega-banner__image {
+    display: block;
+    aspect-ratio: 1.49 / 1;
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f2f2f1;
+  }
+
+  .lhx-mega-banner__image img,
+  .lhx-mega-banner__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s var(--lhx-ease);
+  }
+
+  .lhx-mega-banner:hover .lhx-mega-banner__image img {
+    transform: scale(1.025);
+  }
+
+  .lhx-mega-banner h3 {
+    margin: 18px 0 0;
+    font-size: 16px;
+    line-height: 1.35;
+    font-weight: 700;
+  }
+
+  .lhx-mega-banner__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  .lhx-mega__deals {
+    min-width: 0;
+  }
+
+  .lhx-mega__deals-header {
+    min-height: 24px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .lhx-mega__deals-header h3 {
+    margin: 0;
+    font-size: 20px;
+    line-height: 1.2;
+    font-weight: 700;
+  }
+
+  .lhx-mega__deals .lhx-rail-controls {
+    margin: 0;
+    gap: 10px;
+  }
+
+  .lhx-mega__deals .lhx-rail-controls .lhx-icon-button {
+    width: 24px;
+    height: 24px;
+  }
+
+  .lhx-mega__deals .lhx-mega__rail {
+    gap: 12px;
+    padding: 0 0 4px;
+  }
+
+  .lhx-mega__deals .lhx-product-card {
+    flex: 0 0 calc((100% - 24px) / 3);
+    width: auto;
+    min-width: 0;
+  }
+
+  .lhx-product-card__visual {
+    position: relative;
+  }
+
+  .lhx-mega__deals .lhx-product-card__image {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    border-radius: 18px;
+    background: #f3f3f2;
+  }
+
+  .lhx-mega__deals .lhx-product-card__image img {
+    width: 100%;
+    height: 100%;
+    padding: 7%;
+    object-fit: contain;
+  }
+
+  .lhx-product-card__badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 2;
+    min-width: 48px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: #ef0909;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .lhx-product-card__thumbs {
+    min-height: 40px;
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+  }
+
+  .lhx-product-card__thumbs span {
+    width: 40px;
+    height: 40px;
+    padding: 3px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #f3f3f2;
+  }
+
+  .lhx-product-card__thumbs img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .lhx-mega__deals .lhx-product-card__meta {
+    padding-top: 12px;
+    display: grid;
+    justify-content: stretch;
+    gap: 6px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .lhx-product-card__prices {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 7px;
+    font-size: 13px;
+  }
+
+  .lhx-product-card__prices span {
+    color: var(--lhx-ink);
+    white-space: nowrap;
+  }
+
+  .lhx-product-card__prices .is-sale {
+    color: #ef1515;
+  }
+
+  .lhx-product-card__prices s {
+    color: #686868;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .lhx-mega__deals .lhx-product-card__add {
+    top: 12px;
+    right: 12px;
+    bottom: auto;
+    left: auto;
+    z-index: 3;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: #111;
+    color: #fff;
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  .lhx-mega__deals .lhx-product-card:hover .lhx-product-card__add,
+  .lhx-mega__deals .lhx-product-card:focus-within .lhx-product-card__add {
+    opacity: 1;
+    transform: none;
+  }
+
+  .lhx-mega__deals .lhx-product-card__add svg {
+    width: 18px;
+    height: 18px;
+  }
+
   .lhx-drawer[data-drawer='localization'].is-popover {
     top: var(--lhx-popover-top, 119px);
     right: var(--lhx-popover-right, 50px);
@@ -619,9 +909,31 @@
   }
 }
 
+@media (min-width: 1500px) {
+  .lhx-header:not(.is-sticky) .lhx-mega__inner {
+    padding-right: 5.2vw;
+    padding-left: 5.2vw;
+  }
+}
+
 @media (min-width: 991px) and (max-width: 1120px) {
   .lhx-header {
     --lhx-sticky-gutter: 24px;
+  }
+
+  .lhx-mega__inner {
+    padding-right: 24px;
+    padding-left: 24px;
+    gap: 24px;
+  }
+
+  .lhx-mega__column a,
+  .lhx-mega__column-title {
+    font-size: 13px;
+  }
+
+  .lhx-mega__primary-list a {
+    font-size: 14px;
   }
 
   .lhx-header__shell,
@@ -1065,5 +1377,11 @@
     transition-duration: .01ms !important;
     animation-duration: .01ms !important;
     animation-iteration-count: 1 !important;
+  }
+}
+
+@media (min-width: 991px) {
+  .lhx-mega__deals .lhx-product-card:hover .lhx-product-card__thumbs img {
+    transform: none;
   }
 }
