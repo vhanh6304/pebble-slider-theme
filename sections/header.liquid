@@ -112,8 +112,8 @@
       endif
       assign promo_product_one = featured_collection.products.first
       assign promo_product_two = featured_collection.products[1] | default: promo_product_one
-      assign promo_image_one = block.settings.promo_image_1 | default: block.settings.collection.image | default: promo_product_one.featured_image
-      assign promo_image_two = block.settings.promo_image_2 | default: block.settings.secondary_collection.image | default: promo_product_two.featured_image
+      assign promo_image_one = block.settings.promo_image_1 | default: promo_product_one.featured_image | default: block.settings.collection.image
+      assign promo_image_two = block.settings.promo_image_2 | default: promo_product_two.featured_image | default: block.settings.secondary_collection.image
       assign promo_link_one = block.settings.promo_link_1 | default: primary_url
       assign promo_link_two = block.settings.promo_link_2 | default: block.settings.secondary_collection.url | default: primary_url
     -%}
