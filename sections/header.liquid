@@ -219,13 +219,18 @@
                       <button type="button" class="lhx-product-card__add" data-quick-add data-quick-add-icon data-variant-id="{{ variant.id }}" data-product-title="{{ product.title | escape }}" aria-label="Quick add {{ product.title | escape }}">{% render 'lhx-icon', icon: 'bag' %}</button>
                     {%- endif -%}
                   </div>
-                  {%- if product.images.size > 1 -%}
-                    <div class="lhx-product-card__thumbs" aria-hidden="true">
+                  <div class="lhx-product-card__thumbs" aria-hidden="true">
+                    {%- if product.images.size > 1 -%}
                       {%- for image in product.images limit: 2 -%}
                         <span>{{ image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,90,120', alt: '' }}</span>
                       {%- endfor -%}
-                    </div>
-                  {%- endif -%}
+                    {%- else -%}
+                      {%- for thumb_variant in product.variants limit: 2 -%}
+                        {%- assign thumb_image = thumb_variant.featured_image | default: product.featured_image -%}
+                        <span>{{ thumb_image | image_url: width: 120 | image_tag: loading: 'lazy', widths: '60,90,120', alt: '' }}</span>
+                      {%- endfor -%}
+                    {%- endif -%}
+                  </div>
                   <div class="lhx-product-card__meta">
                     <a href="{{ product.url }}">{{ product.title | escape }}</a>
                     <div class="lhx-product-card__prices">
