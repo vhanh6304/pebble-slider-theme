@@ -1,0 +1,21 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "layout": "theme",
+  "sections": {
+    "omnise-2f2f85769d5353d0a5af90b3": {
+      "type": "omnise-2f2f85769d5353d0a5af90b3",
+      "settings": {}
+    }
+  },
+  "order": [
+    "omnise-2f2f85769d5353d0a5af90b3"
+  ]
+}
