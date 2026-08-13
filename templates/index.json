@@ -122,9 +122,123 @@
         "desktop_padding": 48,
         "mobile_padding": 16
       }
+    },
+    "pebble_hero_slider_NyffEU": {
+      "type": "pebble-hero-slider",
+      "blocks": {
+        "slide_VNAJqd": {
+          "type": "slide",
+          "settings": {
+            "image_position": "center center",
+            "mobile_image_position": "center center",
+            "image_scale": 100,
+            "eyebrow": "NEW CAMPAIGN",
+            "heading": "Softness in Comfort",
+            "body": "",
+            "button_label": "Shop Collection",
+            "button_link": "",
+            "button_style": "solid",
+            "show_button_icon": true,
+            "button_full_width_mobile": true,
+            "button_radius": 40,
+            "content_position": "left",
+            "mobile_content_position": "center",
+            "vertical_position": "middle",
+            "content_width": 560,
+            "heading_size": 68,
+            "mobile_heading_size": 42,
+            "overlay_color": "#2c2234",
+            "overlay_opacity": 10,
+            "background": "#a8b58f",
+            "foreground": "#ffffff",
+            "button_background": "#ffffff",
+            "button_foreground": "#111111"
+          }
+        },
+        "slide_pT7qzm": {
+          "type": "slide",
+          "settings": {
+            "image_position": "center center",
+            "mobile_image_position": "center center",
+            "image_scale": 100,
+            "eyebrow": "NEW CAMPAIGN",
+            "heading": "Softness in Comfort",
+            "body": "",
+            "button_label": "Shop Collection",
+            "button_link": "",
+            "button_style": "solid",
+            "show_button_icon": true,
+            "button_full_width_mobile": true,
+            "button_radius": 40,
+            "content_position": "left",
+            "mobile_content_position": "center",
+            "vertical_position": "middle",
+            "content_width": 560,
+            "heading_size": 68,
+            "mobile_heading_size": 42,
+            "overlay_color": "#2c2234",
+            "overlay_opacity": 10,
+            "background": "#a8b58f",
+            "foreground": "#ffffff",
+            "button_background": "#ffffff",
+            "button_foreground": "#111111"
+          }
+        },
+        "slide_fjTrBN": {
+          "type": "slide",
+          "settings": {
+            "image_position": "center center",
+            "mobile_image_position": "center center",
+            "image_scale": 100,
+            "eyebrow": "NEW CAMPAIGN",
+            "heading": "Softness in Comfort",
+            "body": "",
+            "button_label": "Shop Collection",
+            "button_link": "",
+            "button_style": "solid",
+            "show_button_icon": true,
+            "button_full_width_mobile": true,
+            "button_radius": 40,
+            "content_position": "left",
+            "mobile_content_position": "center",
+            "vertical_position": "middle",
+            "content_width": 560,
+            "heading_size": 68,
+            "mobile_heading_size": 42,
+            "overlay_color": "#2c2234",
+            "overlay_opacity": 10,
+            "background": "#a8b58f",
+            "foreground": "#ffffff",
+            "button_background": "#ffffff",
+            "button_foreground": "#111111"
+          }
+        }
+      },
+      "block_order": [
+        "slide_VNAJqd",
+        "slide_pT7qzm",
+        "slide_fjTrBN"
+      ],
+      "name": "t:pebble_hero.name",
+      "settings": {
+        "height": "large",
+        "autoplay": true,
+        "autoplay_speed": 5,
+        "transition_speed": 700,
+        "pause_on_hover": false,
+        "show_arrows": true,
+        "show_pagination": true,
+        "show_progress_line": true,
+        "controls_position": "right",
+        "controls_color": "#ffffff",
+        "corner_radius": 18,
+        "desktop_padding": 48,
+        "mobile_padding": 16
+      }
     }
   },
   "order": [
-    "pebble_hero"
+    "pebble_hero",
+    "pebble_hero_slider_NyffEU"
   ]
 }
