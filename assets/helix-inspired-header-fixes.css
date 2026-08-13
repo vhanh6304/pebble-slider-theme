@@ -605,7 +605,7 @@
 
   .lhx-mega__primary-list a {
     font-size: 16px;
-    font-weight: 700;
+    font-weight: 800;
   }
 
   .lhx-mega__column a {
@@ -1108,7 +1108,7 @@
     background: transparent;
     color: inherit;
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700;
     text-align: left;
   }
 
@@ -1120,7 +1120,7 @@
   .lhx-mobile-subpanel__body {
     flex: 1;
     min-height: 0;
-    padding: 24px 22px max(36px, calc(24px + env(safe-area-inset-bottom)));
+    padding: 20px 16px max(36px, calc(24px + env(safe-area-inset-bottom)));
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -1147,11 +1147,11 @@
   }
 
   .lhx-mobile-discovery-menu__link {
-    min-height: 35px;
+    min-height: 33.6px;
     display: flex;
     align-items: center;
-    font-size: 17px !important;
-    font-weight: 650;
+    font-size: 16px !important;
+    font-weight: 700;
     line-height: 1.2 !important;
   }
 
@@ -1182,6 +1182,60 @@
   .lhx-mobile-discovery-menu__trigger svg {
     width: 16px;
     height: 16px;
+  }
+
+  .lhx-mobile-promos {
+    margin-top: 36px;
+    display: grid;
+    gap: 28px;
+  }
+
+  .lhx-mobile-promo__image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1.49;
+    overflow: hidden;
+    border-radius: 16px;
+    background: rgba(50, 50, 50, .06);
+  }
+
+  .lhx-mobile-promo__image img,
+  .lhx-mobile-promo__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .lhx-mobile-promo h3 {
+    margin: 14px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .lhx-mobile-promo h3 a {
+    font: inherit;
+  }
+
+  .lhx-mobile-promo__cta {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 9px;
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .lhx-mobile-promo__cta::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    height: 1px;
+    background: currentColor;
   }
 
   .lhx-mobile-products {

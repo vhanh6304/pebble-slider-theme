@@ -284,6 +284,14 @@
       {%- if mobile_on_sale_url == blank -%}
         {%- assign mobile_on_sale_url = routes.search_url | append: '?q=sale&type=product' -%}
       {%- endif -%}
+      {%- liquid
+        assign mobile_promo_product_one = mobile_featured_collection.products.first
+        assign mobile_promo_product_two = mobile_featured_collection.products[1] | default: mobile_promo_product_one
+        assign mobile_promo_image_one = block.settings.promo_image_1 | default: mobile_promo_product_one.featured_image | default: block.settings.collection.image
+        assign mobile_promo_image_two = block.settings.promo_image_2 | default: mobile_promo_product_two.featured_image | default: block.settings.secondary_collection.image
+        assign mobile_promo_link_one = block.settings.promo_link_1 | default: mobile_primary_url
+        assign mobile_promo_link_two = block.settings.promo_link_2 | default: block.settings.secondary_collection.url | default: mobile_primary_url
+      -%}
       <section class="lhx-mobile-subpanel" id="lhx-mobile-panel-{{ block.id }}" data-mobile-subpanel="{{ block.id }}" aria-hidden="true" inert>
         <div class="lhx-mobile-subpanel__header">
           <button class="lhx-mobile-subpanel__back" type="button" data-mobile-panel-back aria-label="Back to main menu">{% render 'lhx-icon', icon: 'arrow-left' %}<span>{{ block.settings.label | escape }}</span></button>
@@ -312,7 +320,32 @@
               <li class="lhx-mobile-discovery-menu__group"><button class="lhx-mobile-discovery-menu__trigger" type="button" data-mobile-panel-open="{{ block.id }}-feature" aria-controls="lhx-mobile-panel-{{ block.id }}-feature" aria-expanded="false"><span>By feature</span>{% render 'lhx-icon', icon: 'arrow-right' %}</button></li>
             {%- endif -%}
           </ul>
-          {%- if mobile_featured_collection != blank and mobile_featured_collection.products_count > 0 -%}
+          {%- if forloop.first -%}
+            <div class="lhx-mobile-promos">
+              <article class="lhx-mobile-promo">
+                <a class="lhx-mobile-promo__image" href="{{ mobile_promo_link_one }}" aria-label="{{ block.settings.promo_title_1 | default: 'Women’s sale' | escape }}">
+                  {%- if mobile_promo_image_one != blank -%}
+                    {{ mobile_promo_image_one | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: 'calc(100vw - 48px)', alt: block.settings.promo_title_1 }}
+                  {%- else -%}
+                    {{ 'collection-1' | placeholder_svg_tag: 'lhx-mobile-promo__placeholder' }}
+                  {%- endif -%}
+                </a>
+                <h3><a href="{{ mobile_promo_link_one }}">{{ block.settings.promo_title_1 | default: 'Women’s sale' | escape }}</a></h3>
+                <a class="lhx-mobile-promo__cta" href="{{ mobile_promo_link_one }}">{{ block.settings.promo_button_label | default: 'Shop now' | escape }} <span aria-hidden="true">↗</span></a>
+              </article>
+              <article class="lhx-mobile-promo">
+                <a class="lhx-mobile-promo__image" href="{{ mobile_promo_link_two }}" aria-label="{{ block.settings.promo_title_2 | default: 'Women’s favorites' | escape }}">
+                  {%- if mobile_promo_image_two != blank -%}
+                    {{ mobile_promo_image_two | image_url: width: 900 | image_tag: loading: 'lazy', widths: '320,480,640,900', sizes: 'calc(100vw - 48px)', alt: block.settings.promo_title_2 }}
+                  {%- else -%}
+                    {{ 'collection-2' | placeholder_svg_tag: 'lhx-mobile-promo__placeholder' }}
+                  {%- endif -%}
+                </a>
+                <h3><a href="{{ mobile_promo_link_two }}">{{ block.settings.promo_title_2 | default: 'Women’s favorites' | escape }}</a></h3>
+                <a class="lhx-mobile-promo__cta" href="{{ mobile_promo_link_two }}">{{ block.settings.promo_button_label | default: 'Shop now' | escape }} <span aria-hidden="true">↗</span></a>
+              </article>
+            </div>
+          {%- elsif mobile_featured_collection != blank and mobile_featured_collection.products_count > 0 -%}
             <div class="lhx-mobile-products">
               <h3 class="lhx-mobile-products__heading">{{ block.settings.mobile_products_heading | default: 'Best deals 🔥' | escape }}</h3>
               <div class="lhx-mobile-products__grid">
