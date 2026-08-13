@@ -1097,7 +1097,7 @@
     border-bottom: 1px solid var(--lhx-line);
   }
 
-  .lhx-mobile-subpanel__back {
+  .lhx-header .lhx-mobile-subpanel__back {
     flex: 1;
     align-self: stretch;
     padding: 0;
@@ -1146,7 +1146,7 @@
     margin: 0;
   }
 
-  .lhx-mobile-discovery-menu__link {
+  .lhx-header .lhx-mobile-discovery-menu__link {
     min-height: 33.6px;
     display: flex;
     align-items: center;
