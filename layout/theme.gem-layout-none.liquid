@@ -1,0 +1,62 @@
+{% comment %}
+	GEMPAGES BUILDER (https://apps.shopify.com/gempages)
+
+	You SHOULD NOT modify source code in this file because
+	It is automatically generated from GEMPAGES BUILDER
+	Try to edit page with the live editor.
+{% endcomment %}
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}">
+  <head>
+<!-- ECOMBE-HELPER --> 
+{%- render 'ecombe-helper' -%}
+<!-- END ECOMBE-HELPER -->
+<!-- ECOMBE-V2-HEADER --> 
+{%- render 'ecombe-header' -%}
+<!-- END ECOMBE-V2-HEADER -->
+ {%- render 'layouthub_header' -%}
+ {%- capture ecom_header_content -%}{%- render 'ecom_header' -%}{%- endcapture -%}{%- unless ecom_header_content contains 'Liquid error' -%}{{ ecom_header_content }}{%- endunless -%}
+    {% # Inlined CSS Variables %}
+    {% render 'css-variables' %}
+
+    {% comment %}
+      Font preloading:
+      1. Preconnect to font CDN for faster connection
+      2. Preload only the critical font variant (base weight)
+      3. Additional variants load on-demand via @font-face
+    {% endcomment %}
+    {% unless settings.type_primary_font.system? %}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+
+      {% comment %} Preload the base font variant for initial page render {% endcomment %}
+      {{ settings.type_primary_font | font_url | preload_tag: as: 'font', crossorigin: 'anonymous' }}
+    {% endunless %}
+
+    {% # Load and preload the critical CSS %}
+    <style>
+      @font-face {
+        font-family: 'Bricolage Grotesque';
+        font-style: normal;
+        font-weight: 200 800;
+        font-display: swap;
+        src: url('{{ 'bricolage-grotesque-latin-wght-normal.woff2' | asset_url }}') format('woff2');
+      }
+    </style>
+    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+    {{ 'swiper-bundle.min.css' | asset_url | stylesheet_tag }}
+
+    {% # Social, title, etc. %}
+    {% render 'meta-tags' %}
+
+    {{ content_for_header }}
+    <script src="{{ 'swiper-bundle.min.js' | asset_url }}" defer="defer"></script>
+  </head>
+
+  <body>
+<div class="gem-container">
+	{{ content_for_layout }}
+</div><!-- end .gem-container --></body>
+<!-- ECOMBE-V2-FOOTER --> 
+{%- render 'ecombe-footer' -%}
+<!-- END ECOMBE-V2-FOOTER -->
+</html>
