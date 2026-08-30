@@ -13,12 +13,17 @@
     "omnise-default-template": {
       "type": "omnise-2daa6ae0e30a620b26ac434f",
       "blocks": {
+        "omnise-qpooxo": {
+          "type": "shopify://apps/upload-lift/blocks/app-block/3c98bdcb-7587-4ade-bfe4-7d8af00d05ca",
+          "settings": {}
+        },
         "omnise-ytrf8l": {
           "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
           "settings": {}
         }
       },
       "block_order": [
+        "omnise-qpooxo",
         "omnise-ytrf8l"
       ],
       "settings": {}
