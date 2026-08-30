@@ -9,6 +9,7 @@
  */
 {
   "current": {
+    "content_for_index": [],
     "blocks": {
       "7914987560903345225": {
         "type": "shopify://apps/beae-page-builder/blocks/app-embed/f4353b90-19bd-4f19-8138-af38b7a6de94",
@@ -18,6 +19,16 @@
       "4511042945966949202": {
         "type": "shopify://apps/ecombe-page-builder/blocks/app_embed/019acda3-2cf4-7ddf-930a-874774fcd7cf",
         "disabled": false,
+        "settings": {}
+      },
+      "13319315114606262840": {
+        "type": "shopify://apps/mini-image-upload/blocks/app-embed/019a499d-2f45-732c-96ee-872049547d70",
+        "disabled": false,
+        "settings": {}
+      },
+      "15132424025755801183": {
+        "type": "shopify://apps/upload-lift/blocks/app-embed/3c98bdcb-7587-4ade-bfe4-7d8af00d05ca",
+        "disabled": true,
         "settings": {}
       }
     }
