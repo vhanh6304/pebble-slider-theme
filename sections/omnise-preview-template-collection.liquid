@@ -1,0 +1,1436 @@
+
+            {% assign omnise_root_url = routes.root_url %}
+            {% if omnise_root_url != '/'%}
+                {% assign omnise_root_url = routes.root_url | append: '/' %}
+            {% endif %}
+        <link rel="stylesheet" id="omnise-exported-page-css" media="all" href="{{'omnise-preview-template-collection.css' | asset_url}}"><div data-omnise-export-section-id="omnise-k96jms" data-omnise-export-has-ab="false"><section data-bnode="omnise-k96jms" data-bnode-index="1" class="omnise-section omnise-surface-light"><div class="omnise-section-container"><div class="omnise-slot" data-bnode="omnise-m4ehob" data-bnode-index="1"><div class="omnise-slot" data-bnode="omnise-lzjnu3" data-bnode-index="1"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-17nim4" data-bnode-index="1" style="--omnise-image-position: 0% 50%;"><img width="1600" height="185" sizes="min(1900px, 100vw)" alt="" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=3200 3200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=2400 2400w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=1600 1600w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=1300 1300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=1000 1000w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=700 700w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=400 400w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Container_11zon_db957703-3837-4a0c-9a02-e7ef04974c96.webp?v=1786002592&amp;width=3200"></div></div></div><div class="omnise-slot" data-bnode="omnise-e0jokk" data-bnode-index="2">
+    
+    <nav class="omnise-breadcrumb omnise-p2" aria-label="Breadcrumb" data-gap-control=":scope" data-bnode="omnise-jsxk4g" data-bnode-index="1">
+      <a class="omnise-breadcrumb-item" data-gap-item="true" href="/">{{ 'sections.omnise-preview-template-collection.omnise_1cc1r' | t }}</a>
+      {% if product != blank %}
+        
+          {% if collection != blank %}
+            <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+            <a class="omnise-breadcrumb-item" data-gap-item="true" href="{{ collection.url }}">{{ collection.title }}</a>
+          {% else %}
+            {% assign breadcrumb_collection = product.collections.first %}
+            {% if breadcrumb_collection != blank %}
+              <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+              <a class="omnise-breadcrumb-item" data-gap-item="true" href="{{ breadcrumb_collection.url }}">{{ breadcrumb_collection.title }}</a>
+            {% endif %}
+          {% endif %}
+        
+        <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+        <span class="omnise-breadcrumb-item omnise-breadcrumb-current" data-gap-item="true">{{ product.title }}</span>
+      {% elsif article != blank %}
+        
+          {% if blog != blank %}
+            <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+            <a class="omnise-breadcrumb-item" data-gap-item="true" href="{{ blog.url }}">{{ blog.title }}</a>
+          {% else %}
+            {% if article.blog != blank %}
+              <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+              <a class="omnise-breadcrumb-item" data-gap-item="true" href="{{ article.blog.url }}">{{ article.blog.title }}</a>
+            {% endif %}
+          {% endif %}
+        
+        <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+        <span class="omnise-breadcrumb-item omnise-breadcrumb-current" data-gap-item="true">{{ article.title }}</span>
+      {% elsif collection != blank %}
+        <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+        <span class="omnise-breadcrumb-item omnise-breadcrumb-current" data-gap-item="true">{{ collection.title }}</span>
+      {% elsif blog != blank %}
+        <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+        <span class="omnise-breadcrumb-item omnise-breadcrumb-current" data-gap-item="true">{{ blog.title }}</span>
+      {% else %}
+        <span class="omnise-breadcrumb-separator" data-gap-item="true" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v16"/></svg></span>
+        <span class="omnise-breadcrumb-item omnise-breadcrumb-current" data-gap-item="true">{{ page.title }}</span>
+      {% endif %}
+    </nav>
+  
+  
+  <h1 class="omnise-collection-title omnise-h2 omnise-line-1" data-bnode="omnise-q99o1u" data-bnode-index="2">
+      {{ collection.title | default: 'No title available' }}
+  </h1></div></div></div></section></div><div data-omnise-export-section-id="omnise-dfj2at" data-omnise-export-has-ab="false"><section data-bnode="omnise-dfj2at" data-bnode-index="2" class="omnise-section omnise-surface-light"><div class="omnise-section-container"><div class="omnise-slot" data-bnode="omnise-d7koxp" data-bnode-index="1"><div class="omnise-slot" data-bnode="omnise-snybiz" data-bnode-index="1"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1">
+    
+    
+    
+    
+    
+
+    <div
+      class="omnise-collection-filter-header"
+      data-omnise-collection-filter-header
+      data-bnode="omnise-o476kq" data-bnode-index="1"
+    >
+      <div
+        class="omnise-collection-filter-header-trigger omnise-p"
+        data-omnise-collection-filter-header-trigger
+        data-icon-position="left"
+        role="button"
+        tabindex="0"
+        aria-haspopup="dialog"
+        aria-expanded="false"
+      >
+        
+        
+          <span class="omnise-collection-filter-header-text">Filter</span>
+        
+      </div>
+    </div>
+  </div></div><div class="omnise-slot" data-bnode="omnise-252d3u" data-bnode-index="2">
+    
+    
+    
+
+    {% assign omnise_active_filter_count = 0 %}
+    {% assign omnise_clear_all_url = collection.url %}
+    {% if collection.sort_by != blank %}
+      {% assign omnise_clear_all_url = collection.url | append: '?sort_by=' | append: collection.sort_by %}
+    {% endif %}
+
+    {% for filter in collection.filters %}
+      {% assign omnise_active_filter_count = omnise_active_filter_count | plus: filter.active_values.size %}
+      {% if filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank %}
+        {% assign omnise_active_filter_count = omnise_active_filter_count | plus: 1 %}
+      {% endif %}
+    {% endfor %}
+
+    <div class="omnise-collection-active-filters omnise-p2{% if omnise_active_filter_count == 0 %} is-empty{% endif %}" data-bnode="omnise-kfi6e8" data-bnode-index="1" data-omnise-collection-active-filters>
+      {% for filter in collection.filters %}
+        {% for value in filter.active_values %}
+          <a
+            class="omnise-collection-active-filter-chip"
+            href="{{ value.url_to_remove }}"
+            data-omnise-active-filter-link
+          >
+            {% if value.swatch.color != blank or value.swatch.image != blank %}
+              <span
+                class="omnise-collection-active-filter-swatch"
+                aria-hidden="true"
+                {% if value.swatch.color != blank %}
+                  style="background-color: {{ value.swatch.color }};{% if value.swatch.image != blank %} background-image: url('{{ value.swatch.image | image_url: width: 40 }}');{% endif %}"
+                {% elsif value.swatch.image != blank %}
+                  style="background-image: url('{{ value.swatch.image | image_url: width: 40 }}');"
+                {% endif %}
+              ></span>
+            {% endif %}
+            <span class="omnise-collection-active-filter-label">{{ value.label }}</span>
+            <span class="omnise-collection-active-filter-remove" aria-hidden="true">×</span>
+          </a>
+        {% endfor %}
+
+        {% if filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank %}
+          <a
+            class="omnise-collection-active-filter-chip"
+            href="{{ filter.url_to_remove }}"
+            data-omnise-active-filter-link
+          >
+            <span class="omnise-collection-active-filter-label">
+              {% if filter.min_value.value != blank %}{{ filter.min_value.value | money_without_trailing_zeros }}{% endif %}
+              {% if filter.min_value.value != blank and filter.max_value.value != blank %} - {% endif %}
+              {% if filter.max_value.value != blank %}{{ filter.max_value.value | money_without_trailing_zeros }}{% endif %}
+            </span>
+            <span class="omnise-collection-active-filter-remove" aria-hidden="true">×</span>
+          </a>
+        {% endif %}
+      {% endfor %}
+
+      
+        {% if omnise_active_filter_count > 0 %}
+          <a
+            class="omnise-collection-active-filter-clear"
+            href="{{ omnise_clear_all_url }}"
+            data-omnise-active-filter-link
+            data-omnise-clear-all
+          >
+            Clear all
+          </a>
+        {% endif %}
+      
+    </div>
+  </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    <div class="omnise-collection-filter omnise-collection-filter-vertical" data-layout="vertical" data-layout-desktop="vertical" data-layout-tablet="draw" data-layout-mobile="draw" data-drawer-side="left" data-normal-surface="none" data-hover-surface="muted" data-active-surface="dark" data-color-shape="circle" data-bnode="omnise-bzhymu" data-bnode-index="3">
+      
+        <div class="omnise-collection-filter-drawer">
+          <button class="omnise-collection-filter-drawer-trigger" type="button" data-icon-position="left" data-omnise-collection-filter-internal-trigger><span>Filters</span></button>
+          <button class="omnise-collection-filter-drawer-overlay" type="button" aria-label="Close filters"></button>
+          <div class="omnise-collection-filter-drawer-panel">
+            <div class="omnise-collection-filter-drawer-header">
+              <a class="omnise-collection-filter-drawer-clear omnise-btn-te" href="{{ collection.url }}">Clear All</a>
+              <span class="omnise-h4">Filter</span>
+              <button type="button" class="omnise-collection-filter-drawer-close" aria-label="Close filters"></button>
+            </div>
+      
+	      <form class="omnise-collection-filter-form" action="{{ collection.url }}" method="get" aria-label="Collection filters" data-omnise-collection-filter-form>
+	        <div class="omnise-collection-filter-loading" aria-hidden="true">
+	          <span class="omnise-collection-filter-spinner"></span>
+	        </div>
+	        
+	        {% if collection.sort_by != blank %}
+	          <input type="hidden" name="sort_by" value="{{ collection.sort_by }}">
+	        {% endif %}
+        {% for filter in collection.filters %}
+          {% assign omnise_filter_label = filter.label | downcase %}
+          {% assign omnise_filter_param = filter.param_name | downcase %}
+          {% assign omnise_filter_key = '' %}
+          {% if filter.type == 'price_range' or omnise_filter_param contains 'price' %}
+            {% assign omnise_filter_key = 'price' %}
+          {% elsif omnise_filter_param contains 'availability' or omnise_filter_label contains 'availability' %}
+            {% assign omnise_filter_key = 'availability' %}
+          {% elsif omnise_filter_param contains 'product_type' or omnise_filter_label contains 'type' %}
+            {% assign omnise_filter_key = 'type' %}
+          {% elsif omnise_filter_label contains 'size' %}
+            {% assign omnise_filter_key = 'size' %}
+	          {% elsif omnise_filter_label contains 'color' or omnise_filter_label contains 'colour' %}
+	            {% assign omnise_filter_key = 'color' %}
+	          {% endif %}
+
+	          {% if omnise_filter_key == 'availability' and true %}
+	            
+	              <div class="omnise-collection-filter-availability-responsive">
+	            
+	            
+	              <details class="omnise-collection-filter-group omnise-collection-filter-group-availability omnise-collection-filter-availability-details" open>
+	                <summary class="omnise-collection-filter-title omnise-h5"><span>{{ filter.label }}</span><span class="omnise-collection-filter-caret" aria-hidden="true"></span></summary>
+	                <div class="omnise-collection-filter-panel">
+	                  <div class="omnise-collection-filter-popup-header">
+	                    <span>{{ filter.active_values.size }} selected</span>
+	                    <a href="{{ filter.url_to_remove }}">Reset</a>
+	                  </div>
+	                  <div class="omnise-collection-filter-options omnise-collection-filter-options-checkbox">
+	                    {% for value in filter.values %}
+	                      <label class="omnise-collection-filter-option omnise-p omnise-collection-filter-option-checkbox{% if value.active %} is-active{% else %}{% endif %}{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+	                        <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+	                        <span>{{ value.label }}</span>
+	                        <span class="omnise-collection-filter-count">({{ value.count }})</span>
+	                      </label>
+	                    {% endfor %}
+	                  </div>
+	                </div>
+	              </details>
+	            
+	            
+	            <div class="omnise-collection-filter-group omnise-collection-filter-group-availability omnise-collection-filter-availability-switch">
+	              {% for value in filter.values %}
+                {% assign omnise_availability_label = value.label | downcase %}
+                {% if omnise_availability_label contains 'in stock' or forloop.first %}
+                  <label class="omnise-collection-filter-switch-row{% if value.active %} is-active{% endif %}{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                    <span class="omnise-collection-filter-title omnise-h5">In stock only</span>
+                    <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                    <span class="omnise-collection-filter-switch" aria-hidden="true"></span>
+                  </label>
+                  {% break %}
+                {% endif %}
+	              {% endfor %}
+	            </div>
+	            
+	            
+	              </div>
+	            
+	          {% elsif omnise_filter_key == 'type' and true %}
+	            <details class="omnise-collection-filter-group omnise-collection-filter-group-type" open>
+	              <summary class="omnise-collection-filter-title omnise-h5"><span>{{ filter.label }}</span><span class="omnise-collection-filter-caret" aria-hidden="true"></span></summary>
+	              <div class="omnise-collection-filter-panel">
+	                <div class="omnise-collection-filter-popup-header">
+	                  <span>{{ filter.active_values.size }} selected</span>
+	                  <a href="{{ filter.url_to_remove }}">Reset</a>
+	                </div>
+	                <div class="omnise-collection-filter-options omnise-collection-filter-options-checkbox">
+                  {% for value in filter.values %}
+                    <label class="omnise-collection-filter-option omnise-p omnise-collection-filter-option-checkbox{% if value.active %} is-active{% else %}{% endif %}{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                      <span>{{ value.label }}</span>
+                      <span class="omnise-collection-filter-count">({{ value.count }})</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+	            </details>
+	          {% elsif omnise_filter_key == 'size' and true %}
+	            <details class="omnise-collection-filter-group omnise-collection-filter-group-size" open>
+	              <summary class="omnise-collection-filter-title omnise-h5"><span>{{ filter.label }}</span><span class="omnise-collection-filter-caret" aria-hidden="true"></span></summary>
+	              <div class="omnise-collection-filter-panel">
+	                <div class="omnise-collection-filter-popup-header">
+	                  <span>{{ filter.active_values.size }} selected</span>
+	                  <a href="{{ filter.url_to_remove }}">Reset</a>
+	                </div>
+	                <div class="omnise-collection-filter-options omnise-collection-filter-options-checkbox">
+                  {% for value in filter.values %}
+                    <label class="omnise-collection-filter-option omnise-p omnise-collection-filter-option-checkbox{% if value.active %} is-active{% else %}{% endif %}{% if value.count == 0 and value.active == false %} is-disabled{% endif %}">
+                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                      <span>{{ value.label }}</span>
+                      <span class="omnise-collection-filter-count">({{ value.count }})</span>
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </details>
+	          {% elsif omnise_filter_key == 'color' and true %}
+	            <details class="omnise-collection-filter-group omnise-collection-filter-group-color" open>
+	              <summary class="omnise-collection-filter-title omnise-h5"><span>{{ filter.label }}</span><span class="omnise-collection-filter-caret" aria-hidden="true"></span></summary>
+	              <div class="omnise-collection-filter-panel">
+	                <div class="omnise-collection-filter-popup-header">
+	                  <span>{{ filter.active_values.size }} selected</span>
+	                  <a href="{{ filter.url_to_remove }}">Reset</a>
+	                </div>
+		                <div class="omnise-collection-filter-options omnise-collection-filter-options-checkbox">
+	                  {% for value in filter.values %}
+	                    {% assign omnise_swatch_value = '#eeeeee' %}
+	                    {% assign omnise_swatch_focal_point = '' %}
+	                    {% assign omnise_swatch_found = false %}
+	                    {% if value.swatch.image != blank %}
+	                      {% assign omnise_swatch_image = value.swatch.image | image_url: width: 80 %}
+	                      {% assign omnise_swatch_value = 'url(' | append: omnise_swatch_image | append: ')' %}
+	                      {% assign omnise_swatch_focal_point = value.swatch.image.presentation.focal_point %}
+	                      {% assign omnise_swatch_found = true %}
+	                    {% elsif value.swatch.color != blank %}
+	                      {% assign omnise_swatch_value = value.swatch.color %}
+	                      {% assign omnise_swatch_found = true %}
+	                    {% endif %}
+	                    {% unless omnise_swatch_found %}
+	                      {% assign omnise_filter_value_handle = value.label | handleize %}
+	                      {% assign omnise_filter_option_handle = filter.param_name | remove: 'filter.v.option.' | handleize %}
+	                      {% for product in collection.products %}
+	                        {% for option in product.options_with_values %}
+	                          {% assign omnise_option_name_handle = option.name | handleize %}
+	                          {% if omnise_option_name_handle == omnise_filter_option_handle or omnise_option_name_handle == 'color' or omnise_option_name_handle == 'colour' %}
+	                            {% for option_value in option.values %}
+	                              {% assign omnise_option_value_handle = option_value | handleize %}
+	                              {% assign omnise_option_value_name_handle = option_value.name | handleize %}
+	                              {% if omnise_option_value_handle == omnise_filter_value_handle or omnise_option_value_name_handle == omnise_filter_value_handle %}
+	                                {% if option_value.swatch.image != blank %}
+	                                  {% assign omnise_option_swatch_image = option_value.swatch.image | image_url: width: 80 %}
+	                                  {% assign omnise_swatch_value = 'url(' | append: omnise_option_swatch_image | append: ')' %}
+	                                  {% assign omnise_swatch_focal_point = option_value.swatch.image.presentation.focal_point %}
+	                                  {% assign omnise_swatch_found = true %}
+	                                  {% break %}
+	                                {% elsif option_value.swatch.color != blank %}
+	                                  {% assign omnise_swatch_value = option_value.swatch.color %}
+	                                  {% assign omnise_swatch_found = true %}
+	                                  {% break %}
+	                                {% endif %}
+	                              {% endif %}
+	                            {% endfor %}
+	                          {% endif %}
+	                          {% if omnise_swatch_found %}{% break %}{% endif %}
+	                        {% endfor %}
+		                        {% if omnise_swatch_found %}{% break %}{% endif %}
+		                      {% endfor %}
+		                    {% endunless %}
+		                    <label class="omnise-collection-filter-option omnise-p omnise-collection-filter-option-checkbox omnise-collection-filter-color-color-text{% if value.active %} is-active{% else %}{% endif %}{% if value.count == 0 and value.active == false %} is-disabled{% endif %}" title="{{ value.label | escape }}">
+	                      <input type="checkbox" name="{{ value.param_name }}" value="{{ value.value }}" {% if value.active %}checked{% endif %} {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+	                      
+	                        <span class="omnise-collection-filter-swatch" style="background: {{ omnise_swatch_value }};{% if omnise_swatch_focal_point != blank %} background-position: {{ omnise_swatch_focal_point }};{% endif %}" aria-hidden="true"></span>
+	                      
+                      
+                        <span>{{ value.label }}</span>
+                        <span class="omnise-collection-filter-count">({{ value.count }})</span>
+                      
+                    </label>
+                  {% endfor %}
+                </div>
+              </div>
+            </details>
+	          {% elsif omnise_filter_key == 'price' and true %}
+		            <details class="omnise-collection-filter-group omnise-collection-filter-group-price" open>
+			              <summary class="omnise-collection-filter-title omnise-h5"><span>{{ filter.label }}</span><span class="omnise-collection-filter-caret" aria-hidden="true"></span></summary>
+			              <div class="omnise-collection-filter-panel">
+			                <div class="omnise-collection-filter-popup-header">
+			                  <span>{% if filter.min_value.value != blank or filter.max_value.value != blank %}1{% else %}0{% endif %} selected</span>
+			                  <a href="{{ filter.url_to_remove }}">Reset</a>
+			                </div>
+			                <div class="omnise-collection-filter-price-inputs omnise-collection-filter-price-slider">
+	                {% assign omnise_price_min = 0 %}
+	                {% assign omnise_price_max = filter.range_max | money_without_currency | replace: ',', '' %}
+	                {% assign omnise_price_min_value = filter.min_value.value | default: 0 | money_without_currency | replace: ',', '' %}
+	                {% assign omnise_price_max_value = filter.max_value.value | default: filter.range_max | money_without_currency | replace: ',', '' %}
+		                <div class="omnise-collection-filter-price-slider-wrap">
+		                
+		                    <div class="omnise-collection-filter-price-slider-control">
+		                      <input class="omnise-collection-filter-price-slider omnise-collection-filter-price-slider-min" name="{{ filter.min_value.param_name }}" type="range" min="{{ omnise_price_min }}" max="{{ omnise_price_max }}" value="{{ omnise_price_min_value }}">
+		                      <input class="omnise-collection-filter-price-slider omnise-collection-filter-price-slider-max" name="{{ filter.max_value.param_name }}" type="range" min="{{ omnise_price_min }}" max="{{ omnise_price_max }}" value="{{ omnise_price_max_value }}">
+		                    </div>
+		                
+	                    <div class="omnise-collection-filter-price-fields omnise-p">
+	                      <label class="omnise-collection-filter-price-pill">
+	                        <span>{{ cart.currency.symbol | default: '$' }}</span>
+	                        <input class="omnise-collection-filter-price-min-field"  type="number" min="{{ omnise_price_min }}" max="{{ omnise_price_max }}" value="{{ omnise_price_min_value }}" inputmode="decimal">
+	                      </label>
+	                      <span class="omnise-collection-filter-price-to">to</span>
+	                      <label class="omnise-collection-filter-price-pill">
+	                        <span>{{ cart.currency.symbol | default: '$' }}</span>
+	                        <input class="omnise-collection-filter-price-max-field"  type="number" min="{{ omnise_price_min }}" max="{{ omnise_price_max }}" value="{{ omnise_price_max_value }}" inputmode="decimal">
+	                      </label>
+	                    </div>
+		                  </div>
+		                </div>
+	              </div>
+	            </details>
+          {% endif %}
+        {% endfor %}
+        <div class="omnise-collection-filter-actions">
+          <button type="submit" class="omnise-btn-button omnise-btn-pr omnise-collection-filter-apply">Apply ({{ collection.products_count | default: collection.products.size }})</button>
+        </div>
+      </form>
+      
+          </div>
+        </div>
+      
+    </div>
+  </div><div class="omnise-slot" data-bnode="omnise-8tw2xo" data-bnode-index="2"><div class="omnise-slot" data-bnode="omnise-ey7anq" data-bnode-index="1">
+    
+    
+    
+    
+    
+    
+    
+
+    {% assign omnise_source_collection = omnise_collection_grid_source_collection %}
+    {% if omnise_source_collection == blank %}
+      {% assign omnise_source_collection = collection %}
+    {% endif %}
+    {% assign omnise_control_per_page = omnise_collection_grid_per_page | default: 12 %}
+    {% assign omnise_total_count = omnise_source_collection.products_count | default: omnise_source_collection.all_products_count | default: collection.products_count | default: 0 %}
+    {% assign omnise_current_count = omnise_total_count %}
+
+    {% if omnise_source_collection != blank %}
+      {% paginate omnise_source_collection.products by omnise_control_per_page %}
+        {% assign omnise_current_count = paginate.current_offset | plus: omnise_source_collection.products.size %}
+        {% if omnise_current_count > omnise_total_count %}
+          {% assign omnise_current_count = omnise_total_count %}
+        {% endif %}
+        <div
+          class="omnise-collection-results omnise-p"
+          data-bnode="omnise-zz8rdn" data-bnode-index="1"
+          data-omnise-collection-results
+          data-display-mode="current_of_total"
+          data-current-count="{{ omnise_current_count }}"
+          data-total-count="{{ omnise_total_count }}"
+          data-suffix=" {{ 'sections.omnise-preview-template-collection.omnise_pckisq' | t }}"
+          data-between-text=" {{ 'sections.omnise-preview-template-collection.omnise_mscp' | t }} "
+          data-total-suffix=" {{ 'sections.omnise-preview-template-collection.omnise_glm36k' | t }}"
+        >
+          
+            {{ omnise_current_count }} {{ 'sections.omnise-preview-template-collection.omnise_mscp' | t }} {{ omnise_total_count }} {{ 'sections.omnise-preview-template-collection.omnise_glm36k' | t }}
+          
+        </div>
+      {% endpaginate %}
+    {% else %}
+      <div
+        class="omnise-collection-results omnise-p"
+        data-bnode="omnise-zz8rdn" data-bnode-index="1"
+        data-omnise-collection-results
+        data-display-mode="current_of_total"
+        data-current-count="0"
+        data-total-count="0"
+        data-suffix=" {{ 'sections.omnise-preview-template-collection.omnise_pckisq' | t }}"
+        data-between-text=" {{ 'sections.omnise-preview-template-collection.omnise_mscp' | t }} "
+        data-total-suffix=" {{ 'sections.omnise-preview-template-collection.omnise_glm36k' | t }}"
+      >
+        
+          0 {{ 'sections.omnise-preview-template-collection.omnise_mscp' | t }} 0 {{ 'sections.omnise-preview-template-collection.omnise_glm36k' | t }}
+        
+      </div>
+    {% endif %}
+  <div class="omnise-slot" data-bnode="omnise-tie1c2" data-bnode-index="2"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1">
+    
+    
+    
+    
+    {% assign omnise_current_sort = collection.sort_by | default: collection.default_sort_by | default: 'manual' %}
+    {% assign omnise_current_sort_label = 'Featured' %}
+    {% case omnise_current_sort %}
+      {% when 'best-selling' %}
+        {% assign omnise_current_sort_label = 'Best selling' %}
+      {% when 'title-ascending' %}
+        {% assign omnise_current_sort_label = 'Alphabetically, A-Z' %}
+      {% when 'title-descending' %}
+        {% assign omnise_current_sort_label = 'Alphabetically, Z-A' %}
+      {% when 'price-ascending' %}
+        {% assign omnise_current_sort_label = 'Price, low to high' %}
+      {% when 'price-descending' %}
+        {% assign omnise_current_sort_label = 'Price, high to low' %}
+      {% when 'created-ascending' %}
+        {% assign omnise_current_sort_label = 'Date, old to new' %}
+      {% when 'created-descending' %}
+        {% assign omnise_current_sort_label = 'Date, new to old' %}
+    {% endcase %}
+
+    <form class="omnise-collection-sort-by" action="{{ collection.url }}" method="get" data-omnise-collection-sort-form data-bnode="omnise-92e2ra" data-bnode-index="1">
+      {% for filter in collection.filters %}
+        {% for value in filter.active_values %}
+          <input type="hidden" name="{{ value.param_name }}" value="{{ value.value }}">
+        {% endfor %}
+        {% if filter.type == 'price_range' %}
+          {% if filter.min_value.value != blank %}
+            <input type="hidden" name="{{ filter.min_value.param_name }}" value="{{ filter.min_value.value | money_without_currency | replace: ',', '' }}">
+          {% endif %}
+          {% if filter.max_value.value != blank %}
+            <input type="hidden" name="{{ filter.max_value.param_name }}" value="{{ filter.max_value.value | money_without_currency | replace: ',', '' }}">
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      <input type="hidden" name="sort_by" value="{{ omnise_current_sort }}" data-omnise-sort-value>
+
+      
+        <div class="omnise-label omnise-collection-sort-by-label omnise-p">
+          <label>{{ 'sections.omnise-preview-template-collection.omnise_sizb6p' | t }}</label>
+        </div>
+      
+      <div class="omnise-contact-field omnise-collection-sort-by-field" data-omnise-sort-dropdown>
+        <div
+          class="omnise-contact-input omnise-field-input omnise-collection-sort-by-trigger omnise-p2"
+          role="button"
+          tabindex="0"
+          aria-haspopup="listbox"
+          aria-expanded="false"
+          aria-label="{{ 'sections.omnise-preview-template-collection.omnise_sizb6p' | t }}"
+          data-omnise-sort-trigger
+        >
+          <span class="omnise-collection-sort-by-trigger-label">{{ omnise_current_sort_label }}</span>
+          <span class="omnise-collection-sort-by-trigger-icon" aria-hidden="true">▾</span>
+        </div>
+        <ul
+          class="omnise-collection-sort-by-menu"
+          role="listbox"
+          aria-label="{{ 'sections.omnise-preview-template-collection.omnise_sizb6p' | t }}"
+          data-omnise-sort-menu
+        >
+          <li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'manual' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'manual' %}true{% else %}false{% endif %}"
+                  data-sort-value="manual"
+                >
+                  <span>Featured</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'best-selling' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'best-selling' %}true{% else %}false{% endif %}"
+                  data-sort-value="best-selling"
+                >
+                  <span>Best selling</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'title-ascending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'title-ascending' %}true{% else %}false{% endif %}"
+                  data-sort-value="title-ascending"
+                >
+                  <span>Alphabetically, A-Z</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'title-descending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'title-descending' %}true{% else %}false{% endif %}"
+                  data-sort-value="title-descending"
+                >
+                  <span>Alphabetically, Z-A</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'price-ascending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'price-ascending' %}true{% else %}false{% endif %}"
+                  data-sort-value="price-ascending"
+                >
+                  <span>Price, low to high</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'price-descending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'price-descending' %}true{% else %}false{% endif %}"
+                  data-sort-value="price-descending"
+                >
+                  <span>Price, high to low</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'created-ascending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'created-ascending' %}true{% else %}false{% endif %}"
+                  data-sort-value="created-ascending"
+                >
+                  <span>Date, old to new</span>
+                </div>
+              </li><li class="omnise-collection-sort-by-item" role="presentation">
+                <div
+                  class="omnise-collection-sort-by-option omnise-p{% if omnise_current_sort == 'created-descending' %} is-active{% endif %}"
+                  role="option"
+                  tabindex="0"
+                  aria-selected="{% if omnise_current_sort == 'created-descending' %}true{% else %}false{% endif %}"
+                  data-sort-value="created-descending"
+                >
+                  <span>Date, new to old</span>
+                </div>
+              </li>
+        </ul>
+      </div>
+    </form>
+  </div></div></div><div class="omnise-slot" data-bnode="omnise-dtwniz" data-bnode-index="2"><div class="omnise-collection-product-grid omnise-content-list" data-bnode="omnise-tkmcht" data-bnode-index="1" data-per-page="15" data-gap-control=":scope &gt; .omnise-collection-product-grid-items"><div class="omnise-collection-product-grid-items">
+        {% assign omnise_collection_grid_source_collection = collection %}
+        {% assign omnise_collection_grid_per_page = 15 %}
+        {% if omnise_collection_grid_source_collection and omnise_collection_grid_source_collection.products_count > 0 %}
+        {% paginate omnise_collection_grid_source_collection.products by 15 %}
+        {% if paginate.current_page == 1 %}
+        {% for product in omnise_collection_grid_source_collection.products limit: 7 %}
+      <div class="omnise-collection-product-grid-item" data-gap-item="true"><script type="application/json" class="product-json-data" aria-hidden="true">{ "id": {{ product.id }},"title": {{ product.title | json }},"handle": {{ product.handle | json }},"options": {{ product.options | json }},"available": {{ product.available | json }},"currency": {{ cart.currency.iso_code | default: localization.country.currency.iso_code | default: shop.currency | json }},"money_format": {{ shop.money_format | strip_html | escape | json }},"money_with_currency_format": {{ shop.money_with_currency_format | strip_html | escape | json }},"variants":[{% for variant in product.variants %}{"id": {{ variant.id }},"title": {{ variant.title | json }},"available": {{ variant.available | json }},"price": {{ variant.price | default: 0 }},"compare_at_price": {{ variant.compare_at_price | default: 0 }},"inventory_quantity": {{ variant.inventory_quantity | default: 0 }},"sku": {{ variant.sku | json }}, "options": {{ variant.options | json }},"featured_image":{"src": {{ variant.featured_image.src | json }}}}{% unless forloop.last %},{% endunless %}{% endfor %}] }</script><div class="omnise-slot omnise-collection-product-grid-card" data-bnode="be-ctl-item" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-slot omnise-surface-light" data-bnode="omnise-k26nxw" data-bnode-index="1"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-b6am0s" data-bnode-index="1">
+
+
+<a 
+  href="{{ product.url | default: '#' }}"
+  class="omnise-product-picture "
+  data-bnode="omnise-v3kjij" data-bnode-index="1"
+>
+    {% if omnise_product_placeholder %}
+      {{ omnise_product_placeholder_name | placeholder_svg_tag: 'omnise-img-main' }}
+    {% elsif product != blank %}
+
+      <img
+        srcset="{%- if product.featured_media.width >= 165 -%}{{ product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+        {%- if product.featured_media.width >= 330 -%}{{ product.featured_media | image_url: width: 330 }} 330w,{%- endif -%}
+        {%- if product.featured_media.width >= 535 -%}{{ product.featured_media | image_url: width: 535 }} 535w,{%- endif -%}
+        {{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+        src="{{ product.featured_media | image_url: width: 535 }}"
+        alt="{{ product.featured_media.alt | escape }}"
+        loading="lazy"
+        class="omnise-img-main"
+      >
+    
+
+    {% else %}
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/image-product-4_e1a50d90-86fa-402d-99f5-ffd3046ea39a.svg?v=1755827595"
+        alt="Default Product"
+        class="omnise-img-main"
+        loading="lazy"
+      >
+    {% endif %}
+</a><div class="omnise-slot" data-bnode="omnise-90451y" data-bnode-index="2"><div class="omnise-slot" data-hide-tablet="true" data-hide-mobile="true" data-bnode="omnise-zexv01" data-bnode-index="1">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-pr"
+              data-bnode="omnise-c2yxv2" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+
+              
+              <span class="omnise-atc-text">
+                  {% unless is_available %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+                  
+                  {% elsif has_variants and collection != blank %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}
+                  {% else %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}
+                  {% endunless %}
+
+              </span>
+              
+          </button>
+    </div><div class="omnise-slot" data-hide-desktop="true" data-bnode="omnise-qrkxg5" data-bnode-index="2">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-se"
+              data-bnode="omnise-mc24bm" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+              <span>
+                  
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="currentColor" d="M9 6h6a3 3 0 1 0-6 0M7 6a5 5 0 0 1 10 0h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM5 8v12h14V8zm4 2a3 3 0 1 0 6 0h2a5 5 0 0 1-10 0z"/></svg>                  
+              </span>
+              
+
+              
+          </button>
+    </div></div><div class="omnise-slot" data-bnode="omnise-fpl8uj" data-bnode-index="3">
+
+
+{% assign tag_input = 'New' | downcase | split: '|' %}
+{% assign has_match = false %}
+
+{% capture matched_tags %}
+  {% for input_tag in tag_input %}
+    {% assign input_clean = input_tag | strip | downcase %}
+
+    {% for tag in product.tags %}
+      {% assign tag_down = tag | downcase %}
+
+      {% if input_clean == tag_down %}
+        {% assign has_match = true %}
+
+        <div
+          class="omnise-product-tag omnise-product-tag-{{ forloop.index }}"
+          data-gap-item="true"
+        >
+          {{ tag }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endcapture %}
+
+{% if has_match %}
+<div
+  class="omnise-product-tags omnise-p3"
+  data-gap-control=":scope"
+  data-bnode="omnise-ekydih" data-bnode-index="1"
+>
+    {{ matched_tags }}
+</div>
+{% endif %}
+  
+    {% unless product.available %}
+      <div
+        class="omnise-product-badge omnise-badge-soldout omnise-p3"
+        data-bnode="omnise-aofath" data-bnode-index="2"
+      >
+        {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+      </div>
+
+    {% else %}
+      {% assign price = product.price_min %}
+      {% assign compare_at_price = product.compare_at_price_min %}
+
+      {% if compare_at_price > price %}
+        <div
+          class="omnise-product-badge omnise-badge-sale omnise-p3"
+          data-show-discount="true"
+          data-discount-prefix="minus"
+          data-discount-off-label="{{ 'sections.omnise-preview-template-collection.omnise_2ctr' | t }}"
+          data-discount-save-label="{{ 'sections.omnise-preview-template-collection.omnise_1j2ql' | t }}"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+          {% if compare_at_price %}
+            {% assign discount = compare_at_price
+              | minus: price
+              | times: 100.0
+              | divided_by: compare_at_price
+            %}
+            {% assign discount = discount | round: 2 %}
+          {% else %}
+            {% assign discount = 0 %}
+          {% endif %}
+          {% assign discount_value = discount | round %}
+
+          
+            
+              -{{ discount_value }}%
+            
+          
+        </div>
+
+      {% else %}
+        <div
+          class="omnise-product-badge omnise-badge-empty omnise-live-product omnise-p3"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+         
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div></div><div class="omnise-slot" data-bnode="omnise-35o3gl" data-bnode-index="2"><div class="omnise-app-block" data-bnode="omnise-i3c52m" data-bnode-index="1">{%- for block in section.blocks -%}{% if block.id contains 'omnise-i3c52m' %}{% render block %}{% endif %}{%- endfor -%}</div>
+    
+    
+    
+    
+    <h3 class="omnise-product-title omnise-h5 omnise-line-2" data-bnode="omnise-vxcfoz" data-bnode-index="2">
+      {% if omnise_product_placeholder %}
+        <a role="link">Example product title</a>
+      {% else %}
+        <a href="{{ product.url }}">{{ product.title }}</a>
+      {% endif %}
+    </h3>
+    
+    
+        <div class="omnise-product-price-wrapper {% if product.compare_at_price > product.price %} omnise-on-sale {% endif %} omnise-p2" data-bnode="omnise-o1ur6w" data-bnode-index="3">
+          <span class="omnise-product-price omnise-price-sale">
+            {% if omnise_product_placeholder or product == blank %}
+              $10.00 USD
+            {% else %}
+              {{ product.price | money_with_currency | strip_html | escape }}
+            {% endif %}
+          </span>
+          <span class="omnise-product-price-compare" {% unless product.compare_at_price > product.price %} style="display:none;"  {% endunless %}>
+            {{ product.compare_at_price | money_with_currency | strip_html | escape }}
+          </span>
+        </div>
+    </div></div></div></div>
+        {% endfor %}
+        {% endif %}
+        {% endpaginate %}
+        {% endif %}
+      
+        {% assign omnise_collection_grid_source_collection = collection %}
+        {% assign omnise_collection_grid_per_page = 15 %}
+        {% if omnise_collection_grid_source_collection %}
+        {% paginate omnise_collection_grid_source_collection.products by 15 %}
+        {% if paginate.current_page == 1 and omnise_collection_grid_source_collection.products.size > 0 %}
+      <div class="omnise-collection-product-grid-item omnise-collection-product-grid-banner-item" data-gap-item="true"><div class="omnise-slot omnise-collection-product-grid-banner-card" data-bnode="be-collection-grid-banner" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-3jbj11" data-bnode-index="1" style="--omnise-image-position: 0% 50%;"><img width="453" height="623" sizes="min(1900px, 100vw)" alt="" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_2__11zon_dc9ac9e1-951c-46d4-a9d1-28f2b9cfbb74.webp?v=1786002709&amp;width=1000 1000w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_2__11zon_dc9ac9e1-951c-46d4-a9d1-28f2b9cfbb74.webp?v=1786002709&amp;width=700 700w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_2__11zon_dc9ac9e1-951c-46d4-a9d1-28f2b9cfbb74.webp?v=1786002709&amp;width=500 500w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_2__11zon_dc9ac9e1-951c-46d4-a9d1-28f2b9cfbb74.webp?v=1786002709&amp;width=300 300w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_2__11zon_dc9ac9e1-951c-46d4-a9d1-28f2b9cfbb74.webp?v=1786002709&amp;width=1000"></div><div class="omnise-slot omnise-surface-dark" data-bnode="omnise-opr5dq" data-bnode-index="2"><h3 class="omnise-heading omnise-h3" data-bnode="omnise-8e0cxb" data-bnode-index="1">{{ 'sections.omnise-preview-template-collection.omnise_ga7h7t' | t }}</h3><a data-bnode="omnise-k7o4k0" data-bnode-index="2" class="omnise-btn-button omnise-btn-te" omnise-btn-po="right" href="#"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h10v10M7 17L17 7"></path></svg></span>{{ 'sections.omnise-preview-template-collection.omnise_4o0f90' | t }}</a></div></div></div>
+        {% elsif paginate.current_page == 1 %}
+          
+    <div class="omnise-collection-product-grid-empty omnise-content-list-empty">
+      <div class="omnise-collection-product-grid-empty-icon" aria-hidden="true"><span></span></div>
+      <h2 class="omnise-h4">No products match those filters.</h2>
+      <p class="omnise-p">Use fewer filters or</p>
+      <a class="omnise-collection-product-grid-empty-clear omnise-btn-pr" href="{{ collection.url }}">
+        <span aria-hidden="true">×</span>
+        Clear all
+      </a>
+    </div>
+  
+        {% endif %}
+        {% endpaginate %}
+        {% endif %}
+      
+        {% assign omnise_collection_grid_source_collection = collection %}
+        {% assign omnise_collection_grid_per_page = 15 %}
+        {% if omnise_collection_grid_source_collection and omnise_collection_grid_source_collection.products_count > 0 %}
+        {% paginate omnise_collection_grid_source_collection.products by 15 %}
+        {% if paginate.current_page == 1 %}
+        {% for product in omnise_collection_grid_source_collection.products offset: 7 %}
+      <div class="omnise-collection-product-grid-item" data-gap-item="true"><script type="application/json" class="product-json-data" aria-hidden="true">{ "id": {{ product.id }},"title": {{ product.title | json }},"handle": {{ product.handle | json }},"options": {{ product.options | json }},"available": {{ product.available | json }},"currency": {{ cart.currency.iso_code | default: localization.country.currency.iso_code | default: shop.currency | json }},"money_format": {{ shop.money_format | strip_html | escape | json }},"money_with_currency_format": {{ shop.money_with_currency_format | strip_html | escape | json }},"variants":[{% for variant in product.variants %}{"id": {{ variant.id }},"title": {{ variant.title | json }},"available": {{ variant.available | json }},"price": {{ variant.price | default: 0 }},"compare_at_price": {{ variant.compare_at_price | default: 0 }},"inventory_quantity": {{ variant.inventory_quantity | default: 0 }},"sku": {{ variant.sku | json }}, "options": {{ variant.options | json }},"featured_image":{"src": {{ variant.featured_image.src | json }}}}{% unless forloop.last %},{% endunless %}{% endfor %}] }</script><div class="omnise-slot omnise-collection-product-grid-card" data-bnode="be-ctl-item" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-slot omnise-surface-light" data-bnode="omnise-k26nxw" data-bnode-index="1"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-b6am0s" data-bnode-index="1">
+
+
+<a 
+  href="{{ product.url | default: '#' }}"
+  class="omnise-product-picture "
+  data-bnode="omnise-v3kjij" data-bnode-index="1"
+>
+    {% if omnise_product_placeholder %}
+      {{ omnise_product_placeholder_name | placeholder_svg_tag: 'omnise-img-main' }}
+    {% elsif product != blank %}
+
+      <img
+        srcset="{%- if product.featured_media.width >= 165 -%}{{ product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+        {%- if product.featured_media.width >= 330 -%}{{ product.featured_media | image_url: width: 330 }} 330w,{%- endif -%}
+        {%- if product.featured_media.width >= 535 -%}{{ product.featured_media | image_url: width: 535 }} 535w,{%- endif -%}
+        {{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+        src="{{ product.featured_media | image_url: width: 535 }}"
+        alt="{{ product.featured_media.alt | escape }}"
+        loading="lazy"
+        class="omnise-img-main"
+      >
+    
+
+    {% else %}
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/image-product-4_e1a50d90-86fa-402d-99f5-ffd3046ea39a.svg?v=1755827595"
+        alt="Default Product"
+        class="omnise-img-main"
+        loading="lazy"
+      >
+    {% endif %}
+</a><div class="omnise-slot" data-bnode="omnise-90451y" data-bnode-index="2"><div class="omnise-slot" data-hide-tablet="true" data-hide-mobile="true" data-bnode="omnise-zexv01" data-bnode-index="1">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-pr"
+              data-bnode="omnise-c2yxv2" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+
+              
+              <span class="omnise-atc-text">
+                  {% unless is_available %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+                  
+                  {% elsif has_variants and collection != blank %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}
+                  {% else %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}
+                  {% endunless %}
+
+              </span>
+              
+          </button>
+    </div><div class="omnise-slot" data-hide-desktop="true" data-bnode="omnise-qrkxg5" data-bnode-index="2">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-se"
+              data-bnode="omnise-mc24bm" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+              <span>
+                  
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="currentColor" d="M9 6h6a3 3 0 1 0-6 0M7 6a5 5 0 0 1 10 0h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM5 8v12h14V8zm4 2a3 3 0 1 0 6 0h2a5 5 0 0 1-10 0z"/></svg>                  
+              </span>
+              
+
+              
+          </button>
+    </div></div><div class="omnise-slot" data-bnode="omnise-fpl8uj" data-bnode-index="3">
+
+
+{% assign tag_input = 'New' | downcase | split: '|' %}
+{% assign has_match = false %}
+
+{% capture matched_tags %}
+  {% for input_tag in tag_input %}
+    {% assign input_clean = input_tag | strip | downcase %}
+
+    {% for tag in product.tags %}
+      {% assign tag_down = tag | downcase %}
+
+      {% if input_clean == tag_down %}
+        {% assign has_match = true %}
+
+        <div
+          class="omnise-product-tag omnise-product-tag-{{ forloop.index }}"
+          data-gap-item="true"
+        >
+          {{ tag }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endcapture %}
+
+{% if has_match %}
+<div
+  class="omnise-product-tags omnise-p3"
+  data-gap-control=":scope"
+  data-bnode="omnise-ekydih" data-bnode-index="1"
+>
+    {{ matched_tags }}
+</div>
+{% endif %}
+  
+    {% unless product.available %}
+      <div
+        class="omnise-product-badge omnise-badge-soldout omnise-p3"
+        data-bnode="omnise-aofath" data-bnode-index="2"
+      >
+        {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+      </div>
+
+    {% else %}
+      {% assign price = product.price_min %}
+      {% assign compare_at_price = product.compare_at_price_min %}
+
+      {% if compare_at_price > price %}
+        <div
+          class="omnise-product-badge omnise-badge-sale omnise-p3"
+          data-show-discount="true"
+          data-discount-prefix="minus"
+          data-discount-off-label="{{ 'sections.omnise-preview-template-collection.omnise_2ctr' | t }}"
+          data-discount-save-label="{{ 'sections.omnise-preview-template-collection.omnise_1j2ql' | t }}"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+          {% if compare_at_price %}
+            {% assign discount = compare_at_price
+              | minus: price
+              | times: 100.0
+              | divided_by: compare_at_price
+            %}
+            {% assign discount = discount | round: 2 %}
+          {% else %}
+            {% assign discount = 0 %}
+          {% endif %}
+          {% assign discount_value = discount | round %}
+
+          
+            
+              -{{ discount_value }}%
+            
+          
+        </div>
+
+      {% else %}
+        <div
+          class="omnise-product-badge omnise-badge-empty omnise-live-product omnise-p3"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+         
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div></div><div class="omnise-slot" data-bnode="omnise-35o3gl" data-bnode-index="2"><div class="omnise-app-block" data-bnode="omnise-i3c52m" data-bnode-index="1">{%- for block in section.blocks -%}{% if block.id contains 'omnise-i3c52m' %}{% render block %}{% endif %}{%- endfor -%}</div>
+    
+    
+    
+    
+    <h3 class="omnise-product-title omnise-h5 omnise-line-2" data-bnode="omnise-vxcfoz" data-bnode-index="2">
+      {% if omnise_product_placeholder %}
+        <a role="link">Example product title</a>
+      {% else %}
+        <a href="{{ product.url }}">{{ product.title }}</a>
+      {% endif %}
+    </h3>
+    
+    
+        <div class="omnise-product-price-wrapper {% if product.compare_at_price > product.price %} omnise-on-sale {% endif %} omnise-p2" data-bnode="omnise-o1ur6w" data-bnode-index="3">
+          <span class="omnise-product-price omnise-price-sale">
+            {% if omnise_product_placeholder or product == blank %}
+              $10.00 USD
+            {% else %}
+              {{ product.price | money_with_currency | strip_html | escape }}
+            {% endif %}
+          </span>
+          <span class="omnise-product-price-compare" {% unless product.compare_at_price > product.price %} style="display:none;"  {% endunless %}>
+            {{ product.compare_at_price | money_with_currency | strip_html | escape }}
+          </span>
+        </div>
+    </div></div></div></div>
+        {% endfor %}
+        {% endif %}
+        {% endpaginate %}
+        {% endif %}
+      
+        {% assign omnise_collection_grid_source_collection = collection %}
+        {% assign omnise_collection_grid_per_page = 15 %}
+        {% if omnise_collection_grid_source_collection and omnise_collection_grid_source_collection.products_count > 0 %}
+        {% paginate omnise_collection_grid_source_collection.products by 15 %}
+        {% if paginate.current_page > 1 %}
+        {% for product in omnise_collection_grid_source_collection.products %}
+      <div class="omnise-collection-product-grid-item" data-gap-item="true"><script type="application/json" class="product-json-data" aria-hidden="true">{ "id": {{ product.id }},"title": {{ product.title | json }},"handle": {{ product.handle | json }},"options": {{ product.options | json }},"available": {{ product.available | json }},"currency": {{ cart.currency.iso_code | default: localization.country.currency.iso_code | default: shop.currency | json }},"money_format": {{ shop.money_format | strip_html | escape | json }},"money_with_currency_format": {{ shop.money_with_currency_format | strip_html | escape | json }},"variants":[{% for variant in product.variants %}{"id": {{ variant.id }},"title": {{ variant.title | json }},"available": {{ variant.available | json }},"price": {{ variant.price | default: 0 }},"compare_at_price": {{ variant.compare_at_price | default: 0 }},"inventory_quantity": {{ variant.inventory_quantity | default: 0 }},"sku": {{ variant.sku | json }}, "options": {{ variant.options | json }},"featured_image":{"src": {{ variant.featured_image.src | json }}}}{% unless forloop.last %},{% endunless %}{% endfor %}] }</script><div class="omnise-slot omnise-collection-product-grid-card" data-bnode="be-ctl-item" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-slot omnise-surface-light" data-bnode="omnise-k26nxw" data-bnode-index="1"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-b6am0s" data-bnode-index="1">
+
+
+<a 
+  href="{{ product.url | default: '#' }}"
+  class="omnise-product-picture "
+  data-bnode="omnise-v3kjij" data-bnode-index="1"
+>
+    {% if omnise_product_placeholder %}
+      {{ omnise_product_placeholder_name | placeholder_svg_tag: 'omnise-img-main' }}
+    {% elsif product != blank %}
+
+      <img
+        srcset="{%- if product.featured_media.width >= 165 -%}{{ product.featured_media | image_url: width: 165 }} 165w,{%- endif -%}
+        {%- if product.featured_media.width >= 330 -%}{{ product.featured_media | image_url: width: 330 }} 330w,{%- endif -%}
+        {%- if product.featured_media.width >= 535 -%}{{ product.featured_media | image_url: width: 535 }} 535w,{%- endif -%}
+        {{ product.featured_media | image_url }} {{ product.featured_media.width }}w"
+        src="{{ product.featured_media | image_url: width: 535 }}"
+        alt="{{ product.featured_media.alt | escape }}"
+        loading="lazy"
+        class="omnise-img-main"
+      >
+    
+
+    {% else %}
+
+      <img
+        src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/image-product-4_e1a50d90-86fa-402d-99f5-ffd3046ea39a.svg?v=1755827595"
+        alt="Default Product"
+        class="omnise-img-main"
+        loading="lazy"
+      >
+    {% endif %}
+</a><div class="omnise-slot" data-bnode="omnise-90451y" data-bnode-index="2"><div class="omnise-slot" data-hide-tablet="true" data-hide-mobile="true" data-bnode="omnise-zexv01" data-bnode-index="1">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-pr"
+              data-bnode="omnise-c2yxv2" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+
+              
+              <span class="omnise-atc-text">
+                  {% unless is_available %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+                  
+                  {% elsif has_variants and collection != blank %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}
+                  {% else %}
+                  {{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}
+                  {% endunless %}
+
+              </span>
+              
+          </button>
+    </div><div class="omnise-slot" data-hide-desktop="true" data-bnode="omnise-qrkxg5" data-bnode-index="2">
+        {% assign variants = product.variants %}
+        {% assign variant_size = product.variants | size %}
+        {% if variant_size > 1 %}
+        {% assign has_variants = true %}
+        {% else %}
+        {% assign has_variants = false %}
+        {% endif %}
+        {% if current_variant and current_variant.available %}
+        {% assign is_available = true %}
+        {% else %}
+        {% assign is_available = false %}
+        {% endif %}
+        
+          <button
+              class="omnise-atc-btn omnise-btn-button omnise-btn-se"
+              data-bnode="omnise-mc24bm" data-bnode-index="1"
+              data-atc-text="{{ 'sections.omnise-preview-template-collection.omnise_aqer5m' | t }}"
+              data-select-text="{{ 'sections.omnise-preview-template-collection.omnise_6v6poe' | t }}"
+              data-contact-text="{{ 'sections.omnise-preview-template-collection.omnise_rri8sg' | t }}"
+              data-sold-out-text="{{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}"
+              omnise-btn-po="left"
+          >
+              
+              <span>
+                  
+                  <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill="currentColor" d="M9 6h6a3 3 0 1 0-6 0M7 6a5 5 0 0 1 10 0h3a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM5 8v12h14V8zm4 2a3 3 0 1 0 6 0h2a5 5 0 0 1-10 0z"/></svg>                  
+              </span>
+              
+
+              
+          </button>
+    </div></div><div class="omnise-slot" data-bnode="omnise-fpl8uj" data-bnode-index="3">
+
+
+{% assign tag_input = 'New' | downcase | split: '|' %}
+{% assign has_match = false %}
+
+{% capture matched_tags %}
+  {% for input_tag in tag_input %}
+    {% assign input_clean = input_tag | strip | downcase %}
+
+    {% for tag in product.tags %}
+      {% assign tag_down = tag | downcase %}
+
+      {% if input_clean == tag_down %}
+        {% assign has_match = true %}
+
+        <div
+          class="omnise-product-tag omnise-product-tag-{{ forloop.index }}"
+          data-gap-item="true"
+        >
+          {{ tag }}
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% endfor %}
+{% endcapture %}
+
+{% if has_match %}
+<div
+  class="omnise-product-tags omnise-p3"
+  data-gap-control=":scope"
+  data-bnode="omnise-ekydih" data-bnode-index="1"
+>
+    {{ matched_tags }}
+</div>
+{% endif %}
+  
+    {% unless product.available %}
+      <div
+        class="omnise-product-badge omnise-badge-soldout omnise-p3"
+        data-bnode="omnise-aofath" data-bnode-index="2"
+      >
+        {{ 'sections.omnise-preview-template-collection.omnise_pfx4wy' | t }}
+      </div>
+
+    {% else %}
+      {% assign price = product.price_min %}
+      {% assign compare_at_price = product.compare_at_price_min %}
+
+      {% if compare_at_price > price %}
+        <div
+          class="omnise-product-badge omnise-badge-sale omnise-p3"
+          data-show-discount="true"
+          data-discount-prefix="minus"
+          data-discount-off-label="{{ 'sections.omnise-preview-template-collection.omnise_2ctr' | t }}"
+          data-discount-save-label="{{ 'sections.omnise-preview-template-collection.omnise_1j2ql' | t }}"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+          {% if compare_at_price %}
+            {% assign discount = compare_at_price
+              | minus: price
+              | times: 100.0
+              | divided_by: compare_at_price
+            %}
+            {% assign discount = discount | round: 2 %}
+          {% else %}
+            {% assign discount = 0 %}
+          {% endif %}
+          {% assign discount_value = discount | round %}
+
+          
+            
+              -{{ discount_value }}%
+            
+          
+        </div>
+
+      {% else %}
+        <div
+          class="omnise-product-badge omnise-badge-empty omnise-live-product omnise-p3"
+          data-bnode="omnise-aofath" data-bnode-index="2"
+        >
+         
+        </div>
+      {% endif %}
+    {% endunless %}
+  </div></div><div class="omnise-slot" data-bnode="omnise-35o3gl" data-bnode-index="2"><div class="omnise-app-block" data-bnode="omnise-i3c52m" data-bnode-index="1">{%- for block in section.blocks -%}{% if block.id contains 'omnise-i3c52m' %}{% render block %}{% endif %}{%- endfor -%}</div>
+    
+    
+    
+    
+    <h3 class="omnise-product-title omnise-h5 omnise-line-2" data-bnode="omnise-vxcfoz" data-bnode-index="2">
+      {% if omnise_product_placeholder %}
+        <a role="link">Example product title</a>
+      {% else %}
+        <a href="{{ product.url }}">{{ product.title }}</a>
+      {% endif %}
+    </h3>
+    
+    
+        <div class="omnise-product-price-wrapper {% if product.compare_at_price > product.price %} omnise-on-sale {% endif %} omnise-p2" data-bnode="omnise-o1ur6w" data-bnode-index="3">
+          <span class="omnise-product-price omnise-price-sale">
+            {% if omnise_product_placeholder or product == blank %}
+              $10.00 USD
+            {% else %}
+              {{ product.price | money_with_currency | strip_html | escape }}
+            {% endif %}
+          </span>
+          <span class="omnise-product-price-compare" {% unless product.compare_at_price > product.price %} style="display:none;"  {% endunless %}>
+            {{ product.compare_at_price | money_with_currency | strip_html | escape }}
+          </span>
+        </div>
+    </div></div></div></div>
+        {% endfor %}
+        {% endif %}
+        {% endpaginate %}
+        {% endif %}
+      </div></div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    {% assign omnise_source_collection = omnise_collection_grid_source_collection %}
+    {% if omnise_source_collection == blank %}
+      {% assign omnise_source_collection = collection %}
+    {% endif %}
+    {% assign omnise_control_per_page = omnise_collection_grid_per_page | default: 12 %}
+
+    {% if omnise_source_collection != blank %}
+      {% paginate omnise_source_collection.products by omnise_control_per_page %}
+          <nav class="omnise-collection-pagination omnise-p{% unless paginate.pages > 1 %} is-hidden{% endunless %}" aria-label="Collection pagination" data-normal-surface="custom" data-hover-surface="custom" data-bnode="omnise-z8yc5p" data-bnode-index="2">
+            {% if paginate.pages > 1 %}
+            {% if paginate.previous %}
+              <a class="omnise-collection-pagination-item" href="{{ paginate.previous.url }}">
+                {{ 'sections.omnise-preview-template-collection.omnise_jzvvmx' | t }}
+              </a>
+            {% else %}
+              <span class="omnise-collection-pagination-item omnise-collection-pagination-disabled">
+                {{ 'sections.omnise-preview-template-collection.omnise_jzvvmx' | t }}
+              </span>
+            {% endif %}
+
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a class="omnise-collection-pagination-item" href="{{ part.url }}">{{ part.title }}</a>
+              {% elsif part.title == paginate.current_page %}
+                <span class="omnise-collection-pagination-item active" aria-current="page">{{ part.title }}</span>
+              {% else %}
+                <span class="omnise-collection-pagination-item omnise-collection-pagination-ellipsis">{{ part.title }}</span>
+              {% endif %}
+            {% endfor %}
+
+            {% if paginate.next %}
+              <a class="omnise-collection-pagination-item" href="{{ paginate.next.url }}">
+                {{ 'sections.omnise-preview-template-collection.omnise_1fytv' | t }}
+              </a>
+            {% else %}
+              <span class="omnise-collection-pagination-item omnise-collection-pagination-disabled">
+                {{ 'sections.omnise-preview-template-collection.omnise_1fytv' | t }}
+              </span>
+            {% endif %}
+            {% endif %}
+          </nav>
+      {% endpaginate %}
+    {% endif %}
+  </div></div></div></section></div><div data-omnise-export-section-id="omnise-x3jbx0" data-omnise-export-has-ab="false"><section data-bnode="omnise-x3jbx0" data-bnode-index="3" class="omnise-section omnise-surface-muted"><div class="omnise-section-container"><div class="omnise-slot" data-bnode="omnise-lbifcm" data-bnode-index="1"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><h3 class="omnise-heading omnise-h2" data-bnode="omnise-ljfq1g" data-bnode-index="1">{{ 'sections.omnise-preview-template-collection.omnise_q71e9q' | t }}</h3></div></div><div class="omnise-carousel omnise-content-list" data-bnode="omnise-601hvd" data-bnode-index="2" data-gap-control=":scope &gt; .omnise-slider-wrapper &gt; .omnise-slider-items"><div class="omnise-slider-wrapper" data-navigation="none" data-pagination="none" data-dir="left" data-effect="slide" data-scroll="1" data-align="start" data-desktop-layout="slider" data-tablet-layout="slider" data-mobile-layout="slider" data-item="4" data-item-tablet="3" data-item-mobile="1.4" data-loop="true" data-play="false" data-auto-scroll="true" data-auto-scroll-speed="1" data-auto-scroll-direction="backward" data-auto-scroll-stop-on-interaction="true" data-transition="5s"><div class="omnise-slider-items"><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="0" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_10_11zon.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_10_11zon.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_10_11zon.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_10_11zon.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image_10_11zon.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="0">{{ 'sections.omnise-preview-template-collection.omnise_3ctuud' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="2" data-bnode-loop-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="1" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-1_1_11zon_633327ab-1b19-4cfc-bae1-fa3165c05149.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-1_1_11zon_633327ab-1b19-4cfc-bae1-fa3165c05149.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-1_1_11zon_633327ab-1b19-4cfc-bae1-fa3165c05149.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-1_1_11zon_633327ab-1b19-4cfc-bae1-fa3165c05149.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-1_1_11zon_633327ab-1b19-4cfc-bae1-fa3165c05149.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="1">{{ 'sections.omnise-preview-template-collection.omnise_tq6vzu' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="3" data-bnode-loop-index="2"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="2" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-2_2_11zon_3e513834-de2c-4614-b624-7bba07b8ceca.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-2_2_11zon_3e513834-de2c-4614-b624-7bba07b8ceca.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-2_2_11zon_3e513834-de2c-4614-b624-7bba07b8ceca.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-2_2_11zon_3e513834-de2c-4614-b624-7bba07b8ceca.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-2_2_11zon_3e513834-de2c-4614-b624-7bba07b8ceca.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="2">{{ 'sections.omnise-preview-template-collection.omnise_3gk1ja' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="4" data-bnode-loop-index="3"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="3" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-3_3_11zon_ddd7c493-a1c5-4b48-8d59-cad3dbd6a619.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-3_3_11zon_ddd7c493-a1c5-4b48-8d59-cad3dbd6a619.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-3_3_11zon_ddd7c493-a1c5-4b48-8d59-cad3dbd6a619.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-3_3_11zon_ddd7c493-a1c5-4b48-8d59-cad3dbd6a619.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-3_3_11zon_ddd7c493-a1c5-4b48-8d59-cad3dbd6a619.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="3">{{ 'sections.omnise-preview-template-collection.omnise_xiar5y' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="5" data-bnode-loop-index="4"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="4" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-4_4_11zon_485baea8-d3b9-4f60-9659-9db4a9706d7f.webp?v=1786002078&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-4_4_11zon_485baea8-d3b9-4f60-9659-9db4a9706d7f.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-4_4_11zon_485baea8-d3b9-4f60-9659-9db4a9706d7f.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-4_4_11zon_485baea8-d3b9-4f60-9659-9db4a9706d7f.webp?v=1786002078&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-4_4_11zon_485baea8-d3b9-4f60-9659-9db4a9706d7f.webp?v=1786002078&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="4">{{ 'sections.omnise-preview-template-collection.omnise_11vgs6' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="6" data-bnode-loop-index="5"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="5" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-5_5_11zon_a19cab37-8ddc-45cc-9bdb-a9c4abec626f.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-5_5_11zon_a19cab37-8ddc-45cc-9bdb-a9c4abec626f.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-5_5_11zon_a19cab37-8ddc-45cc-9bdb-a9c4abec626f.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-5_5_11zon_a19cab37-8ddc-45cc-9bdb-a9c4abec626f.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-5_5_11zon_a19cab37-8ddc-45cc-9bdb-a9c4abec626f.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="5">{{ 'sections.omnise-preview-template-collection.omnise_x9ch8l' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="7" data-bnode-loop-index="6"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="6" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-6_6_11zon_5b2de01c-0f8a-4933-829f-17ae37c0388f.webp?v=1786002078&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-6_6_11zon_5b2de01c-0f8a-4933-829f-17ae37c0388f.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-6_6_11zon_5b2de01c-0f8a-4933-829f-17ae37c0388f.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-6_6_11zon_5b2de01c-0f8a-4933-829f-17ae37c0388f.webp?v=1786002078&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-6_6_11zon_5b2de01c-0f8a-4933-829f-17ae37c0388f.webp?v=1786002078&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="6">{{ 'sections.omnise-preview-template-collection.omnise_z5j1ov' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="8" data-bnode-loop-index="7"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="7" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-7_7_11zon_684faeb9-5e2f-4015-9f64-187dfb7b5d32.webp?v=1786002078&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-7_7_11zon_684faeb9-5e2f-4015-9f64-187dfb7b5d32.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-7_7_11zon_684faeb9-5e2f-4015-9f64-187dfb7b5d32.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-7_7_11zon_684faeb9-5e2f-4015-9f64-187dfb7b5d32.webp?v=1786002078&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-7_7_11zon_684faeb9-5e2f-4015-9f64-187dfb7b5d32.webp?v=1786002078&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="7">{{ 'sections.omnise-preview-template-collection.omnise_ar42z4' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="9" data-bnode-loop-index="8"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="8" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-8_8_11zon_78d2cc96-5bd1-4c08-8314-742627722377.webp?v=1786002077&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-8_8_11zon_78d2cc96-5bd1-4c08-8314-742627722377.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-8_8_11zon_78d2cc96-5bd1-4c08-8314-742627722377.webp?v=1786002077&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-8_8_11zon_78d2cc96-5bd1-4c08-8314-742627722377.webp?v=1786002077&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-8_8_11zon_78d2cc96-5bd1-4c08-8314-742627722377.webp?v=1786002077&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="8">{{ 'sections.omnise-preview-template-collection.omnise_8u8lhh' | t }}</h3></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot omnise-surface-light" data-bnode="be-ctl-item" data-bnode-index="10" data-bnode-loop-index="9"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-xyo1lt" data-bnode-index="1" data-bnode-loop-index="9" style="--omnise-image-position: 0% 50%;"><img width="120" height="120" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-9_9_11zon_f7a96e73-4493-40f2-8d2a-6e2b5677c518.webp?v=1786002078&amp;width=300 300w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-9_9_11zon_f7a96e73-4493-40f2-8d2a-6e2b5677c518.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-9_9_11zon_f7a96e73-4493-40f2-8d2a-6e2b5677c518.webp?v=1786002078&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-9_9_11zon_f7a96e73-4493-40f2-8d2a-6e2b5677c518.webp?v=1786002078&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/Image-9_9_11zon_f7a96e73-4493-40f2-8d2a-6e2b5677c518.webp?v=1786002078&amp;width=300"></div><h3 class="omnise-heading omnise-h5" data-bnode="omnise-4z18x6" data-bnode-index="2" data-bnode-loop-index="9">{{ 'sections.omnise-preview-template-collection.omnise_e1kd07' | t }}</h3></div></div></div></div><div class="omnise-slider-controls"><div class="omnise-slider-controls-wrp"></div></div></div></div></section></div><div data-omnise-export-section-id="omnise-77fxmn" data-omnise-export-has-ab="false"><section data-bnode="omnise-77fxmn" data-bnode-index="4" class="omnise-section omnise-surface-light"><div class="omnise-section-container"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-carousel omnise-content-list" data-bnode="omnise-x80pdr" data-bnode-index="1" data-gap-control=":scope &gt; .omnise-slider-wrapper &gt; .omnise-slider-items"><div class="omnise-slider-wrapper" data-navigation="navi-type-1" data-pagination="none" data-dir="left" data-effect="slide" data-scroll="1" data-align="start" data-desktop-layout="grid" data-tablet-layout="grid" data-mobile-layout="grid" data-item="4" data-item-tablet="2" data-item-mobile="1" data-loop="true" data-play="false" data-transition="5s"><div class="omnise-slider-items"><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot" data-bnode="be-ctl-item" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-zsmt55" data-bnode-index="1" data-bnode-loop-index="0"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-x6ov8a" data-bnode-index="1" data-bnode-loop-index="0" style="--omnise-image-position: 0% 50%;"><img width="64" height="64" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons-solid_truck.png?v=1785824849&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons-solid_truck.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons-solid_truck.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons-solid_truck.png?v=1785824849&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons-solid_truck.png?v=1785824849&amp;width=200"></div></div></div><div class="omnise-slot" data-bnode="omnise-gvgxlb" data-bnode-index="2" data-bnode-loop-index="0"><h4 class="omnise-heading omnise-h5" data-bnode="omnise-wdycsx" data-bnode-index="1" data-bnode-loop-index="0">{{ 'sections.omnise-preview-template-collection.omnise_r6iiz9' | t }}</h4><p class="omnise-paragraph omnise-p" data-bnode="omnise-dmnws1" data-bnode-index="2" data-bnode-loop-index="0">{{ 'sections.omnise-preview-template-collection.omnise_9k07jw' | t }}</p></div></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot" data-bnode="be-ctl-item" data-bnode-index="2" data-bnode-loop-index="1"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-zsmt55" data-bnode-index="1" data-bnode-loop-index="1"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-x6ov8a" data-bnode-index="1" data-bnode-loop-index="1" style="--omnise-image-position: 0% 50%;"><img width="64" height="64" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_currency-dollar-20-solid.png?v=1785824849&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_currency-dollar-20-solid.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_currency-dollar-20-solid.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_currency-dollar-20-solid.png?v=1785824849&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_currency-dollar-20-solid.png?v=1785824849&amp;width=200"></div></div></div><div class="omnise-slot" data-bnode="omnise-gvgxlb" data-bnode-index="2" data-bnode-loop-index="1"><h3 class="omnise-heading omnise-h5" data-bnode="omnise-wdycsx" data-bnode-index="1" data-bnode-loop-index="1">{{ 'sections.omnise-preview-template-collection.omnise_hg1mup' | t }}</h3><p class="omnise-paragraph omnise-p" data-bnode="omnise-dmnws1" data-bnode-index="2" data-bnode-loop-index="1">{{ 'sections.omnise-preview-template-collection.omnise_s4hw4w' | t }}</p></div></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot" data-bnode="be-ctl-item" data-bnode-index="3" data-bnode-loop-index="2"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-zsmt55" data-bnode-index="1" data-bnode-loop-index="2"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-x6ov8a" data-bnode-index="1" data-bnode-loop-index="2" style="--omnise-image-position: 0% 50%;"><img width="64" height="64" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_chat-bubble-oval-left-ellipsis-20-solid.png?v=1785824850&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_chat-bubble-oval-left-ellipsis-20-solid.png?v=1785824850&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_chat-bubble-oval-left-ellipsis-20-solid.png?v=1785824850&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_chat-bubble-oval-left-ellipsis-20-solid.png?v=1785824850&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_chat-bubble-oval-left-ellipsis-20-solid.png?v=1785824850&amp;width=200"></div></div></div><div class="omnise-slot" data-bnode="omnise-gvgxlb" data-bnode-index="2" data-bnode-loop-index="2"><h3 class="omnise-heading omnise-h5" data-bnode="omnise-wdycsx" data-bnode-index="1" data-bnode-loop-index="2">{{ 'sections.omnise-preview-template-collection.omnise_mqghdk' | t }}</h3><p class="omnise-paragraph omnise-p" data-bnode="omnise-dmnws1" data-bnode-index="2" data-bnode-loop-index="2">{{ 'sections.omnise-preview-template-collection.omnise_jlvpt0' | t }}</p></div></div></div><div class="omnise-slider-item" data-gap-item="true"><div class="omnise-slot" data-bnode="be-ctl-item" data-bnode-index="4" data-bnode-loop-index="3"><div class="omnise-slot omnise-surface-muted" data-bnode="omnise-zsmt55" data-bnode-index="1" data-bnode-loop-index="3"><div class="omnise-slot omnise-virtual-slot" data-bnode-index="1"><div class="omnise-media-wrapper omnise-media-card" data-bnode="omnise-x6ov8a" data-bnode-index="1" data-bnode-loop-index="3" style="--omnise-image-position: 0% 50%;"><img width="64" height="64" sizes="min(1900px, 100vw)" alt="Image" loading="lazy" class="omnise-image" srcset="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_gift-20-solid.png?v=1785824849&amp;width=200 200w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_gift-20-solid.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_gift-20-solid.png?v=1785824849&amp;width=100 100w,https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_gift-20-solid.png?v=1785824849&amp;width=100 100w" src="https://cdn.shopify.com/s/files/1/0730/1110/1853/files/heroicons_gift-20-solid.png?v=1785824849&amp;width=200"></div></div></div><div class="omnise-slot" data-bnode="omnise-gvgxlb" data-bnode-index="2" data-bnode-loop-index="3"><h3 class="omnise-heading omnise-h5" data-bnode="omnise-wdycsx" data-bnode-index="1" data-bnode-loop-index="3">{{ 'sections.omnise-preview-template-collection.omnise_ma1fw8' | t }}</h3><p class="omnise-paragraph omnise-p" data-bnode="omnise-dmnws1" data-bnode-index="2" data-bnode-loop-index="3">{{ 'sections.omnise-preview-template-collection.omnise_2v3etx' | t }}</p></div></div></div></div></div></div></div></div></section></div>
+<script id="omnise-exported-page-js" src="{{'omnise-preview-template-collection.js'  | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "OMNISE BUILDER APP",
+  "locales": {
+    "en": {
+      "omnise_1cc1r": "Home",
+      "omnise_pckisq": "Results",
+      "omnise_mscp": " of ",
+      "omnise_glm36k": "products",
+      "omnise_sizb6p": "Sort by:",
+      "omnise_aqer5m": "Add to cart",
+      "omnise_6v6poe": "Options",
+      "omnise_rri8sg": "Contact",
+      "omnise_pfx4wy": "Sold out",
+      "omnise_2ctr": "off",
+      "omnise_1j2ql": "Save",
+      "omnise_ga7h7t": "Upgrade your phone.",
+      "omnise_4o0f90": "Shop now",
+      "omnise_jzvvmx": "Previous",
+      "omnise_1fytv": "Next",
+      "omnise_q71e9q": "Explore Popular categories.",
+      "omnise_3ctuud": "Smartphone",
+      "omnise_tq6vzu": "Tablet",
+      "omnise_3gk1ja": "Smartwatch",
+      "omnise_xiar5y": "Laptop",
+      "omnise_11vgs6": "Audio",
+      "omnise_x9ch8l": "Camera",
+      "omnise_z5j1ov": "Gaming",
+      "omnise_ar42z4": "Accessories",
+      "omnise_8u8lhh": "Computer",
+      "omnise_e1kd07": "TV - Monitor",
+      "omnise_r6iiz9": "Free Shipping & Returns",
+      "omnise_9k07jw": "Get your favorite electronics delivered free to your house.",
+      "omnise_hg1mup": "Money Back Guarantee",
+      "omnise_s4hw4w": "If you're not completely satisfied with your purchase, we'll fix it.",
+      "omnise_mqghdk": "Online Support 24/7",
+      "omnise_jlvpt0": "Need help with electronics? Contact us anytime.",
+      "omnise_ma1fw8": "Regular Sales",
+      "omnise_2v3etx": "Add your text here"
+    }
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "The section was generated by OMNISE BUILDER",
+      "info": "Omnise is a flexible page builder app on Shopify AppStore.\n              It provides 100+ Shopify Elements and pre-built templates library, \n              so you can build unlimited pages that you can imagine with it."
+    },
+    {
+      "type": "header",
+      "content": "[EDIT WITH OMNISE APP →](https://layouthub-hank.myshopify.com/admin/apps/3db283686bdf064c04e98e5cf61875ee/app/editor/v4/collection/9e4cab2a1600adec53ceb2c0)",
+      "info": "(*You must install the app to start editing this section [Learn more](https://docs.beae.com/en/article/quick-start-guide-dkoesy/))"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "@app"
+    }
+  ]
+}
+{% endschema %}
